@@ -26,7 +26,7 @@ function map(f, a)
 function mapSub1Cdr(a)
 {
     a.splice(0,1);
-    return map(function(x) { return x-1 }, a);
+    return map(function (x) { return x-1 }, a);
 }
 
 function encodeLine(numbers, str)
