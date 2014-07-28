@@ -1,4 +1,4 @@
-//----- ENCODING
+//----- TMOL ENCODING
 
 function triangles(limit)
 {
@@ -49,7 +49,7 @@ function kgEncode(str)
     return help(start);
 }
 
-//----- DECODING
+//----- TMOL DECODING
 function stringReverse(s)
 {
     return s.split("").reverse().join("");
@@ -89,20 +89,25 @@ function kgDecode(str)
     return result;
 }
 
-//----- SODA
+//----- SODA ENCODE
+function isConsonant(c)
+{
+    var consonants = "BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz".split("");
+    return consonants.indexOf(c) != -1
+}
+
 function sodaEncode(str)
 {
     var encoded = "",
         vowels = {'a':1, 'e':2, 'i':3, 'o':4, 'u':5,
                   'A':1, 'E':2, 'I':3, 'O':4, 'U':5}
-        consonants = "BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz".split("");
     for (i in str)
     {
         var c = str[i],
             lookup = vowels[c];
         if (lookup)
             encoded += lookup;
-        else if (consonants.indexOf(c) != -1)
+        else if (isConsonant(c))
             encoded += (c + nextLetter(c));
         else
             encoded += c;
@@ -120,6 +125,31 @@ function nextLetter(c)
        return String.fromCharCode(c.charCodeAt(0) + 1)
 }
 
+// SODA DECODING
+function sodaDecode(str)
+{
+    var decoded = "",
+        vowels = {1:'a', 2:'e', 3:'i', 4:'o', 5:'u',
+                  1:'A', 2:'E', 3:'I', 4:'O', 5:'U'};
+    for(var i = 0; i < str.length; i++)
+    {
+        var c = str[i],
+            lookup = vowels[c];
+        if (lookup)
+            decoded += lookup;
+        else if (isConsonant(c))
+        {
+            decoded += c;
+            i++; // skip next letter
+        }
+        else
+            decoded += c;
+    }
+    return decoded.toUpperCase();
+}
+
+print(sodaDecode("hi2lmlm4 wx4rslmde"))
+
 function processInput(f)
 {
     return function ()
@@ -131,4 +161,5 @@ function processInput(f)
 
 encodeText = processInput(kgEncode);
 decodeText = processInput(kgDecode);
-encodeSoda = processInput(sodaEncode);
+encodeSodaText = processInput(sodaEncode);
+decodeSodaText = processInput(sodaDecode);
