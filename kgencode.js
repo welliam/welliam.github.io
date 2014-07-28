@@ -50,9 +50,9 @@ function kgEncode(str)
 }
 
 //----- DECODING
-String.prototype.reverse = function ()
+function stringReverse(s)
 {
-    return this.split("").reverse().join("");
+    return s.split("").reverse().join("");
 }
 
 function partitionEncoding(str)
@@ -64,14 +64,14 @@ function partitionEncoding(str)
 
 function revDiagonal(a, index)
 {
-    result = "";
+    var result = "";
     for(var i = 0; i < a.length; i++, index--)
     {
         if (index<0) break;
         else if (index < a[i].length)
             result += a[i][index];
     }
-    return result.reverse();
+    return stringReverse(result);
 }
 
 function kgDecode(str)
@@ -89,6 +89,37 @@ function kgDecode(str)
     return result;
 }
 
+//----- SODA
+function sodaEncode(str)
+{
+    var encoded = "",
+        vowels = {'a':1, 'e':2, 'i':3, 'o':4, 'u':5,
+                  'A':1, 'E':2, 'I':3, 'O':4, 'U':5}
+        consonants = "BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz".split("");
+    for (i in str)
+    {
+        var c = str[i],
+            lookup = vowels[c];
+        if (lookup)
+            encoded += lookup;
+        else if (consonants.indexOf(c) != -1)
+            encoded += (c + nextLetter(c));
+        else
+            encoded += c;
+    }
+    return encoded;
+}
+
+function nextLetter(c)
+{
+    if (c == 'z')
+        return 'a';
+    else if (c == 'Z')
+        return 'A'
+    else
+       return String.fromCharCode(c.charCodeAt(0) + 1)
+}
+
 function processInput(f)
 {
     return function ()
@@ -100,3 +131,4 @@ function processInput(f)
 
 encodeText = processInput(kgEncode);
 decodeText = processInput(kgDecode);
+encodeSoda = processInput(sodaEncode);
