@@ -148,8 +148,6 @@ function sodaDecode(str)
     return decoded.toUpperCase();
 }
 
-print(sodaDecode("hi2lmlm4 wx4rslmde"))
-
 function processInput(f)
 {
     return function ()
