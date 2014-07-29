@@ -1,5 +1,4 @@
 //----- TMOL ENCODING
-
 function triangles(limit)
 {
     var i = 0,
@@ -39,13 +38,13 @@ function kgEncode(str)
     var start = mapSub1Cdr(triangles(str.length)),
         s     = str.replace(" ", "_", "g"),
         help  = function (line)
-                {
-                    if (line.length == 0)
-                        return "";
-                    else
-                        return encodeLine(line, s) + " " +
-                               help(mapSub1Cdr(line));
-                };
+        {
+            if (line.length == 0)
+                return "";
+            else
+                return encodeLine(line, s) + " " +
+                help(mapSub1Cdr(line));
+        };
     return help(start);
 }
 
@@ -89,31 +88,49 @@ function kgDecode(str)
     return result;
 }
 
-//----- SODA ENCODE
+//----- SODA ENCODING/DECODING
 function isConsonant(c)
 {
     var consonants = "BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz".split("");
-    return consonants.indexOf(c) != -1
+    return consonants.indexOf(c) != -1;
 }
 
-function sodaEncode(str)
+function doSoda(isEncoding) 
+/* Decoding and encoding are so similar that it makes more sense to wrap them 
+ * in a parent function which I've called doSoda. 
+*/
 {
-    var encoded = "",
-        vowels = {'a':1, 'e':2, 'i':3, 'o':4, 'u':5,
-                  'A':1, 'E':2, 'I':3, 'O':4, 'U':5}
-    for (i in str)
+    return function(str)
     {
-        var c = str[i],
-            lookup = vowels[c];
-        if (lookup)
-            encoded += lookup;
-        else if (isConsonant(c))
-            encoded += (c + nextLetter(c));
-        else
-            encoded += c;
+        var result = "",
+            vowels = {'A':1, 'E':2, 'I':3, 'O':4, 'U':5,
+                      'a':1, 'e':2, 'i':3, 'o':4, 'u':5},
+            numbers = {1:'A', 2:'E', 3:'I', 4:'O', 5:'U'};
+        for(var i = 0; i < str.length; i++)
+        {
+            var c      = str[i],
+                lookup = isEncoding ? vowels[c] : numbers[c];
+            if (lookup)
+                result += lookup;
+            else if (isConsonant(c))
+            {
+                if (isEncoding)
+                    result += (c + nextLetter(c));
+                else
+                    {
+                        result += c;
+                        i++; // skip next letter
+                    }
+            }
+            else
+                result += c;
+        }
+        return result.toUpperCase();
     }
-    return encoded;
 }
+
+var sodaEncode = doSoda(true)
+var sodaDecode = doSoda(false)
 
 function nextLetter(c)
 {
@@ -125,29 +142,7 @@ function nextLetter(c)
        return String.fromCharCode(c.charCodeAt(0) + 1)
 }
 
-// SODA DECODING
-function sodaDecode(str)
-{
-    var decoded = "",
-        vowels = {1:'a', 2:'e', 3:'i', 4:'o', 5:'u',
-                  1:'A', 2:'E', 3:'I', 4:'O', 5:'U'};
-    for(var i = 0; i < str.length; i++)
-    {
-        var c = str[i],
-            lookup = vowels[c];
-        if (lookup)
-            decoded += lookup;
-        else if (isConsonant(c))
-        {
-            decoded += c;
-            i++; // skip next letter
-        }
-        else
-            decoded += c;
-    }
-    return decoded.toUpperCase();
-}
-
+//----- PAGE FUNCTIONS
 function processInput(f)
 {
     return function ()
