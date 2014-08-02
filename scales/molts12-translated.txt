@@ -45,5 +45,11 @@
 (C Db D Eb E F Gb G Ab A Bb B)
 
 ** pure molts
-(C Gb)
-(C E Ab)
+(C D Eb E Gb G Ab Bb B)
+(C Db Eb E F G Ab A B)
+(C Db D E F Gb Ab A Bb)
+(C D Eb E F Gb Ab A Bb B)
+(C Db Eb E F Gb G A Bb B)
+(C Db D E F Gb G Ab Bb B)
+(C Db D Eb F Gb G Ab A B)
+(C Db D Eb E Gb G Ab A Bb)
