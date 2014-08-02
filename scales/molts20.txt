@@ -1,5 +1,10 @@
 ** 20 tone scale
 
+** prime symmetrical scales
+(0 10)
+(0 4 8 12 16)
+
+** molts
 (0 10)
 (0 9 10 19)
 (0 8 10 18)

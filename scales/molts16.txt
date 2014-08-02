@@ -1,5 +1,9 @@
 ** 16 tone scale
 
+** prime symmetrical scales
+(0 8)
+
+** molts
 (0 8)
 (0 7 8 15)
 (0 6 8 14)

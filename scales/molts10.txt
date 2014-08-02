@@ -1,5 +1,10 @@
 ** 10 tone scale
 
+** prime symmetrical scales
+(0 5)
+(0 2 4 6 8)
+
+** molts
 (0 5)
 (0 4 5 9)
 (0 3 5 8)

@@ -1,5 +1,9 @@
 ** 2 tone scale
 
+** prime symmetrical scales
+(0 1)
+
+** molts
 (0 1)
 
 ** pure molts

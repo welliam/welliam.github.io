@@ -1,5 +1,10 @@
 ** 12 tone scale
 
+** prime symmetrical scales
+(0 6)
+(0 4 8)
+
+** molts
 (0 6)
 (0 4 8)
 (0 5 6 11)

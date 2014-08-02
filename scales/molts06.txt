@@ -1,5 +1,10 @@
 ** 6 tone scale
 
+** prime symmetrical scales
+(0 3)
+(0 2 4)
+
+** molts
 (0 3)
 (0 2 4)
 (0 2 3 5)

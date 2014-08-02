@@ -1,5 +1,9 @@
 ** 8 tone scale
 
+** prime symmetrical scales
+(0 4)
+
+** molts
 (0 4)
 (0 3 4 7)
 (0 2 4 6)

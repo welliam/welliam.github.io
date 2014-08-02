@@ -1,5 +1,10 @@
 ** 24 tone scale
 
+** prime symmetrical scales
+(0 12)
+(0 8 16)
+
+** molts
 (0 12)
 (0 8 16)
 (0 11 12 23)

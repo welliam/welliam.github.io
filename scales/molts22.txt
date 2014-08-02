@@ -1,5 +1,10 @@
 ** 22 tone scale
 
+** prime symmetrical scales
+(0 11)
+(0 2 4 6 8 10 12 14 16 18 20)
+
+** molts
 (0 11)
 (0 10 11 21)
 (0 9 11 20)

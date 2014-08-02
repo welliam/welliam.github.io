@@ -1,5 +1,9 @@
 ** 4 tone scale
 
+** prime symmetrical scales
+(0 2)
+
+** molts
 (0 2)
 (0 1 2 3)
 
