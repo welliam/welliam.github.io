@@ -1,9 +1,0 @@
-** 3 tone scale
-
-** prime symmetrical scales
-(0 1 2)
-
-** molts
-(0 1 2)
-
-** pure molts

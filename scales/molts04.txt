@@ -3,7 +3,7 @@
 ** prime symmetrical scales
 (0 2)
 
-** molts
+** molts (2)
 (0 2)
 (0 1 2 3)
 
