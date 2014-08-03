@@ -1,0 +1,17 @@
+** 6 tone scale
+
+** prime symmetrical scales
+(C Gb)
+(C E Ab)
+
+** molts
+(C Gb)
+(C E Ab)
+(C D Gb Ab)
+(C E Gb Bb)
+(C D E Gb Ab Bb)
+
+** pure molts
+(C E Ab)
+(C D Gb Ab)
+(C E Gb Bb)

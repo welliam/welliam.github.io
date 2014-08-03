@@ -1,0 +1,11 @@
+** 4 tone scale
+
+** prime symmetrical scales
+(C Gb)
+
+** molts
+(C Gb)
+(C Eb Gb A)
+
+** pure molts
+(C Gb)
