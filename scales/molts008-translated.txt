@@ -1,0 +1,19 @@
+** 8 tone scale
+
+** prime symmetrical scales
+(C Gb)
+
+** molts
+(C Gb)
+(C D- Gb Ab-)
+(C Eb Gb A)
+(C F- Gb B-)
+(C D- Eb Gb Ab- A)
+(C D- F- Gb Ab- B-)
+(C Eb F- Gb A B-)
+(C D- Eb F- Gb Ab- A B-)
+
+** pure molts
+(C D- Eb Gb Ab- A)
+(C D- F- Gb Ab- B-)
+(C Eb F- Gb A B-)
