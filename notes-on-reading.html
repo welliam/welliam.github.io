@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Notes on Scales</title>
+  <link
+     rel="icon"
+     href="https://upload.wikimedia.org/wikipedia/commons/d/db/Chrysopoea_of_Cleopatra_1.gif"
+     />
+  <link href="scales-style.css"
+        rel="stylesheet"
+        type="text/css" />
+</head>
+
+<body>
+  <h3>Notes for Reading MOLT Lists</h3>
+  <p>
+    Because many of the scales we write about cannot be expressed in the 12 tone scale, we are forced to resort to numbered scales for many of the MOLT lists. When we can represent the scales as notes of the 12 tone scale, we do so in C, and we also give the numeric representation common to all lists.
+  </p>
+  <p>
+    In addition to translating the numeric scales to the 12 tone scale, we also represent the 8 tone and 24 tone scales in terms of quarter tone notes. Dbb is represented as Db-; for simplicity we do not complicate the scale further.
+  </p>
+  <p>
+    Currently the algorithm for finding MOLTs is too slow for many scales above the 24 tone scale. The exception to this is scales which are equal to squares of prime numbers. These scales are exceptional because they only have one prime factor, which means only one PSS; this limits the number of MOLTs, which means the algorithm runs fast. I have not found a good way to figure the number of MOLTs for arbitrary tone scales (I'm sure this is trivial for someone who's better at math than I am); however, it seems that for prime squared-tone scales, the number of MOLTs is equal to 2 to the power of its prime factor minus one. For example, the 49 tone scale (7<sup>2</sup>) is equal to 2<sup>7-1</sup>, 64. As a result, I have found that my algorithm runs in a tolerable amount of time for all prime-squared tone scales up to 169 (13<sup>2</sup>).
+  </p>
+
+  <a href="scales.html">MOLTs</a>
+</body>
