@@ -1,19 +1,37 @@
 ** 8 tone scale
 
 ** prime symmetrical scales
-(C Gb)
+(0 4)
 
-** molts
-(C Gb)
-(C D- Gb Ab-)
-(C Eb Gb A)
-(C F- Gb B-)
-(C D- Eb Gb Ab- A)
+** molts (8)
 (C D- F- Gb Ab- B-)
+(C Gb)
+(C Eb Gb A)
+(C D- Eb F- Gb Ab- A B-)
+(C D- Eb Gb Ab- A)
 (C Eb F- Gb A B-)
+(C D- Gb Ab-)
+(C F- Gb B-)
+
+** symmetrical scales (16)
+(C)
+(C Gb)
+(C D- B-)
+(C Eb A)
+(C F- Ab-)
+(C D- Gb B-)
+(C Eb Gb A)
+(C F- Gb Ab-)
+(C D- Eb A B-)
+(C D- F- Ab- B-)
+(C Eb F- Ab- A)
+(C D- Eb Gb A B-)
+(C D- F- Gb Ab- B-)
+(C Eb F- Gb Ab- A)
+(C D- Eb F- Ab- A B-)
 (C D- Eb F- Gb Ab- A B-)
 
 ** pure molts
-(C D- Eb Gb Ab- A)
 (C D- F- Gb Ab- B-)
+(C D- Eb Gb Ab- A)
 (C Eb F- Gb A B-)
