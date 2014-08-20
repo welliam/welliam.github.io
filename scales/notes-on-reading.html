@@ -14,16 +14,14 @@
 <body>
   <h3>Notes for Reading MOLT Lists</h3>
   <p>
-    Because many of the scales we write about cannot be expressed in
-    the 12 tone scale, we are forced to resort to numbered scales for
-    many of the MOLT lists. When we can represent the scales as notes
-    of the 12 tone scale, we do so in C, and we also give the numeric
-    representation common to all lists.
-  </p>
-  <p>
-    In addition to translating the numeric scales to the 12 tone
-    scale, we also represent the 8 tone and 24 tone scales in terms of
-    quarter tone notes.
+    Because many of the scales listed cannot be expressed in the 12
+    tone scale, the lists numbers the scales from 0 to <i>n</i>
+    for <i>n</i>-equal tempered scales. When we can represent the
+    scales as notes of the 12 tone scale, we do so in C, and we also
+    give the numeric representation common to all lists.  In addition
+    to translating the numeric scales to the 12 tone scale, we also
+    represent the 8 tone and 24 tone scales in terms of quarter tone
+    notes.
   </p>
   <p>
     Currently the algorithm for finding MOLTs is too slow for many
@@ -31,7 +29,8 @@
     which are equal to squares of prime numbers. These scales are
     exceptional because they only have one unique prime factor, which
     means only one PSS; this limits the number of MOLTs, which lets
-    the algorithm runs fast.
+    the algorithm runs fast. Therefore, the list includes
+    prime-squared-equal tempered scales for primes up to 13.
   </p>
   <p>
     I have not found a good way to find the number of MOLTs for
@@ -52,9 +51,10 @@
     (&lceil;(9/2)&rceil; = 5). Unfortunately, this means finding
     all the symmetical scale for numbers much larger than 24 becomes
     increasingly ridiculous (and impossible in a reasonable amount of
-    memory). For example, the 169-tone scale would have
-    2<sup>85</sup> (38,685,626,227,668,100,000,000,000) symmetrical scales.
-    
+    memory). The 169-tone scale would have 2<sup>85</sup>
+    (38,685,626,227,668,133,590,597,632) symmetrical
+    scales. Therefore, for equal tempered scales higher than 25
+    the corresponding symmetrical scales are not listed.
   </p>
 
   <a href="index.html">MOLTs</a>
