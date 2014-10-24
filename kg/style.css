@@ -1,0 +1,10 @@
+body {
+    display: table;
+    margin: auto;
+    width: 500px;
+}
+
+p { text-indent: 1em; }
+
+a { color: black }
+a:hover { text-decoration: none }
