@@ -1,7 +1,15 @@
+function format_stats(name, info, stats) {
+    res = "<h4>" + name + "</h4><p>" + info + '</p><div class="stats">'
+    for(var i in stats) {
+        res += stats[i] + "<br />"
+    }
+    return res + "</div>"
+}
+
 function person(name, info, stats) {
     document.getElementById(name).onclick = function() {
-        document.getElementById("chara").innerHTML =
-            "<h4>" + name + "</h4><p>" + info + "</p><p>" + stats + "</p>"
+        document.getElementById("chara").innerHTML = 
+            format_stats(name, info, stats)
     }
 }
 

@@ -4,7 +4,12 @@ body {
     width: 500px;
 }
 
-p { text-indent: 1em; }
+div.stats {
+    font-style: italic;
+    margin-left: 20px;
+}
+
+#story { text-indent: 1em; }
 
 a { color: black }
 a:hover { text-decoration: none }
