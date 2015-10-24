@@ -3,7 +3,13 @@ body {
     width: 70%;
 }
 
-h3 { margin: 5.7%; } /* 5.7 is correct */
+h3 {
+    margin-left: 3em;
+}
+
+h4 {
+    margin-left: 2em;
+}
 
 p { text-indent: 2em; }
 
