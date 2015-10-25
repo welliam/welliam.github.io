@@ -124,16 +124,31 @@
   </p>
 
   <h4>
-    <var>S</var> = <var>f</var>(<var>n</var>) = <var>p</var>(<var>n</var> + 1)
+    <var>S</var> = <var>f</var>(<var>n</var>) = <var>p</var>(2<var>n</var> + 1)
     (MOLTs from a prime scale <var>p</var>)
   </h4>
   <p>
     Properly speaking, this equation should be <var>pn</var> +
     1. However, as this does nothing but include the trivial scale of
     one note, I prefer
-    <var>p</var>(<var>n</var> + 1),
+    <var>p</var>(<var>2n</var> + 1),
     0 &le; <var>n</var> &lt; 2 <sup><var>t</var>/<var>p</var> - 1</sup>,
-    n&isin;&#8469;<sub>0</sub>. I don't understand this formula.
+    n&isin;&#8469;<sub>0</sub>. 
+  </p>
+  <p>
+    Multiplication of prime scale P by another scale S means
+    interpolating P by each interval in S. For example, the whole tone
+    scale is 65&times;21. 65 is the tritone 1000001b, and 21 is
+    10101b, which is `C D E` in the key of C. Through multiplication
+    the pattern C D E is transposed to each interval contained in the
+    tritone, yielding C D E (i.e. 21&times;1, where 1 is the first
+    note contained in 65) plus F&#9839; G&#9839; A&#9839;
+    (21&times;64, 64 being the note contained in the tritone).
+  </p>
+  <p>
+    Essentially, this formula says that every possible scale
+    (i.e. 2<var>n</var> + 1) between 1 and the first non-one interval
+    of a prime scale multiplied by that prime scale is a MOLT.
   </p>
 
   <h4>
