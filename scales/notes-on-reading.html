@@ -1,27 +1,20 @@
 <!DOCTYPE html>
 
 <head>
-  <title>Notes on Scales</title>
-  <link
-     rel="icon"
-     href="https://upload.wikimedia.org/wikipedia/commons/d/db/Chrysopoea_of_Cleopatra_1.gif"
-     />
-  <link href="scales-style.css"
-        rel="stylesheet"
-        type="text/css" />
+  <title>Notes on Scales</title> <link rel="icon"
+  href="https://upload.wikimedia.org/wikipedia/commons/d/db/Chrysopoea_of_Cleopatra_1.gif"
+  /> <link href="scales-style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
   <h3>Notes for Reading MOLT Lists</h3>
   <p>
     Because many of the scales listed cannot be expressed in the 12
-    tone scale, the lists numbers the scales from 0 to <i>n</i>
-    for <i>n</i>-equal tempered scales. When we can represent the
-    scales as notes of the 12 tone scale, we do so in C, and we also
-    give the numeric representation common to all lists.  In addition
-    to translating the numeric scales to the 12 tone scale, we also
-    represent the 8 tone and 24 tone scales in terms of quarter tone
-    notes.
+    tone scale, the lists numbers the scales from 0 to <i>n</i>-1
+    for <i>n</i>-equal tempered scales. When it is possible to
+    represent the scales as notes of the 12 tone scale, the lists
+    start with C. When it is possible to translate the scale to the 24
+    scale this is done, again starting with C.
   </p>
   <p>
     Currently the algorithm for finding MOLTs is too slow for many
@@ -44,18 +37,17 @@
     (13<sup>2</sup>).
   </p>
   <p>
-    Finding the number of symmetrical scales for a given equal
-    tempered scale is easy. Given <i>n</i> tones, there are
-    2<sup>&lceil;(<i>n</i>/2)&rceil;</sup> scales. For example, for the
-    9 tone scale, there are 2<sup>5</sup> symmetrical scales
-    (&lceil;(9/2)&rceil; = 5). Unfortunately, this means finding
-    all the symmetical scale for numbers much larger than 24 becomes
-    increasingly ridiculous (and impossible in a reasonable amount of
-    memory). The 169-tone scale would have 2<sup>85</sup>
+    For <i>n</i> tones, there are
+    2<sup>&lceil;(<i>n</i>/2)&rceil;</sup> symmetrical scales. For
+    example, for the 9 tone scale, there are 2<sup>5</sup> symmetrical
+    scales. Unfortunately, this means finding all the symmetical scale
+    for numbers much larger than 24 becomes increasingly ridiculous
+    (and impossible in a reasonable amount of memory). The 169-tone
+    scale, only having 4096 MOLTs, would have 2<sup>85</sup>
     (38,685,626,227,668,133,590,597,632) symmetrical
-    scales. Therefore, for equal tempered scales higher than 25
-    the corresponding symmetrical scales are not listed.
+    scales. Therefore, for equal tempered scales higher than 25 the
+    corresponding symmetrical scales are not listed.
   </p>
 
-  <a href="index.html">MOLTs</a>
+  <footer><a href="index.html">MOLTs</a></footer>
 </body>
