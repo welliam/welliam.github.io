@@ -4,10 +4,16 @@ body {
     width: 500px;
 }
 
+div {
+    margin-top: 20px;
+}
+
 div.stats {
     font-style: italic;
     margin-left: 20px;
 }
+
+div.pages { color: pink }
 
 #story { text-indent: 1em; }
 
