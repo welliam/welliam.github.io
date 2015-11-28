@@ -1,17 +1,19 @@
 body {
     margin-left: 10%;
-    width: 70%;
+    margin-right: 10%;
 }
 
 h3 {
-    margin-left: 3em;
+    text-align: center;
 }
 
 h4 {
-    margin-left: 2em;
+    text-align: center;
 }
 
 p { text-indent: 2em; }
+
+footer { text-align: center; }
 
 a { color: black }
 a:hover { text-decoration: none }
