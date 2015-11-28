@@ -91,8 +91,8 @@ function doSoda(isEncoding) {
                       'a':1, 'e':2, 'i':3, 'o':4, 'u':5}
         var numbers = {1:'A', 2:'E', 3:'I', 4:'O', 5:'U'}
         for(var i = 0; i < str.length; i++) {
-            var c      = str[i],
-                lookup = isEncoding ? vowels[c] : numbers[c]
+            var c = str[i]
+            var lookup = isEncoding ? vowels[c] : numbers[c]
             if (lookup)
                 result += lookup
             else if (isConsonant(c)) {
