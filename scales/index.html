@@ -27,6 +27,14 @@
 
   <div id="intro">
     <p>
+      This page is about finding every possible mode of limited
+      transposition for arbitrary equal temperatements. For
+      information about the history and other properties about these
+      scales,
+      see <a href="https://en.wikipedia.org/wiki/Modes_of_limited_transposition">the
+      wikipedia article on them,</a> or read Messiaen's book.
+    </p>
+    <p>
       A list of all modes of limited transposition for equal tempered
       scales.  Prime numbered tone scales are not included because
       they have no MOLTs; rather, they are the basis for MOLTs in
@@ -152,17 +160,17 @@
       the 12 tone scale.
     </p>
     <p>
-      Finally, it is worth mentioning that the "pure" MOLTs&ndash; that
-      is, the MOLTs which are not truncations of other MOLTs&ndash; are
-      the chromatic scales with a single PSS removed. One might also
-      think of this as "uninterpolating" a PSS. For example, Messiaen's
-      7th MOLT is the chromatic scale with a tritone removed, and his
-      3rd is the chromatic scale with an augmented chord removed.
+      True MOLTs&ndash; that is, the MOLTs which are not truncations
+      of other MOLTs&ndash; are the chromatic scales with a single PSS
+      removed. One might also think of this as "uninterpolating" a
+      PSS. For example, Messiaen's 7th MOLT is the chromatic scale
+      with a tritone removed, and his 3rd is the chromatic scale with
+      an augmented chord removed.
     </p>
   </div>
 
   <div id="numbers">
-    <h3>How The Program Works, or, Scales as Numbers</h3>
+    <h3>How The Program Works</h3>
     <p>
       Scales from any <var>n</var>&ndash;tone equal temperament scale (TET)
       can be represented as a binary number with <var>n</var> digits
@@ -174,12 +182,10 @@
       which is 2741 in base 10. (This method of representing scales is
       key-agnostic and the key of C was chosen for readability.)
       Notice how the least significant bit represents the lowest note
-      in the scale&ndash; this is out of convenience, as the scale
-      just containing the 1st note in the TET would be 1. Every
-      possible scale is represented as the odd numbers as we do not
-      considers sets of notes which do not include the first note to
-      be scales; the least significant bit of odd numbers in base 2 is
-      always 1.
+      in the scale. Every scale is represented as the odd numbers as
+      we do not considers sets of notes which do not include the first
+      note to be scales; the least significant bit of odd numbers in
+      base 2 is always 1.
     </p>
     <p>
       Finding all the MOLTs first involves finding the unique prime
@@ -276,7 +282,8 @@
       the pattern C D E is transposed to each note contained in the
       tritone, yielding C D E (i.e. 21&times;1, where 1 is the first
       note contained in 65) plus F&#9839; G&#9839; A&#9839;
-      (21&times;64, 64 being the note contained in the tritone).
+      (21&times;64, 64 being the second note contained in the
+      tritone).
     </p>
     <p>
       Essentially, this formula says that every possible scale
@@ -314,15 +321,25 @@
 
   <div id="haskell">
     <h3>Haskell Code</h3>
+    <p>
+      The Haskell code below is more concise than the equivalent code
+      I wrote in Scheme, due to the new method of representing scales
+      as numbers. It also runs much more efficiently. The running time
+      of the `molts` function is dependent on the number of prime
+      factors the TET has, and how large those prime factors are; the
+      smaller the prime factor, the more scales produced from it.
+      However, most of the time spent running the program is probably
+      in translating the numbers into readable scales for
+      printing. The old Scheme program was used to produce the lists
+      on this page.
+    </p>
     <pre>
 import Data.List
 
 primeFactors :: Integer -> [Integer]
-primeFactors x = [p | p <- sieve [2..x-1], x `mod` p == 0]
-
-sieve :: [Integer] -> [Integer]
-sieve [] = []
-sieve (a:b) = a : sieve (filter ((/=0).(`mod`a)) b)
+primeFactors x = [p | p <- filterPrimes [2..x-1], x `mod` p == 0]
+  where filterPrimes [] = []
+        filterPrimes (a:b) = a : filterPrimes (filter ((/=0).(`mod`a)) b)
 
 primeScale :: Integer -> Integer -> Integer
 primeScale tet prime = (1 - 2 ^ tet) `div` (1 - 2^(tet `div` prime))
@@ -340,19 +357,16 @@ twelveTones :: [String]
 twelveTones = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 showScale :: [a] -> Integer -> [a]
-showScale t s =
-  [k | (k, n) <- zip t (takeWhile (>0) (iterate (`div` 2) s)), n `mod` 2 == 1]
-
-show12 :: Integer -> [String]
-show12 = showScale twelveTones
+showScale t s = [k | (k, n) <- zip t bits, n `mod` 2 == 1]
+  where bits = takeWhile (>0) (iterate (`div` 2) s)
 
 printMolts :: [Integer] -> Integer -> IO ()
-printMolts scale = putStr
-  . concatMap ((++ "\n") . concat . intersperse " " . showScale (map show scale))
-  . molts
-
-printMolts' ::  Integer -> IO ()
-printMolts' = printMolts [0..]
+printMolts scale tet = foldr (>>) (return ()) ms
+  where ms = map (print . showScale scale) (molts tet)
     </pre>
+    <p>
+      Please don't kill me for the shitty prime factorer, an
+      efficient/reasonable one is overkill.
+    </p>
   </div>
 </body>
