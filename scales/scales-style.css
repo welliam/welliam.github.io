@@ -5,7 +5,8 @@ body {
 }
 
 h2 { text-align: center; }
-h3 { text-align: center; }
+h3 { text-align: center;
+     padding-top: 10px; }
 h4 { text-align: center; }
 
 p { text-indent: 2em; }
