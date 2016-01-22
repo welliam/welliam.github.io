@@ -31,7 +31,7 @@ function encodeLine(numbers, str) {
 
 function kgEncode(str) {
     var start = mapSub1Cdr(triangles(str.length)),
-        s = str.replace(" ", "_", "g"),
+        s = str.replace(" ", "_"),
         help = function (line) {
             if (line.length == 0)
                 return ""
@@ -49,7 +49,7 @@ function stringReverse(s) {
 function partitionEncoding(str) {
     return str
         .split(" ")
-        .map(function (s) {return s.replace("_", " ", "g")})
+        .map(function (s) {return s.replace("_", " ")})
 }
 
 function revDiagonal(a, index) {
@@ -130,7 +130,9 @@ function processInput(f) {
     }
 }
 
-encodeText = processInput(kgEncode)
-decodeText = processInput(kgDecode)
-encodeSodaText = processInput(sodaEncode)
-decodeSodaText = processInput(sodaDecode)
+window.onload = function () {
+    document.getElementById("sodaEncode").onclick = processInput(sodaEncode);
+    document.getElementById("sodaDecode").onclick = processInput(sodaDecode);
+    document.getElementById("tmolEncode").onclick = processInput(kgEncode);
+    document.getElementById("tmolDecode").onclick = processInput(kgDecode);
+}
