@@ -12,27 +12,39 @@ function keyPosition(nth) {
     return 25 * (nth + (nth > 4 ? 1 : 0))
 }
 
+var generateId = (function () {
+    x = 0
+    return function() {
+        return '___' + (x++).toString() + '___'
+    }
+})()
+
 function makeKey(nth, startx, starty) {
     startx = startx || 0
     starty = starty || 0
 
-    var label = document.createElement('label'),
+    var id = generateId(),
+        span = document.createElement('span'),
+        label = document.createElement('label'),
         checkbox = document.createElement('input'),
         position = keyPosition(nth),
         keyisblack = isBlack(nth)
 
-    label.appendChild(checkbox)
+    span.appendChild(checkbox)
+    span.appendChild(label)
 
+    checkbox.setAttribute('id', id)
     checkbox.setAttribute('type', 'checkbox')
-    checkbox.setAttribute('id', 'box')
     checkbox.setAttribute('class', 'keycheckbox')
 
-    label.setAttribute('class', keyisblack ? 'blackkey' : 'whitekey')
+    label.setAttribute('class', 'key ' + (keyisblack ? 'blackkey' : 'whitekey'))
     label.style.top = starty + 'px'
     label.style.left = startx + position + (keyisblack ? 10 : 0) + 'px'
     label.style.zIndex = keyisblack ? '1' : '0'
+    label.setAttribute('for', id)
 
     return {
+        span: span,
         label: label,
         checkbox: checkbox,
         nth: nth
@@ -67,7 +79,7 @@ window.onload = function() {
                 updateScalenum(scale)
             }
             keys.push(key)
-            piano.appendChild(key.label)
+            piano.appendChild(key.span)
         })()
     }
 
