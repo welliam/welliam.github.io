@@ -1,0 +1,35 @@
+body {
+    background-color: #eeeeee;
+}
+
+#controls {
+    margin: 5%;
+}
+
+#piano {
+    position: relative;
+    width: 0;
+    height: 0;
+    margin: 10%;
+}
+
+.keycheckbox {
+    display: none;
+}
+
+label {
+    position: absolute;
+    background-repeat: no-repeat;
+}
+
+label.blackkey {
+    background-image: url('blackkey.png');
+    width: 30px;
+    height: 150px;
+}
+
+label.whitekey {
+    background-image: url('whitekey.png');
+    width: 50px;
+    height: 250px;
+}
