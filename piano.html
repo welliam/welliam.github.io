@@ -6,16 +6,34 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="scalesdictionary.js"></script>
+    <script src="play.js"></script>
     <script src="piano.js"></script>
   </head>
 
   <body>
     <noscript><h1>Sorry, this page needs Javascript! :( :( :(</h1></noscript>
 
+    <div id="audio">
+      <audio id="note0" src="resources/0.ogg"></audio>
+      <audio id="note1" src="resources/1.ogg"></audio>
+      <audio id="note2" src="resources/2.ogg"></audio>
+      <audio id="note3" src="resources/3.ogg"></audio>
+      <audio id="note4" src="resources/4.ogg"></audio>
+      <audio id="note5" src="resources/5.ogg"></audio>
+      <audio id="note6" src="resources/6.ogg"></audio>
+      <audio id="note7" src="resources/7.ogg"></audio>
+      <audio id="note8" src="resources/8.ogg"></audio>
+      <audio id="note9" src="resources/9.ogg"></audio>
+      <audio id="note10" src="resources/10.ogg"></audio>
+      <audio id="note11" src="resources/11.ogg"></audio>
+      <audio id="note12" src="resources/12.ogg"></audio>
+    </div>
+
     <input type="text" id="title" placeholder="Enter title here"></input>
 
     <div id="controls">
       <button type="button" id="clear">Clear</button>
+      <button type="button" id="play">Play</button>
     </div>
 
     <div id="piano"></div>

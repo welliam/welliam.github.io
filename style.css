@@ -5,6 +5,14 @@ body {
     margin-right: 5%;
 }
 
+::selection {
+    background: #ffffff;
+}
+
+::-moz-selection {
+    background: #ffffff;
+}
+
 body > * {
     margin-top: 0.5em;
 }
@@ -51,13 +59,13 @@ label {
 }
 
 label.blackkey {
-    background-image: url('blackkey.png');
+    background-image: url('resources/blackkey.png');
     width: 30px;
     height: 150px;
 }
 
 label.whitekey {
-    background-image: url('whitekey.png');
+    background-image: url('resources/whitekey.png');
     width: 50px;
     height: 250px;
 }
@@ -84,6 +92,7 @@ input[type="text"]:focus + #scalenuminputwarning {
 
 #statslist {
     margin-top: 1em;
+    padding-left: 1em;
     font-style: italic;
     list-style: none;
 }

@@ -69,13 +69,6 @@ function makeKeys(parent, listener) {
     return keys
 }
 
-function loadAudio(audiopath) {
-    var audio = document.createElement('audio')
-    audio.style.display = 'none'
-    audio.setAttribute('src', audiopath)
-    audio.setAttribute('preload', 'auto')
-}
-
 function areModes(s1, s2) {
     if (s1 == s2) {
         return false
@@ -92,23 +85,22 @@ function areModes(s1, s2) {
     return false
 }
 
-function similarScales(s1, scales) {
+function similarScales(s1notes, scales) {
     var subsets = [],
         supersets = [],
         same = [],
         modes = []
     scales.forEach(function (s2) {
-        var notes = s2.notes
-        if (areModes(s1, notes)) {
+        var s2notes = s2.notes
+        if (areModes(s1notes, s2notes)) {
             modes.push(s2)
         }
 
-        if (s1 == notes) {
+        if (s1notes == s2notes) {
             same.push(s2)
-        }
-        else if ((s1 & notes) == s1) {
+        } else if ((s1notes & s2notes) == s1notes) {
             supersets.push(s2)
-        } else if ((s1 & notes) == notes) {
+        } else if ((s1notes & s2notes) == s2notes) {
             subsets.push(s2)
         }
     })
@@ -268,4 +260,7 @@ window.onload = function() {
     })
     */
 
+    document.getElementById('play').onclick = function() {
+        playScale(scale)
+    }
 }
