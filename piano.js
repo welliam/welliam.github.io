@@ -130,13 +130,18 @@ function scaleLink(name, s) {
     return link
 }
 
-function resetScales(parent, scales) {
-    parent.innerHTML = ''
-    scales.forEach(function (s) {
-        var li = document.createElement('li')
-        li.appendChild(scaleLink(s.name, s.notes))
-        parent.appendChild(li)
-    })
+function resetScales(parent, list, scales) {
+    if (!scales.length) {
+        parent.style.display = 'none'
+    } else {
+        parent.style.display = 'block'
+        list.innerHTML = ''
+        scales.forEach(function (s) {
+            var li = document.createElement('li')
+            li.appendChild(scaleLink(s.name, s.notes))
+            list.appendChild(li)
+        })
+    }
 }
 
 function statsTell(statistic) {
@@ -184,10 +189,24 @@ function updateScalenum(s, scaledict) {
     tellAllStats(s)
 
     var similars = similarScales(s, scaledict)
-    resetScales(document.getElementById('samelist'), similars.same)
-    resetScales(document.getElementById('modeslist'), similars.modes)
-    resetScales(document.getElementById('subsetlist'), similars.subsets)
-    resetScales(document.getElementById('supersetlist'), similars.supersets)
+    resetScales(document.getElementById('same'),
+                document.getElementById('samelist'),
+                similars.same)
+
+    resetScales(
+        document.getElementById('modes'),
+        document.getElementById('modeslist'),
+        similars.modes)
+
+    resetScales(
+        document.getElementById('subset'),
+        document.getElementById('subsetlist'),
+        similars.subsets)
+
+    resetScales(
+        document.getElementById('superset'),
+        document.getElementById('supersetlist'),
+        similars.supersets)
 }
 
 
