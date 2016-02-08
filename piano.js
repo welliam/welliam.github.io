@@ -1,3 +1,5 @@
+"use strict";
+
 function isBlack(nth) {
     switch(nth % 12) {
     case 0: case 2: case 4: case 5: case 7: case 9: case 11:
@@ -74,39 +76,120 @@ function loadAudio(audiopath) {
     audio.setAttribute('preload', 'auto')
 }
 
-// function similarScales(s1, scales) {
-//     var subsets = [],
-//         supersets = [],
-//         same = []
-//     scales.forEach(function (s2) {
-//         if (s1 == s2) {
-//             same.push(s2)
-//         } else if (s1 & s2 == s1) {
-//             subsets.push(s2)
-//         } else if (s1 & s2 == s2) {
-//             supersets.push(s2)
-//         }
-//     })
-//     return {
-//         same: same,
-//         subsets: subsets,
-//         supersets: supersets
-//     }
-// }
+function areModes(s1, s2) {
+    if (s1 == s2) {
+        return false
+    }
+    for(var i = 0; i < 12; i++) {
+        if (s1 == s2) {
+            return true
+        }
+        if (s1 % 2) {
+            s1 += 4096
+        }
+        s1 >>= 1
+    }
+    return false
+}
 
-function scaleLink(s, name) {
+function similarScales(s1, scales) {
+    var subsets = [],
+        supersets = [],
+        same = [],
+        modes = []
+    scales.forEach(function (s2) {
+        var notes = s2.notes
+        if (areModes(s1, notes)) {
+            modes.push(s2)
+        }
+
+        if (s1 == notes) {
+            same.push(s2)
+        }
+        else if ((s1 & notes) == s1) {
+            supersets.push(s2)
+        } else if ((s1 & notes) == notes) {
+            subsets.push(s2)
+        }
+    })
+    return {
+        same: same,
+        subsets: subsets,
+        supersets: supersets,
+        modes: modes
+    }
+}
+
+function scaleLink(name, s) {
     var link = document.createElement('a')
     link.onclick = function () {
         loadScale(s)
+        document.getElementById('title').value = name
     }
     link.appendChild(document.createTextNode(name || s))
+    return link
+}
+
+function resetScales(parent, scales) {
+    parent.innerHTML = ''
+    scales.forEach(function (s) {
+        var li = document.createElement('li')
+        li.appendChild(scaleLink(s.name, s.notes))
+        parent.appendChild(li)
+    })
+}
+
+function statsTell(statistic) {
+    var li = document.createElement('li')
+    li.innerHTML = statistic
+    document.getElementById('statslist').appendChild(li)
+}
+
+function isMolt(s) {
+    if (!s % 2) {
+        return false
+    }
+
+    return s % 64 == s >> 6 ||
+        (s % 16 == (s >> 4) % 16 && s % 16 == s >> 8)
+}
+
+function isSymmetrical(s) {
+    if (!s % 2) {
+        return false
+    }
+    s >>= 1
+    var rev = 0
+    for(var i = 0; i < 11; i++) {
+        rev *= 2
+        rev += (s >> i) % 2
+    }
+    return rev == s
+}
+
+function tellAllStats(s) {
+    if (isSymmetrical(s)) {
+        statsTell('This scale is symmetrical.')
+    }
+
+    if (isMolt(s)) {
+        statsTell('This scale is a mode of limited transposition.')
+    }
 }
 
 function updateScalenum(s, scaledict) {
-    document.getElementById('scalenum').innerHTML = s
+    document.getElementById('scalenum').value = s
 
-    // var similars = similarScales(s, scaledict
+    document.getElementById('statslist').innerHTML = ''
+    tellAllStats(s)
+
+    var similars = similarScales(s, scaledict)
+    resetScales(document.getElementById('samelist'), similars.same)
+    resetScales(document.getElementById('modeslist'), similars.modes)
+    resetScales(document.getElementById('subsetlist'), similars.subsets)
+    resetScales(document.getElementById('supersetlist'), similars.supersets)
 }
+
 
 function clearKeys(keys) {
     keys.forEach(function (k) {
@@ -117,34 +200,67 @@ function clearKeys(keys) {
     })
 }
 
-// var loadScale
+function defscale(name, notes) {
+    return {
+        name: name,
+        notes: parseInt(notes, 2)
+    }
+}
+
+function loadScale(s) {
+    clearKeys(keys)
+    keys.forEach(function (k) {
+        if (s & (1 << k.nth)) {
+            k.checkbox.onclick()
+            k.checkbox.checked = true
+        }
+    })
+    updateScalenum(s, scalesDict)
+}
+
+var scalesDict = []
+var keys
 
 window.onload = function() {
+   [defscale("Major", "101010110101"),
+    defscale("Harmonic Minor", "010110101101"),
+    defscale("Melodic Minor", "101010101101"),
+    defscale("Dorian", "011010101101")].forEach(function (s) {
+        scalesDict.push(s)
+    })
+
     var scale = 0,
-        piano = document.getElementById('piano'),
-        keys = makeKeys(piano, function(n) {
-            scale ^= 1 << n
-            updateScalenum(scale)
-        })
+        piano = document.getElementById('piano')
 
-    // loadScale = function (s) {
-    //     clearKeys(keys)
-    //     for(var i = 0; i < 12; i++) {
-    //         if (s & (1 << i)) {
-    //             k.checkbox.onclick()
-    //             k.checkbox.checked = true
-    //         }
-    //     }
-    //     updateScalenum(scale)
-    // }
+    keys = makeKeys(piano, function(n) {
+        scale ^= 1 << n
+        updateScalenum(scale, scalesDict)
+    })
 
-    document.getElementById('clear').onclick = function() { clearKeys(keys) }
+    var scalenum = document.getElementById('scalenum')
 
-    updateScalenum(scale)
+    scalenum.onchange = function() {
+        var attempt = parseInt(scalenum.value)
+        if (attempt != NaN && attempt >= 0 && attempt < 4096) {
+            loadScale(attempt)
+        } else {
+            clearKeys(keys)
+        }
+    }
 
-    document.addEventListener('keyup', function (e) {
-        if (e.keyCode == 67) { // c
+    document.getElementById('clear').onclick = function() {
+        document.getElementById('title').value = ''
+        clearKeys(keys)
+    }
+
+    updateScalenum(scale, scalesDict)
+
+    /* removed for now-- typing c in input type="text" activates this
+    document.addEventListener('keydown', function (e) {
+        if (e.key == 67) { // c
             clearKeys(keys)
         }
     })
+    */
+
 }

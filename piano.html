@@ -10,12 +10,40 @@
 
   <body>
     <noscript>Sorry, this page needs Javascript!</noscript>
+
+    <input type="text" id="title" placeholder="Enter title here"></input>
+
     <div id="controls">
-      <button type="button" id="clear">Clear keys</button>
-      <span id="scalenum"></span>
+      <button type="button" id="clear">Clear</button>
     </div>
 
     <div id="piano"></div>
+    <span id="scalespan">=
+      <input type="text" id="scalenum" maxlength="4"></input>
+      <span id="scalenuminputwarning">(enter when done)</span>
+    </span>
+
+    <ul id="statslist"></ul>
+
+    <div id="same">
+      <span class="infoheader">Duplicate scales:</span>
+      <ul id="samelist"></ul>
+    </div>
+
+    <div id="modes">
+      <span class="infoheader">Modes of scale:</span>
+      <ul id="modeslist"></ul>
+    </div>
+
+    <div id="subset">
+      <span class="infoheader">Subsets of scale:</span>
+      <ul id="subsetlist"></ul>
+    </div>
+
+    <div id="superset">
+      <span class="infoheader">Supersets of scale:</span>
+      <ul id="supersetlist"></ul>
+    </div>
   </body>
 
 </html>
