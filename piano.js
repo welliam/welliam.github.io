@@ -13,7 +13,7 @@ function keyPosition(nth) {
 }
 
 var generateId = (function () {
-    x = 0
+    var x = 0
     return function() {
         return '___' + (x++).toString() + '___'
     }
@@ -37,18 +37,34 @@ function makeKey(nth, startx, starty) {
     checkbox.setAttribute('type', 'checkbox')
     checkbox.setAttribute('class', 'keycheckbox')
 
-    label.setAttribute('class', 'key ' + (keyisblack ? 'blackkey' : 'whitekey'))
+    label.setAttribute('for', id)
+    label.setAttribute(
+        'class', 'key ' + (keyisblack ? 'blackkey' : 'whitekey')
+    )
     label.style.top = starty + 'px'
     label.style.left = startx + position + (keyisblack ? 10 : 0) + 'px'
     label.style.zIndex = keyisblack ? '1' : '0'
-    label.setAttribute('for', id)
 
     return {
         span: span,
-        label: label,
         checkbox: checkbox,
         nth: nth
     }
+}
+
+function makeKeys(parent, listener) {
+    var keys = []
+    for(var i = 0; i < 12; i++) {
+        (function () {
+            var key = makeKey(i)
+            key.checkbox.onclick = function() {
+                listener(key.nth)
+            }
+            keys.push(key)
+            parent.appendChild(key.span)
+        })()
+    }
+    return keys
 }
 
 function loadAudio(audiopath) {
@@ -58,39 +74,77 @@ function loadAudio(audiopath) {
     audio.setAttribute('preload', 'auto')
 }
 
-function updateScalenum(to) {
-    document.getElementById('scalenum').innerHTML = to
+// function similarScales(s1, scales) {
+//     var subsets = [],
+//         supersets = [],
+//         same = []
+//     scales.forEach(function (s2) {
+//         if (s1 == s2) {
+//             same.push(s2)
+//         } else if (s1 & s2 == s1) {
+//             subsets.push(s2)
+//         } else if (s1 & s2 == s2) {
+//             supersets.push(s2)
+//         }
+//     })
+//     return {
+//         same: same,
+//         subsets: subsets,
+//         supersets: supersets
+//     }
+// }
+
+function scaleLink(s, name) {
+    var link = document.createElement('a')
+    link.onclick = function () {
+        loadScale(s)
+    }
+    link.appendChild(document.createTextNode(name || s))
 }
 
-function setbit(n, bit, on) {
-    return n ^ (((on ? -1 : 0) ^ n) & (1 << n));
+function updateScalenum(s, scaledict) {
+    document.getElementById('scalenum').innerHTML = s
+
+    // var similars = similarScales(s, scaledict
 }
+
+function clearKeys(keys) {
+    keys.forEach(function (k) {
+        if (k.checkbox.checked) {
+            k.checkbox.onclick()
+            k.checkbox.checked = false
+        }
+    })
+}
+
+// var loadScale
 
 window.onload = function() {
-    var keys = [],
+    var scale = 0,
         piano = document.getElementById('piano'),
-        scale = 0
-
-    for(var i = 0; i < 12; i++) {
-        (function () {
-            var key = makeKey(i)
-            key.checkbox.onclick = function() {
-                scale ^= 1 << key.nth
-                updateScalenum(scale)
-            }
-            keys.push(key)
-            piano.appendChild(key.span)
-        })()
-    }
-
-    document.getElementById('clear').onclick = function() {
-        keys.forEach(function (k) {
-            if (k.checkbox.checked) {
-                k.checkbox.onclick()
-                k.checkbox.checked = false
-            }
+        keys = makeKeys(piano, function(n) {
+            scale ^= 1 << n
+            updateScalenum(scale)
         })
-    }
+
+    // loadScale = function (s) {
+    //     clearKeys(keys)
+    //     for(var i = 0; i < 12; i++) {
+    //         if (s & (1 << i)) {
+    //             k.checkbox.onclick()
+    //             k.checkbox.checked = true
+    //         }
+    //     }
+    //     updateScalenum(scale)
+    // }
+
+    document.getElementById('clear').onclick = function() { clearKeys(keys) }
 
     updateScalenum(scale)
+
+    document.addEventListener('keyup', function (e) {
+        if (e.keyCode == 67) { // c
+            clearKeys(keys)
+        }
+    })
 }
