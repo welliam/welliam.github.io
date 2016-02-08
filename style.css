@@ -1,8 +1,8 @@
 body {
-    background-color: #eeeeee;
+    background-color: #cccccc;
 }
 
-#controls {
+body > * {
     margin: 5%;
 }
 
@@ -10,7 +10,6 @@ body {
     position: relative;
     width: 0;
     height: 0;
-    margin: 10%;
 }
 
 .keycheckbox {
