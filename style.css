@@ -100,6 +100,7 @@ ul {
 
 li * {
     text-decoration: underline;
+    color: black;
 }
 
 li a:hover {

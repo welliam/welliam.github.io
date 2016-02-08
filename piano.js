@@ -122,6 +122,7 @@ function similarScales(s1, scales) {
 
 function scaleLink(name, s) {
     var link = document.createElement('a')
+    link.setAttribute('href', '#')
     link.onclick = function () {
         loadScale(s)
         document.getElementById('title').value = name
@@ -219,13 +220,6 @@ function clearKeys(keys) {
     })
 }
 
-function defscale(name, notes) {
-    return {
-        name: name,
-        notes: parseInt(notes, 2)
-    }
-}
-
 function loadScale(s) {
     clearKeys(keys)
     keys.forEach(function (k) {
@@ -234,26 +228,18 @@ function loadScale(s) {
             k.checkbox.checked = true
         }
     })
-    updateScalenum(s, scalesDict)
+    updateScalenum(s, scalesDictionary)
 }
 
-var scalesDict = []
 var keys
 
 window.onload = function() {
-   [defscale("Major", "101010110101"),
-    defscale("Harmonic Minor", "010110101101"),
-    defscale("Melodic Minor", "101010101101"),
-    defscale("Dorian", "011010101101")].forEach(function (s) {
-        scalesDict.push(s)
-    })
-
     var scale = 0,
         piano = document.getElementById('piano')
 
     keys = makeKeys(piano, function(n) {
         scale ^= 1 << n
-        updateScalenum(scale, scalesDict)
+        updateScalenum(scale, scalesDictionary)
     })
 
     var scalenum = document.getElementById('scalenum')
@@ -272,7 +258,7 @@ window.onload = function() {
         clearKeys(keys)
     }
 
-    updateScalenum(scale, scalesDict)
+    updateScalenum(scale, scalesDictionary)
 
     /* removed for now-- typing c in input type="text" activates this
     document.addEventListener('keydown', function (e) {
