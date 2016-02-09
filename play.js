@@ -1,5 +1,6 @@
 (function () {
     var audio = new Audio()
+    audio.type = 'audio/ogg'
 
     function play(s, i) {
         if (i == 12) {

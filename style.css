@@ -17,6 +17,12 @@ body > * {
     margin-top: 0.5em;
 }
 
+#panel1 {
+    float: left;
+    width: 350px;
+    margin-right: 5em;
+}
+
 #scalespan {
     font-size: 1.3em;
 }
@@ -44,10 +50,14 @@ button {
     min-width: 3.5em;
 }
 
+table, tr, td {
+    vertical-align: top;
+}
+
 #piano {
     position: relative;
-    width: 0;
     height: 250px;
+    margin-top: 1em;
 }
 
 .keycheckbox {

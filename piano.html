@@ -11,43 +11,55 @@
   </head>
 
   <body>
-    <noscript><h1>Sorry, this page needs Javascript!</h1></noscript>
-
-    <input type="text" id="title" placeholder="Enter title here" />
-
-    <div id="controls">
-      <button type="button" id="clear">Clear</button>
-      <button type="button" id="play">Play</button>
-      <button type="button" id="stop">Stop</button>
+    <div id="top">
+      <noscript><h1>Sorry, this page needs Javascript!</h1></noscript>
+      <input type="text" id="title" placeholder="Enter title here" />
     </div>
 
-    <div id="piano"></div>
-    <span id="scalespan">=
-      <input type="text" id="scalenum" maxlength="4" />
-      <span id="scalenuminputwarning">(enter when done)</span>
-    </span>
+    <!-- sorry -->
+    <table>
+      <tr>
 
-    <ul id="statslist"></ul>
+        <td id="panel1">
+          <div id="controls">
+            <button type="button" id="clear">Clear</button>
+            <button type="button" id="play">Play</button>
+            <button type="button" id="stop">Stop</button>
+          </div>
 
-    <div id="same">
-      <span class="infoheader">Duplicate scales:</span>
-      <ul id="samelist"></ul>
-    </div>
+          <div id="piano"></div>
+          <span id="scalespan">=
+            <input type="text" id="scalenum" maxlength="4" />
+            <span id="scalenuminputwarning">(enter when done)</span>
+          </span>
+          <ul id="statslist"></ul>
+        </td>
 
-    <div id="modes">
-      <span class="infoheader">Modes of scale:</span>
-      <ul id="modeslist"></ul>
-    </div>
+        <td id="panel2">
+          <div id="same">
+            <span class="infoheader">Duplicate scales:</span>
+            <ul id="samelist"></ul>
+          </div>
 
-    <div id="subset">
-      <span class="infoheader">Subsets of scale:</span>
-      <ul id="subsetlist"></ul>
-    </div>
+          <div id="modes">
+            <span class="infoheader">Modes of scale:</span>
+            <ul id="modeslist"></ul>
+          </div>
 
-    <div id="superset">
-      <span class="infoheader">Supersets of scale:</span>
-      <ul id="supersetlist"></ul>
-    </div>
+          <div id="subset">
+            <span class="infoheader">Subsets of scale:</span>
+            <ul id="subsetlist"></ul>
+          </div>
+
+          <div id="superset">
+            <span class="infoheader">Supersets of scale:</span>
+            <ul id="supersetlist"></ul>
+          </div>
+        </td>
+
+      </tr>
+    </table>
+
   </body>
 
 </html>
