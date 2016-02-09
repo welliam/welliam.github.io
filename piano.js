@@ -280,4 +280,8 @@ window.onload = function() {
     document.getElementById('play').onclick = function() {
         playScale(scale)
     }
+
+    document.getElementById('stop').onclick = function() {
+        stopPlayScale()
+    }
 }

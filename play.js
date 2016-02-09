@@ -21,4 +21,8 @@
     playScale = function(s) {
         play(s, 0)
     }
+
+    stopPlayScale = function() {
+        audio.src = ''
+    }
 })()
