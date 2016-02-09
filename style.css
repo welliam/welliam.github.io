@@ -6,11 +6,11 @@ body {
 }
 
 ::selection {
-    background: #ffffff;
+    background: #eeeeee;
 }
 
 ::-moz-selection {
-    background: #ffffff;
+    background: #eeeeee;
 }
 
 body > * {
@@ -102,10 +102,34 @@ td {
     min-width: 10em;
 }
 
-#about {
+#aboutlink {
     font-size: 1.3em;
     float: right;
     margin: 1em;
+}
+
+#aboutsectionshader {
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    width: 16em;
+    background-color: white;
+    opacity: 0.95;
+    z-index: 3;
+    display: none;
+}
+
+#aboutsection {
+    margin: 1em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+#closeaboutlink {
+    position: absolute;
+    right: 0.4em;
+    top: 0.4em;
+    text-decoration: none;
 }
 
 #piano {

@@ -284,4 +284,12 @@ window.onload = function() {
     document.getElementById('stop').onclick = function() {
         stopPlayScale()
     }
+
+    document.getElementById('aboutlink').onclick = function() {
+        document.getElementById('aboutsectionshader').style.display = 'block'
+    }
+
+    document.getElementById('closeaboutlink').onclick = function() {
+        document.getElementById('aboutsectionshader').style.display = 'none'
+    }
 }
