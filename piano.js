@@ -286,10 +286,10 @@ window.onload = function() {
     }
 
     document.getElementById('aboutlink').onclick = function() {
-        document.getElementById('aboutsectionshader').style.display = 'block'
+        document.getElementById('aboutsectionwrapper').style.display = 'block'
     }
 
     document.getElementById('closeaboutlink').onclick = function() {
-        document.getElementById('aboutsectionshader').style.display = 'none'
+        document.getElementById('aboutsectionwrapper').style.display = 'none'
     }
 }

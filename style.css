@@ -1,8 +1,8 @@
 body {
     font: 17px / 1 Helvetica;
     background-color: #ddeedd;
-    margin-left: 10%;
-    margin-right: 5%;
+    max-width: 35em;
+    margin: auto;
 }
 
 ::selection {
@@ -11,10 +11,6 @@ body {
 
 ::-moz-selection {
     background: #eeeeee;
-}
-
-body > * {
-    margin-top: 0.5em;
 }
 
 a {
@@ -37,7 +33,6 @@ input[type="text"] {
     background: none;
     border-style: none;
     border-bottom: solid thin;
-    margin-bottom: 0%;
 }
 
 input[type='checkbox'] + label {
@@ -94,12 +89,18 @@ td {
 #panel1 {
     float: left;
     width: 350px;
-    margin-right: 5em;
+    margin-right: 2em;
 }
+
+#top {
+    position: relative;
+    margin-top: 1em;
+}
+
 
 #title {
     font-size: 2em;
-    min-width: 10em;
+    width: 10em;
 }
 
 #aboutlink {
@@ -108,21 +109,26 @@ td {
     margin: 1em;
 }
 
-#aboutsectionshader {
-    position: fixed;
-    top: 1em;
-    right: 1em;
-    width: 16em;
-    background-color: white;
-    opacity: 0.95;
-    z-index: 3;
+#aboutsectionwrapper {
     display: none;
+    margin: 1em;
 }
 
 #aboutsection {
-    margin: 1em;
+    border-radius: 0.3em;
+    position: absolute;
+    right: 0;
+    top: -1.5em;
+    width: 15em;
+
+    z-index: 3;
+    opacity: 0.95;
+
     margin-top: 2em;
     margin-bottom: 2em;
+    padding: 1em;
+
+    background-color: white;
 }
 
 #closeaboutlink {
