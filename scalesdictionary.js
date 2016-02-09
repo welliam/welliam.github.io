@@ -32,6 +32,12 @@ scalesDictionary = (function() {
         defscale('Whole Tone', '010101010101'),
         defscale('Diminished 1', '011011011011'),
         defscale('Diminished 2', '101101101101'),
+        defscale('Augmented', '100110011001'),
+        defscale('MOLT 3', '110111011101'),
+        defscale('MOLT 4', '100111100111'),
+        defscale('MOLT 5', '100011100011'),
+        defscale('MOLT 6', '110011110011'),
+        defscale('MOLT 7', '101111101111'),
 
         // Pentatonic scales and friends
         defscale('Major Pentatonic', '001010010101'),
