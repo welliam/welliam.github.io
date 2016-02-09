@@ -1,6 +1,6 @@
 body {
     font: 17px / 1 Helvetica;
-    background-color: #ddccdd;
+    background-color: #ddeedd;
     margin-left: 10%;
     margin-right: 5%;
 }
@@ -17,23 +17,19 @@ body > * {
     margin-top: 0.5em;
 }
 
-#panel1 {
-    float: left;
-    width: 350px;
-    margin-right: 5em;
+a {
+    color: black;
+    text-decoration: underline;
 }
 
-#scalespan {
+a:hover {
+    text-decoration: none;
+}
+
+button {
     font-size: 1.3em;
-}
-
-#scalenum {
-    width: 3em;
-}
-
-#title {
-    font-size: 2em;
-    min-width: 10em;
+    background: none;
+    min-width: 3.5em;
 }
 
 input[type="text"] {
@@ -44,24 +40,12 @@ input[type="text"] {
     margin-bottom: 0%;
 }
 
-button {
-    font-size: 1.3em;
-    background: none;
-    min-width: 3.5em;
+input[type='checkbox'] + label {
+    opacity: 0.5
 }
 
-table, tr, td {
-    vertical-align: top;
-}
-
-#piano {
-    position: relative;
-    height: 250px;
-    margin-top: 1em;
-}
-
-.keycheckbox {
-    display: none;
+input[type='checkbox']:checked + label {
+    opacity: 1
 }
 
 label {
@@ -81,18 +65,6 @@ label.whitekey {
     height: 250px;
 }
 
-input[type='checkbox'] + label {
-    opacity: 0.5
-}
-
-input[type='checkbox']:checked + label {
-    opacity: 1
-}
-
-#scalenuminputwarning {
-    opacity: 0.5;
-}
-
 input[type="text"] + #scalenuminputwarning {
     display: none;
 }
@@ -101,28 +73,62 @@ input[type="text"]:focus + #scalenuminputwarning {
     display: inline;
 }
 
-#statslist {
-    margin-top: 1em;
-    padding-left: 1em;
-    font-style: italic;
-    list-style: none;
-}
-
-.infoheader {
-    font-weight: bold;
-}
-
 ul {
     margin-top: 0;
     list-style: none;
     padding-left: 1em;
 }
 
-li * {
-    text-decoration: underline;
-    color: black;
+td {
+    vertical-align: top;
 }
 
-li a:hover {
-    text-decoration: none;
+.keycheckbox {
+    display: none;
+}
+
+.infoheader {
+    font-weight: bold;
+}
+
+#panel1 {
+    float: left;
+    width: 350px;
+    margin-right: 5em;
+}
+
+#title {
+    font-size: 2em;
+    min-width: 10em;
+}
+
+#about {
+    font-size: 1.3em;
+    float: right;
+    margin: 1em;
+}
+
+#piano {
+    position: relative;
+    height: 250px;
+    margin-top: 1em;
+}
+
+#scalespan {
+    font-size: 1.3em;
+}
+
+#scalenum {
+    width: 3em;
+}
+
+#scalenuminputwarning {
+    opacity: 0.5;
+}
+
+#statslist {
+    margin-top: 1em;
+    padding-left: 1em;
+    font-style: italic;
+    list-style: none;
 }
