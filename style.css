@@ -68,14 +68,8 @@ input[type="text"]:focus + #scalenuminputwarning {
     display: inline;
 }
 
-ul {
-    margin-top: 0;
+li {
     list-style: none;
-    padding-left: 1em;
-}
-
-td {
-    vertical-align: top;
 }
 
 .keycheckbox {
@@ -86,17 +80,24 @@ td {
     font-weight: bold;
 }
 
+#panels {
+    width: 100%;
+}
+
 #panel1 {
     float: left;
-    width: 350px;
+    width: 400px;
     margin-right: 2em;
+}
+
+#panel2 {
 }
 
 #top {
     position: relative;
     margin-top: 1em;
+    margin-bottom: 1em;
 }
-
 
 #title {
     font-size: 2em;
@@ -109,19 +110,15 @@ td {
     margin: 1em;
 }
 
-#aboutsectionwrapper {
-    display: none;
-    margin: 1em;
-}
-
 #aboutsection {
-    border-radius: 0.3em;
+    display: none;
+
     position: absolute;
     right: 0;
     top: -1.5em;
-    width: 15em;
-
     z-index: 3;
+    width: 15em;
+    border-radius: 0.3em;
     opacity: 0.95;
 
     margin-top: 2em;
