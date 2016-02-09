@@ -85,6 +85,22 @@ function areModes(s1, s2) {
     return false
 }
 
+function hammingDistance(s1notes, s2notes) {
+    var sum = 0
+    for(s1notes ^= s2notes; s1notes > 0; s1notes >>= 1) {
+        sum += s1notes & 1
+    }
+    return sum
+}
+
+function sortScales(notes, scales) {
+    return scales.sort(function (s1, s2) {
+        var hd1 = hammingDistance(notes, s1.notes),
+            hd2 = hammingDistance(notes, s2.notes)
+        return hd1 == hd2 ? s1.notes > s2.notes : hd1 > hd2
+    })
+}
+
 function similarScales(s1notes, scales) {
     var subsets = [],
         supersets = [],
@@ -104,11 +120,12 @@ function similarScales(s1notes, scales) {
             subsets.push(s2)
         }
     })
+
     return {
-        same: same,
-        subsets: subsets,
-        supersets: supersets,
-        modes: modes
+        same: sortScales(s1notes, same),
+        subsets: sortScales(s1notes, subsets),
+        supersets: sortScales(s1notes, supersets),
+        modes: sortScales(s1notes, modes)
     }
 }
 
