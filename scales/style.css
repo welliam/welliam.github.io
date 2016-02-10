@@ -113,7 +113,7 @@ li {
     right: 0;
     top: -1.5em;
     z-index: 3;
-    width: 15em;
+    width: 20em;
     border-radius: 0.3em;
     opacity: 0.95;
 
@@ -122,6 +122,13 @@ li {
     padding: 1em;
 
     background-color: white;
+}
+
+#closeaboutlink {
+    position: absolute;
+    right: 0.4em;
+    top: 0.4em;
+    text-decoration: none;
 }
 
 #hotkeys {
@@ -138,13 +145,6 @@ li {
 #hotkeys .key {
     margin-right: 1em;
     font-style: italic;
-}
-
-#closeaboutlink {
-    position: absolute;
-    right: 0.4em;
-    top: 0.4em;
-    text-decoration: none;
 }
 
 #piano {
