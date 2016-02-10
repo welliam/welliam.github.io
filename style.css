@@ -1,7 +1,7 @@
 body {
     font: 17px / 1 Helvetica;
     background-color: #ddeedd;
-    max-width: 35em;
+    max-width: 40em;
     margin: auto;
 }
 
@@ -80,17 +80,13 @@ li {
     font-weight: bold;
 }
 
-#panels {
-    width: 100%;
-}
-
 #panel1 {
     float: left;
     width: 400px;
-    margin-right: 2em;
 }
 
 #panel2 {
+    float:right;
 }
 
 #top {
