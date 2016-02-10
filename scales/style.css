@@ -1,0 +1,173 @@
+body {
+    font: 17px / 1 Helvetica;
+    background-color: #ddeedd;
+    max-width: 40em;
+    margin: auto;
+}
+
+::selection {
+    background: #eeeeee;
+}
+
+::-moz-selection {
+    background: #eeeeee;
+}
+
+a {
+    color: black;
+    text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+button {
+    font-size: 1.3em;
+    background: none;
+    min-width: 3.5em;
+}
+
+input[type="text"] {
+    font-size: 1em;
+    background: none;
+    border-style: none;
+    border-bottom: solid thin;
+}
+
+input[type='checkbox'] + label {
+    opacity: 0.5
+}
+
+input[type='checkbox']:checked + label {
+    opacity: 1
+}
+
+label {
+    position: absolute;
+    background-repeat: no-repeat;
+}
+
+label.blackkey {
+    background-image: url('resources/blackkey.png');
+    width: 30px;
+    height: 150px;
+}
+
+label.whitekey {
+    background-image: url('resources/whitekey.png');
+    width: 50px;
+    height: 250px;
+}
+
+input[type="text"] + #scalenuminputwarning {
+    display: none;
+}
+
+input[type="text"]:focus + #scalenuminputwarning {
+    display: inline;
+}
+
+li {
+    list-style: none;
+}
+
+.keycheckbox {
+    display: none;
+}
+
+.infoheader {
+    font-weight: bold;
+}
+
+#panel1 {
+    float: left;
+    width: 400px;
+}
+
+#panel2 {
+    float: right;
+}
+
+#top {
+    position: relative;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+#title {
+    font-size: 2em;
+    width: 10em;
+}
+
+#aboutlink {
+    font-size: 1.3em;
+    float: right;
+    margin: 1em;
+}
+
+#aboutsection {
+    display: none;
+
+    position: absolute;
+    right: 0;
+    top: -1.5em;
+    z-index: 3;
+    width: 15em;
+    border-radius: 0.3em;
+    opacity: 0.95;
+
+    margin-top: 2em;
+    margin-bottom: 2em;
+    padding: 1em;
+
+    background-color: white;
+}
+
+#hotkeys {
+    padding: 0;
+    margin: 0;
+}
+
+#hotkeys li {
+    padding: 0;
+    margin: 0;
+    margin-left: 1em;
+}
+
+#hotkeys .key {
+    margin-right: 1em;
+    font-style: italic;
+}
+
+#closeaboutlink {
+    position: absolute;
+    right: 0.4em;
+    top: 0.4em;
+    text-decoration: none;
+}
+
+#piano {
+    position: relative;
+    height: 250px;
+    margin-top: 1em;
+}
+
+#scalespan {
+    font-size: 1.3em;
+}
+
+#scalenum {
+    width: 3em;
+}
+
+#scalenuminputwarning {
+    opacity: 0.5;
+}
+
+#statslist {
+    margin-top: 1em;
+    padding-left: 1em;
+    font-style: italic;
+    list-style: none;
+}

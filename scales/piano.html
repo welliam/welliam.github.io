@@ -1,0 +1,96 @@
+<!doctype html>
+
+<html lang="en">
+
+
+  <head>
+    <meta charset="utf-8"/>
+    <title>Scale DB</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="lib.js"></script>
+    <script src="scalesdictionary.js"></script>
+    <script src="play.js"></script>
+    <script src="piano.js"></script>
+  </head>
+
+
+  <body>
+    <div id="top">
+      <div id="aboutsection">
+        <a href="#" id="closeaboutlink">X</a>
+        <div>
+          <p>
+            Look up scales by their notes. The number below the
+            keyboard identifies the current scale uniquely.
+          </p><p>
+            The scales in the lists to the right are sorted by
+            similarity to the current scale (hamming distance).
+          </p><p>
+            Click 'play' to listen to the current scale, and 'stop'
+            to stop listening.
+            <!-- TODO: insert link to MOLT explanation -->
+          <p>
+            <ol id="hotkeys">
+              <li><span class="key">?</span> Show/hide this</li>
+              <li><span class="key">p</span> Play</li>
+              <li><span class="key">s</span> Stop</li>
+            </ol>
+          </p>
+          </p>
+          </p>
+          <div id="bgcolors">
+            <span class="bgcolor" id="bgcolorgreen"></span>
+            <span class="bgcolor" id="bgcolorpurple"></span>
+            <span class="bgcolor" id="bgcolorred"></span>
+            <span class="bgcolor" id="bgcolorwhite"></span>
+            <span class="bgcolor" id="bgcolorblue"></span>
+          </div>
+        </div>
+      </div>
+
+      <noscript><h1>Sorry, this page needs Javascript!</h1></noscript>
+      <input type="text" id="title" placeholder="Enter title here" />
+      <a href="#" id="aboutlink">About</a>
+    </div>
+
+
+    <div id="panel1">
+      <div id="controls">
+        <button type="button" id="clear">Clear</button>
+        <button type="button" id="play">Play</button>
+        <button type="button" id="stop">Stop</button>
+      </div>
+
+      <div id="piano"></div>
+      <span id="scalespan">=
+        <input type="text" id="scalenum" maxlength="4" />
+        <span id="scalenuminputwarning">(enter when done)</span>
+      </span>
+      <ul id="statslist"></ul>
+    </div>
+
+
+    <div id="panel2">
+      <div id="same">
+        <span class="infoheader">Duplicate scales:</span>
+        <ul id="samelist"></ul>
+      </div>
+
+      <div id="modes">
+        <span class="infoheader">Modes of scale:</span>
+        <ul id="modeslist"></ul>
+      </div>
+
+      <div id="subset">
+        <span class="infoheader">Subsets of scale:</span>
+        <ul id="subsetlist"></ul>
+      </div>
+
+      <div id="superset">
+        <span class="infoheader">Supersets of scale:</span>
+        <ul id="supersetlist"></ul>
+      </div>
+    </div>
+
+  </body>
+</html>
