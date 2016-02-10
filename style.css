@@ -124,6 +124,22 @@ li {
     background-color: white;
 }
 
+#hotkeys {
+    padding: 0;
+    margin: 0;
+}
+
+#hotkeys li {
+    padding: 0;
+    margin: 0;
+    margin-left: 1em;
+}
+
+#hotkeys .key {
+    margin-right: 1em;
+    font-style: italic;
+}
+
 #closeaboutlink {
     position: absolute;
     right: 0.4em;

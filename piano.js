@@ -229,6 +229,12 @@ function clearKeys(keys) {
     })
 }
 
+
+function clearScale() {
+    document.getElementById('title').value = ''
+    clearKeys(keys)
+}
+
 function loadScale(s) {
     clearKeys(keys)
     keys.forEach(function (k) {
@@ -238,6 +244,16 @@ function loadScale(s) {
         }
     })
     updateScalenum(s, scalesDictionary)
+}
+
+function registerHotkey(key, action) {
+    document.addEventListener('keydown', function (e) {
+        var element = document.activeElement
+        var type = element.hasAttribute('type') && element.getAttribute('type')
+        if (type != 'text' && e.key == key) {
+            action()
+        }
+    })
 }
 
 var keys
@@ -262,28 +278,16 @@ window.onload = function() {
         }
     }
 
-    document.getElementById('clear').onclick = function() {
-        document.getElementById('title').value = ''
-        clearKeys(keys)
-    }
+    document.getElementById('clear').onclick = clearScale
 
     updateScalenum(scale, scalesDictionary)
-
-    /* removed for now-- typing c in input type="text" activates this
-    document.addEventListener('keydown', function (e) {
-        if (e.key == 67) { // c
-            clearKeys(keys)
-        }
-    })
-    */
 
     document.getElementById('play').onclick = function() {
         playScale(scale)
     }
 
-    document.getElementById('stop').onclick = function() {
-        stopPlayScale()
-    }
+    document.getElementById('stop').onclick = stopPlayScale
+
 
     document.getElementById('aboutlink').onclick = function() {
         document.getElementById('aboutsection').style.display = 'block'
@@ -292,4 +296,21 @@ window.onload = function() {
     document.getElementById('closeaboutlink').onclick = function() {
         document.getElementById('aboutsection').style.display = 'none'
     }
+
+    registerHotkey('p', function() {
+        playScale(scale)
+    });
+
+    registerHotkey('s', stopPlayScale);
+
+    registerHotkey('?', function () {
+        var x
+        var style = document.getElementById('aboutsection').style
+        if (style.display && style.display == 'block') {
+            x = 'none'
+        } else {
+            x = 'block'
+        }
+        style.display = x
+    })
 }
