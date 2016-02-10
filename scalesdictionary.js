@@ -1,4 +1,4 @@
-scalesDictionary = (function() {
+(function() {
     function defscale(name, notes) {
         return {
             name: name,
@@ -48,5 +48,5 @@ scalesDictionary = (function() {
         defscale('Blues', '010011101001')
     ]
 
-    return scales.sort(function (a, b) { a.name < b.name })
+    PIANO.scalesDictionary = scales
 })()
