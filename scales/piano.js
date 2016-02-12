@@ -7,7 +7,7 @@ PIANO = {}; // used for globally-visible functions
     function defscale(name, notes) {
         return {
             name: name,
-            notes: parseInt(notes, 2);
+            notes: parseInt(notes, 2)
         };
     }
 
