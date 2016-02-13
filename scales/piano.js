@@ -4,13 +4,10 @@ PIANO = {}; // used for globally-visible functions
 // scales
 
 (function() {
-    scales = []
+    scales = {};
 
     function addScale(name, num) {
-        scales.push({
-            name: name,
-            notes: num
-        });
+        scales[name] = num;
     }
 
     function defscale(name, notes) {
@@ -55,10 +52,26 @@ PIANO = {}; // used for globally-visible functions
     // Pentatonic scales and friends
     defscale('Major Pentatonic', '001010010101'),
     defscale('Minor Pentatonic', '010010101001'),
-    defscale('Blues', '010011101001')
+    defscale('Blues', '010011101001');
 
-    PIANO.scalesDictionary = scales;
+    function getAllScales() {
+        var t = [];
+        for(x in scales) {
+            t.push({
+                name: x,
+                notes: scales[x]
+            });
+        }
+        return t;
+    }
+
+    function deleteScale(name) {
+        scales[name] = null;
+    }
+
     PIANO.addScale = addScale;
+    PIANO.getAllScales = getAllScales;
+    PIANO.deleteScale = deleteScale;
 })();
 
 
@@ -285,15 +298,25 @@ PIANO = {}; // used for globally-visible functions
 // page altering functions
 
 (function () {
-    function scaleLink(keys, name, s) {
-        var link = document.createElement('a');
+    var scale;
+
+    function makeLink(action) {
+        var link = document.createElement('a')
         link.setAttribute('href', '#');
-        link.onclick = function () {
+        link.onclick = action;
+        return link;
+    }
+
+    function scaleLink(keys, name, s) {
+        var span = document.createElement('span');
+        var setLink = makeLink(function () {
             loadScale(keys, s);
             document.getElementById('title').value = name;
-        };
-        link.appendChild(document.createTextNode(name || s));
-        return link;
+        });
+
+        setLink.appendChild(document.createTextNode(name || s));
+        span.appendChild(setLink)
+        return span;
     }
 
     function refreshScales(keys, parent, list, scales) {
@@ -351,14 +374,11 @@ PIANO = {}; // used for globally-visible functions
     }
 
     function updateScalenum(keys, scale) {
-        var scaledict = PIANO.scalesDictionary;
         document.getElementById('scalenum').value = scale;
-
         document.getElementById('statslist').innerHTML = '';
         tellAllStats(scale);
-        refreshAllScales(keys, scale, PIANO.scalesDictionary)
+        refreshAllScales(keys, scale, PIANO.getAllScales());
     }
-
 
     function clearKeys(keys) {
         keys.forEach(function (k) {
@@ -368,7 +388,6 @@ PIANO = {}; // used for globally-visible functions
             }
         });
     }
-
 
     function clearScale(keys) {
         document.getElementById('title').value = '';
@@ -398,8 +417,8 @@ PIANO = {}; // used for globally-visible functions
     }
 
     window.onload = function() {
-        var scale = 0,
-            piano = document.getElementById('piano');
+        scale = 0
+        var piano = document.getElementById('piano');
 
         var keys = PIANO.makeKeys(piano, function(n) {
             scale ^= 1 << n;
@@ -441,7 +460,7 @@ PIANO = {}; // used for globally-visible functions
             var title = document.getElementById('title').value
             if (title) {
                 PIANO.addScale(title, scale);
-                refreshAllScales(keys, scale, PIANO.scalesDictionary);
+                refreshAllScales(keys, scale, PIANO.getAllScales());
             }
         };
 
