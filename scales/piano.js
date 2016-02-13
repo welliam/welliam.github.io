@@ -4,56 +4,61 @@ PIANO = {}; // used for globally-visible functions
 // scales
 
 (function() {
-    function defscale(name, notes) {
-        return {
+    scales = []
+
+    function addScale(name, num) {
+        scales.push({
             name: name,
-            notes: parseInt(notes, 2)
-        };
+            notes: num
+        });
     }
 
-    var scales = [
-        // major and modes
-        defscale('Major', '101010110101'),
-        defscale('Natural Minor', '010110101101'),
-        defscale('Ionian', '101010110101'),
-        defscale('Dorian', '011010101101'),
-        defscale('Phrygian', '010110101011'),
-        defscale('Lydian', '101011010101'),
-        defscale('Mixolydian', '011010110101'),
-        defscale('Aeolian', '010110101101'),
-        defscale('Locrian', '010101101011'),
+    function defscale(name, notes) {
+        addScale(name, parseInt(notes, 2));
+    }
 
-        // melodic minor and modes
-        defscale('Melodic Minor', '101010101101'),
-        defscale('Dorian b2', '011010101011'),
-        defscale('Lydian #5', '101101010101'),
-        defscale('Lydian Dominant', '011011010101'),
-        defscale('Aeolian Dominant', '010110110101'),
-        defscale('Half Diminished', '010101101101'),
-        defscale('Altered', '010101011011'),
+    // major and modes
+    defscale('Major', '101010110101'),
+    defscale('Natural Minor', '010110101101'),
+    defscale('Ionian', '101010110101'),
+    defscale('Dorian', '011010101101'),
+    defscale('Phrygian', '010110101011'),
+    defscale('Lydian', '101011010101'),
+    defscale('Mixolydian', '011010110101'),
+    defscale('Aeolian', '010110101101'),
+    defscale('Locrian', '010101101011'),
 
-        defscale('Harmonic Minor', '100110101101'),
+    // melodic minor and modes
+    defscale('Melodic Minor', '101010101101'),
+    defscale('Dorian b2', '011010101011'),
+    defscale('Lydian #5', '101101010101'),
+    defscale('Lydian Dominant', '011011010101'),
+    defscale('Aeolian Dominant', '010110110101'),
+    defscale('Half Diminished', '010101101101'),
+    defscale('Altered', '010101011011'),
 
-        // Named MOLTs
-        defscale('Chromatic', '111111111111'),
-        defscale('Augmented', '100110011001'),
-        defscale('Tritone', '010011010011'),
-        defscale('Whole Tone', '010101010101'),
-        defscale('Diminished 1', '011011011011'),
-        defscale('Diminished 2', '101101101101'),
-        defscale('MOLT 3', '110111011101'),
-        defscale('MOLT 4', '100111100111'),
-        defscale('MOLT 5', '100011100011'),
-        defscale('MOLT 6', '110011110011'),
-        defscale('MOLT 7', '101111101111'),
+    defscale('Harmonic Minor', '100110101101'),
 
-        // Pentatonic scales and friends
-        defscale('Major Pentatonic', '001010010101'),
-        defscale('Minor Pentatonic', '010010101001'),
-        defscale('Blues', '010011101001')
-    ];
+    // Named MOLTs
+    defscale('Chromatic', '111111111111'),
+    defscale('Augmented', '100110011001'),
+    defscale('Tritone', '010011010011'),
+    defscale('Whole Tone', '010101010101'),
+    defscale('Diminished 1', '011011011011'),
+    defscale('Diminished 2', '101101101101'),
+    defscale('MOLT 3', '110111011101'),
+    defscale('MOLT 4', '100111100111'),
+    defscale('MOLT 5', '100011100011'),
+    defscale('MOLT 6', '110011110011'),
+    defscale('MOLT 7', '101111101111'),
+
+    // Pentatonic scales and friends
+    defscale('Major Pentatonic', '001010010101'),
+    defscale('Minor Pentatonic', '010010101001'),
+    defscale('Blues', '010011101001')
 
     PIANO.scalesDictionary = scales;
+    PIANO.addScale = addScale;
 })();
 
 
@@ -280,20 +285,18 @@ PIANO = {}; // used for globally-visible functions
 // page altering functions
 
 (function () {
-    var keys;
-
-    function scaleLink(name, s) {
+    function scaleLink(keys, name, s) {
         var link = document.createElement('a');
         link.setAttribute('href', '#');
         link.onclick = function () {
-            loadScale(s);
+            loadScale(keys, s);
             document.getElementById('title').value = name;
         };
         link.appendChild(document.createTextNode(name || s));
         return link;
     }
 
-    function resetScales(parent, list, scales) {
+    function refreshScales(keys, parent, list, scales) {
         if (!scales.length) {
             parent.style.display = 'none';
         } else {
@@ -301,10 +304,34 @@ PIANO = {}; // used for globally-visible functions
             list.innerHTML = '';
             scales.forEach(function (s) {
                 var li = document.createElement('li');
-                li.appendChild(scaleLink(s.name, s.notes));
+                li.appendChild(scaleLink(keys, s.name, s.notes));
                 list.appendChild(li);
             });
         }
+    }
+
+    function refreshAllScales(keys, scale, dict) {
+        var similars = PIANO.similarScales(scale, dict);
+
+        refreshScales(keys,
+                      document.getElementById('same'),
+                      document.getElementById('samelist'),
+                      similars.same);
+
+        refreshScales(keys,
+                      document.getElementById('modes'),
+                      document.getElementById('modeslist'),
+                      similars.modes);
+
+        refreshScales(keys,
+                      document.getElementById('subset'),
+                      document.getElementById('subsetlist'),
+                      similars.subsets);
+
+        refreshScales(keys,
+                      document.getElementById('superset'),
+                      document.getElementById('supersetlist'),
+                      similars.supersets);
     }
 
     function statsTell(statistic) {
@@ -313,42 +340,23 @@ PIANO = {}; // used for globally-visible functions
         document.getElementById('statslist').appendChild(li);
     }
 
-    function tellAllStats(s) {
-        if (PIANO.isSymmetrical(s)) {
+    function tellAllStats(scale) {
+        if (PIANO.isSymmetrical(scale)) {
             statsTell('This scale is symmetrical.');
         }
 
-        if (PIANO.isMolt(s)) {
+        if (PIANO.isMolt(scale)) {
             statsTell('This scale is a mode of limited transposition.');
         }
     }
 
-    function updateScalenum(s) {
+    function updateScalenum(keys, scale) {
         var scaledict = PIANO.scalesDictionary;
-        document.getElementById('scalenum').value = s;
+        document.getElementById('scalenum').value = scale;
 
         document.getElementById('statslist').innerHTML = '';
-        tellAllStats(s);
-
-        var similars = PIANO.similarScales(s, scaledict);
-        resetScales(document.getElementById('same'),
-                    document.getElementById('samelist'),
-                    similars.same);
-
-        resetScales(
-            document.getElementById('modes'),
-            document.getElementById('modeslist'),
-            similars.modes);
-
-        resetScales(
-            document.getElementById('subset'),
-            document.getElementById('subsetlist'),
-            similars.subsets);
-
-        resetScales(
-            document.getElementById('superset'),
-            document.getElementById('supersetlist'),
-            similars.supersets);
+        tellAllStats(scale);
+        refreshAllScales(keys, scale, PIANO.scalesDictionary)
     }
 
 
@@ -362,23 +370,23 @@ PIANO = {}; // used for globally-visible functions
     }
 
 
-    function clearScale() {
+    function clearScale(keys) {
         document.getElementById('title').value = '';
         clearKeys(keys);
     }
 
-    function loadScale(s) {
+    function loadScale(keys, scale) {
         clearKeys(keys);
         keys.forEach(function (k) {
-            if (s & (1 << k.nth)) {
+            if (scale & (1 << k.nth)) {
                 k.checkbox.onclick();
                 k.checkbox.checked = true;
             }
         });
-        updateScalenum(s);
+        updateScalenum(keys, scale);
     }
 
-    function registerHotkey(key, action) {
+    function addHotkey(key, action) {
         document.addEventListener('keydown', function (e) {
             var element = document.activeElement;
             var type =
@@ -393,25 +401,27 @@ PIANO = {}; // used for globally-visible functions
         var scale = 0,
             piano = document.getElementById('piano');
 
-        keys = PIANO.makeKeys(piano, function(n) {
+        var keys = PIANO.makeKeys(piano, function(n) {
             scale ^= 1 << n;
-            updateScalenum(scale);
+            updateScalenum(keys, scale);
         })
 
         var scalenum = document.getElementById('scalenum');
 
+        updateScalenum(keys, scale);
+
         scalenum.onchange = function() {
             var attempt = parseInt(scalenum.value);
             if (attempt != NaN && attempt >= 0 && attempt < 4096) {
-                loadScale(attempt);
+                loadScale(keys, attempt);
             } else {
                 clearKeys(keys);
             }
         }
 
-        document.getElementById('clear').onclick = clearScale;
-
-        updateScalenum(scale);
+        document.getElementById('clear').onclick = function() {
+            clearScale(keys);
+        }
 
         document.getElementById('play').onclick = function() {
             PIANO.playScale(scale);
@@ -419,21 +429,29 @@ PIANO = {}; // used for globally-visible functions
 
         document.getElementById('stop').onclick = PIANO.stopPlayScale;
 
-        document.getElementById('aboutlink').onclick = function() {
+        document.getElementById('aboutlink').onclick = function () {
             document.getElementById('aboutsection').style.display = 'block';
         };
 
-        document.getElementById('closeaboutlink').onclick = function() {
+        document.getElementById('closeaboutlink').onclick = function () {
             document.getElementById('aboutsection').style.display = 'none';
         };
 
-        registerHotkey('p', function() {
+        document.getElementById('add').onclick = function () {
+            var title = document.getElementById('title').value
+            if (title) {
+                PIANO.addScale(title, scale);
+                refreshAllScales(keys, scale, PIANO.scalesDictionary);
+            }
+        };
+
+        addHotkey('p', function() {
             PIANO.playScale(scale);
         });
 
-        registerHotkey('s', PIANO.stopPlayScale);
+        addHotkey('s', PIANO.stopPlayScale);
 
-        registerHotkey('?', function () {
+        addHotkey('?', function () {
             var newDisplay;
             var style = document.getElementById('aboutsection').style;
             if (style.display && style.display == 'block') {
