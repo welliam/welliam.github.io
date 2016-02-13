@@ -60,11 +60,11 @@ label.whitekey {
     height: 250px;
 }
 
-input[type="text"] + #scalenuminputwarning {
+input.adviceInput[type="text"] + .advice {
     display: none;
 }
 
-input[type="text"]:focus + #scalenuminputwarning {
+input.adviceInput[type="text"]:focus + .advice {
     display: inline;
 }
 
@@ -85,6 +85,10 @@ li {
     width: 400px;
 }
 
+.advice {
+    opacity: 0.5;
+}
+
 #panel2 {
     float: right;
 }
@@ -95,8 +99,12 @@ li {
     margin-bottom: 1em;
 }
 
+#titlespan {
+    font-size: 1.3em;
+}
+
 #title {
-    font-size: 2em;
+    font-size: 1.53em;
     width: 10em;
 }
 
@@ -159,10 +167,6 @@ li {
 
 #scalenum {
     width: 3em;
-}
-
-#scalenuminputwarning {
-    opacity: 0.5;
 }
 
 #statslist {

@@ -416,6 +416,22 @@ PIANO = {}; // used for globally-visible functions
         });
     }
 
+    function addScale(keys, scale) {
+            var title = document.getElementById('title').value
+            if (title) {
+                PIANO.addScale(title, scale);
+                refreshAllScales(keys, scale, PIANO.getAllScales());
+            }
+    }
+
+    function inputOnEnter(input, action) {
+        input.onkeydown = function (event) {
+            if (event.keyCode == 13) {
+                action();
+            }
+        }
+    }
+
     window.onload = function() {
         scale = 0
         var piano = document.getElementById('piano');
@@ -425,18 +441,26 @@ PIANO = {}; // used for globally-visible functions
             updateScalenum(keys, scale);
         })
 
-        var scalenum = document.getElementById('scalenum');
 
         updateScalenum(keys, scale);
 
-        scalenum.onchange = function() {
+        var scalenum = document.getElementById('scalenum');
+        scalenum.onchange = function (event) {
+            scalenum.value = scale;
+        }
+
+        inputOnEnter(scalenum, function () {
             var attempt = parseInt(scalenum.value);
             if (attempt != NaN && attempt >= 0 && attempt < 4096) {
                 loadScale(keys, attempt);
             } else {
                 clearKeys(keys);
             }
-        }
+        });
+
+        inputOnEnter(document.getElementById('title'), function () {
+            addScale(keys, scale);
+        });
 
         document.getElementById('clear').onclick = function() {
             clearScale(keys);
@@ -457,11 +481,7 @@ PIANO = {}; // used for globally-visible functions
         };
 
         document.getElementById('add').onclick = function () {
-            var title = document.getElementById('title').value
-            if (title) {
-                PIANO.addScale(title, scale);
-                refreshAllScales(keys, scale, PIANO.getAllScales());
-            }
+            addScale(keys, scale);
         };
 
         addHotkey('p', function() {

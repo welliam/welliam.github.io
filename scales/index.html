@@ -50,7 +50,11 @@
       </div>
 
       <noscript><h1>Sorry, this page needs Javascript!</h1></noscript>
-      <input type="text" id="title" placeholder="Enter title here" />
+      <span id="titlespan">
+        <input type="text" id="title" class="adviceInput"
+               placeholder="Enter title here" />
+        <span class="advice">(enter to add)</span>
+      </span>
       <a href="#" id="aboutlink">About</a>
     </div>
 
@@ -66,8 +70,8 @@
       <div id="piano"></div>
       <span id="scalespan">
         Scale ID:
-        <input type="text" id="scalenum" maxlength="4" />
-        <span id="scalenuminputwarning">(enter when done)</span>
+        <input type="text" id="scalenum" class="adviceInput" maxlength="4" />
+        <span class="advice">(enter when done)</span>
       </span>
       <ul id="statslist"></ul>
     </div>
