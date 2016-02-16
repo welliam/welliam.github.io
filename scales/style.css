@@ -5,14 +5,6 @@ body {
     margin: auto;
 }
 
-::selection {
-    background: #eeeeee;
-}
-
-::-moz-selection {
-    background: #eeeeee;
-}
-
 a {
     color: black;
     text-decoration: underline;
@@ -80,16 +72,16 @@ li {
     font-weight: bold;
 }
 
-#panel1 {
-    float: left;
-    width: 400px;
-}
-
 .advice {
     opacity: 0.5;
 }
 
-#panel2 {
+#pianopanel {
+    float: left;
+    width: 400px;
+}
+
+#listpanel {
     float: right;
 }
 
