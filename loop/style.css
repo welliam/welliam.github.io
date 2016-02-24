@@ -6,8 +6,12 @@ body {
     background-color: #ffeeee;
 }
 
-h1 {
+h1, h2 {
     text-align: center;
+}
+
+h2 {
+    font-style: italic;
 }
 
 .maths {
@@ -30,7 +34,7 @@ input {
 #loopbox {
     font-style: italic;
     font-weight: bold;
-    margin: 1em;
+    margin: 1.5em;
     display: inline-block;
 }
 

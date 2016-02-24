@@ -118,6 +118,11 @@
         document.getElementById('skipaheadbutton').onclick = skipAhead;
         document.getElementById('intervalcheckbutton').onclick =
             submitSetInterval;
+
         document.getElementById('restartbutton').onclick = restart;
+        document.getElementById('stopbutton').onclick = function () {
+            audio.pause();
+            audio.currentTime = 0;
+        };
     };
 })();

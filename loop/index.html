@@ -12,6 +12,7 @@
     <h1>audio loop tester</h1>
 
     <div>
+      <input type="button" id="stopbutton" value="stop" />
       <input type="button" id="restartbutton" value="restart" />
       <span id="time"></span>
     </div>
@@ -39,19 +40,22 @@
     </div>
 
     <div id="loopbox">
-      the loop log box:
+      <h2>the loop log box:</h2>
       <div id="loopcount"></div>
     </div>
 
     <div id="desc">
-      <h2>html audio element looper</h2>
+      <h2>whats this???</h2>
       <p>
-        Provide an audio track, specially prepared so a segment from
-        time A time B is looped at least once after B&ndash; every S
-        milliseconds (S being set above by 'set loop check interval'),
-        the track will be checked if it has passed B: if so, the track
-        is looped by (ideally) setting its current time to itself
-        minus <span class="maths">B &minus; A</span> seconds.
+        A bad attempt at video game style audio looping&ndash; a
+        looped track with an intro.
+      </p><p>
+        An audio track, specially prepared so a segment from time A to
+        time B is repeated once after B&ndash; every S milliseconds (S
+        being set above by 'set loop check interval'), the track will
+        be checked if it has passed B: if so, the track is looped by
+        (ideally) going back by <span class="maths">B &minus; A</span>
+        seconds.
       </p>
 
     </div>
