@@ -10,11 +10,14 @@
             clearInterval(element.___fader);
         }
 
+        element.style.display = 'inline';
+
         element.___fader = setInterval(function () {
             op -= 0.0035;
             element.style.opacity = op;
             if (op <= 0) { 
                 op = 1;
+                element.style.display = 'none';
                 clearInterval(element.___fader);
             }
         }, 5);
@@ -44,10 +47,11 @@
                 audio.currentTime -= loopLength;
                 var loopcount = document.getElementById('loopcount');
                 loopcount.appendChild(
-                        document.createTextNode('looped! ' + i++ + '\n')
+                        document.createTextNode('looped! ' + ++i + '\n')
                 );
                 loopcount.scrollTop = loopcount.scrollHeight;
             }
+            document.getElementById('time').innerHTML = audio.currentTime;
         }
     }
 
