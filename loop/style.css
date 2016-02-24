@@ -1,0 +1,26 @@
+div {
+    margin: 0.3em 0;
+}
+
+span.info {
+    font-style: italic;
+}
+
+#loopbox {
+    font-style: italic;
+    font-weight: bold;
+    margin: 1em;
+}
+
+#loopcount {
+    height: 7em;
+    width: 7em;
+    whitespace: pre;
+    overflow: scroll;
+    margin: 1em;
+
+    border-style: solid;
+    border-width: thin;
+    padding: 0.3em;
+    max-width: 30em;
+}

@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="loop.js"></script>
+  </head>
+
+  <body>
+    <h1>wleomce 2 hell</h1>
+
+    <div>
+      <input type="button" id="restartbutton" value="restart" />
+    </div>
+
+    <div>
+      <input type="text" id="jumpbackinput" value="8.850" />
+      <input type="button" id="jumpbackbutton"
+             value="jump back on loop (float, s)" />
+      <span class="info" id="jumpbackinfo"></span>
+      (on my computer 8.850ms was best)
+    </div>
+
+    <div>
+      <input type="text" id="skipaheadinput" value="1" />
+      <input type="button" id="skipaheadbutton"
+             value="skip ahead (float, s)" />
+      <span class="info" id="skipaheadinfo"></span>
+    </div>
+
+    <div>
+      <input type="text" id="intervalcheckinput" value="5000" />
+      <input type="button" id="intervalcheckbutton"
+             value="set loop check interval (int, ms)" />
+      <span class="info" id="intervalcheckinfo"></span>
+    </div>
+
+    <div id="loopbox">
+      the loop log box:
+      <div id="loopcount"></div>
+    </div>
+  </body>
+</html>
