@@ -1,5 +1,3 @@
-// fuck lol
-
 (function () {
     var audio, interval, loopLength = 8.850;
 
