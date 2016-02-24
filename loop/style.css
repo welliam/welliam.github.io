@@ -1,3 +1,19 @@
+body {
+    max-width: 50em;
+    margin: auto;
+    color: #0b0b0b;
+    font-size: 20px;
+    background-color: #ffeeee;
+}
+
+h1 {
+    text-align: center;
+}
+
+.maths {
+    display: inline-block;
+}
+
 div {
     margin: 0.3em 0;
 }
@@ -6,10 +22,16 @@ span.info {
     font-style: italic;
 }
 
+input {
+    background: #ffffff;
+    font-size: 20px;
+}
+
 #loopbox {
     font-style: italic;
     font-weight: bold;
     margin: 1em;
+    display: inline-block;
 }
 
 #loopcount {
@@ -23,4 +45,9 @@ span.info {
     border-width: thin;
     padding: 0.3em;
     max-width: 30em;
+}
+
+#desc {
+    max-width: 30em;
+    display: inline-block;
 }

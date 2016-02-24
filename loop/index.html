@@ -2,13 +2,14 @@
 
 <html>
   <head>
+    <title>audio loop tester</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="loop.js"></script>
   </head>
 
   <body>
-    <h1>wleomce 2 hell</h1>
+    <h1>audio loop tester</h1>
 
     <div>
       <input type="button" id="restartbutton" value="restart" />
@@ -41,5 +42,19 @@
       the loop log box:
       <div id="loopcount"></div>
     </div>
+
+    <div id="desc">
+      <h2>html audio element looper</h2>
+      <p>
+        Provide an audio track, specially prepared so a segment from
+        time A time B is looped at least once after B&ndash; every S
+        milliseconds (S being set above by 'set loop check interval'),
+        the track will be checked if it has passed B: if so, the track
+        is looped by (ideally) setting its current time to itself
+        minus <span class="maths">B &minus; A</span> seconds.
+      </p>
+
+    </div>
+
   </body>
 </html>
