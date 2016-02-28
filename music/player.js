@@ -7,6 +7,9 @@
                 player.currentTime = 0;
                 player.play();
                 element.setAttribute('href', 'javascript:;');
+
+                document.getElementById('track').innerHTML =
+                    element.innerHTML + ':';
             };
         } else {
             console.log(
@@ -48,5 +51,17 @@
             player.pause();
             player.currentTime = 0;
         });
+
+        var timespan = document.getElementById('time'), time;
+
+        setInterval(function () {
+            if (! player.paused) {
+                time = player.currentTime;
+                timespan.innerHTML = parseInt(time / 60) +
+                    ':' +
+                    (time % 60 < 10 ? '0' : '') +
+                    parseInt(time % 60);
+            }
+        }, 1000);
     }
 })();

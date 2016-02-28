@@ -1,7 +1,11 @@
-body { margin-left: 25px; margin-right: 25px; }
+body {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 40em;
+}
 
 h1 {
-  font-size: 18px;
+  font-size: 25px;
 }
 
 h2 {
@@ -28,4 +32,9 @@ a:hover { text-decoration: none }
 
 input[type="button"] {
     background: none;
+    min-width: 5em;
+}
+
+#stats {
+    float: right;
 }
