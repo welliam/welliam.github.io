@@ -30,14 +30,13 @@
         var player = new Audio();
         var elements = document.getElementsByClassName('musiclink')
 
-        player.onended = function () {
-        };
-        
         for(var i in elements) {
             if ((typeof elements[i]) == 'object') {
                 generateFromLink(elements[i], player);
             }
         }
+
+        var timespan = document.getElementById('time'), time;
 
         makePlayerButton('playbutton', player, function () {
             player.play();
@@ -50,9 +49,8 @@
         makePlayerButton('stopbutton', player, function () {
             player.pause();
             player.currentTime = 0;
+            timespan.innerHTML = '0:00';
         });
-
-        var timespan = document.getElementById('time'), time;
 
         setInterval(function () {
             if (! player.paused) {
