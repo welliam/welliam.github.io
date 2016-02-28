@@ -2,7 +2,6 @@ body { margin-left: 25px; margin-right: 25px; }
 
 h1 {
   font-size: 18px;
-  display: inline;
 }
 
 h2 {
@@ -25,4 +24,8 @@ a:hover { text-decoration: none }
   border: 1px solid black;
   list-style-position: inside;
   list-style-type: circle;
+}
+
+input[type="button"] {
+    background: none;
 }
