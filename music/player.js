@@ -5,7 +5,9 @@
             element.onclick = function (event) {
                 player.src = link;
                 player.currentTime = 0;
-                player.play();
+                player.pause();
+                playerPause(player, document.getElementById('playbutton'));
+
                 element.setAttribute('href', 'javascript:;');
 
                 document.getElementById('track').innerHTML =
@@ -19,13 +21,24 @@
     }
 
     function makePlayerButton(id, player, action) {
-        document.getElementById(id).onclick = function () {
+        var elem = document.getElementById(id);
+        elem.onclick = function () {
             if (player.src) {
-                action();
+                action(elem);
             }
         };
     }
-    
+
+    function playerPause(player, elem) {
+        if (player.paused) {
+            player.play();
+            elem.setAttribute('value', 'pause');
+        } else {
+            player.pause();
+            elem.setAttribute('value', 'play');
+        }
+    }
+
     window.onload = function () {
         var player = new Audio();
         var elements = document.getElementsByClassName('musiclink')
@@ -38,15 +51,15 @@
 
         var timespan = document.getElementById('time'), time;
 
-        makePlayerButton('playbutton', player, function () {
-            player.play();
-        });
-
-        makePlayerButton('pausebutton', player, function () {
-            player.pause();
+        makePlayerButton('playbutton', player, function (elem) {
+            playerPause(player, elem);
         });
 
         makePlayerButton('stopbutton', player, function () {
+            if (!player.paused) {
+                playerPause(player, document.getElementById('playbutton'));
+            }
+
             player.pause();
             player.currentTime = 0;
             timespan.innerHTML = '0:00';
