@@ -6,6 +6,18 @@ body {
     background-color: #ffeeee;
 }
 
+a {
+    color:black;
+}
+
+input[type="text"] {
+    width: 5em;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
 h1, h2 {
     text-align: center;
 }
@@ -19,11 +31,12 @@ h2 {
 }
 
 div {
-    margin: 0.3em 0;
+    margin: 0.3em;
 }
 
 span.info {
     font-style: italic;
+    display: inline-block;
 }
 
 input {
@@ -34,8 +47,12 @@ input {
 #loopbox {
     font-style: italic;
     font-weight: bold;
-    margin: 1.5em;
+}
+
+#loopbox, #desc {
     display: inline-block;
+    vertical-align: top;
+    margin: 0 1.5em;
 }
 
 #loopcount {
@@ -52,6 +69,6 @@ input {
 }
 
 #desc {
-    max-width: 30em;
-    display: inline-block;
+    max-width: 21em;
+    float: right;
 }
