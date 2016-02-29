@@ -2,16 +2,19 @@
     function generateFromLink(element, player) {
         var link = element.getAttribute('href');
         if (link) {
+            element.setAttribute('href', 'javascript:;');
             element.onclick = function (event) {
                 player.src = link;
                 player.currentTime = 0;
                 player.pause();
                 playerPause(player, document.getElementById('playbutton'));
 
-                element.setAttribute('href', 'javascript:;');
-
                 document.getElementById('track').innerHTML =
                     element.innerHTML + ':';
+
+                var downloadlink = document.getElementById('downloadlink');
+                downloadlink.style.display = 'inline';
+                downloadlink.setAttribute('href', link);
             };
         } else {
             console.log(
@@ -40,8 +43,8 @@
     }
 
     window.onload = function () {
-        var player = new Audio();
-        var elements = document.getElementsByClassName('musiclink')
+        var player = new Audio(),
+            elements = document.getElementsByClassName('musiclink')
 
         for(var i in elements) {
             if ((typeof elements[i]) == 'object') {
