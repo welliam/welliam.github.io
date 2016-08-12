@@ -343,8 +343,7 @@ filterPrimes [] = []
 filterPrimes (a:d) = a : filterPrimes (filter ((/=0).(`mod`a)) d)
 
 primeScale :: Integer -> Integer -> Integer
-primeScale ntet prime = (2 ^ ntet - 1) `div` (2 ^ (ntet `div` prime - 1))
--- alternatively `sum [2 ^ (n * ntet `div` prime) | n <- [0..prime]]`
+primeScale ntet prime = (2 ^ ntet - 1) `div` (2 ^ (ntet `div` prime) - 1)
 
 findMolts :: Integer -> Integer -> [Integer]
 findMolts ntet ps = takeWhile (< 2^ntet) [ps, ps*3..]
