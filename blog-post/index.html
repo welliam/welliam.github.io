@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-09-26 Mon 07:02 -->
+<!-- 2016-09-26 Mon 07:12 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lambda calculus</title>
@@ -493,15 +493,15 @@ immediately return the free variable x.
 <p>
 How about loops? Clearly we don't have any sort of iteration
 structure. Can we recur? The answer is yes, but without a way to
-define values, how are we supposed to refer to a value that hasn't yet
-been defined? First we define our recursive function instead as a
-function which takes a parameter which means "me" or "recur", and
-returns how it would normally be defined. Then we write a function
-which takes a function as its argument and hands that function itself,
-but a version of itself which can also refer to itself. There are
-infinitely many such functions which can do this (and they are called
-fixed point combinators), but one of the most simple ones is called
-the Y combinator. Here it is:
+define values, how are we supposed to have a function refer to itself?
+First we define our recursive function instead as a function which
+takes a parameter which means "me" or "recur", and returns how it
+would normally be defined. Then we write a function which takes a
+function as its argument and hands that function itself, but a version
+of itself which can also refer to itself. There are infinitely many
+such functions which can do this (and they are called fixed point
+combinators), but one of the most simple ones is called the Y
+combinator. Here it is:
 </p>
 
 <pre class="example">

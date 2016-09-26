@@ -205,15 +205,15 @@ immediately return the free variable x.
 
 How about loops? Clearly we don't have any sort of iteration
 structure. Can we recur? The answer is yes, but without a way to
-define values, how are we supposed to refer to a value that hasn't yet
-been defined? First we define our recursive function instead as a
-function which takes a parameter which means "me" or "recur", and
-returns how it would normally be defined. Then we write a function
-which takes a function as its argument and hands that function itself,
-but a version of itself which can also refer to itself. There are
-infinitely many such functions which can do this (and they are called
-fixed point combinators), but one of the most simple ones is called
-the Y combinator. Here it is:
+define values, how are we supposed to have a function refer to itself?
+First we define our recursive function instead as a function which
+takes a parameter which means "me" or "recur", and returns how it
+would normally be defined. Then we write a function which takes a
+function as its argument and hands that function itself, but a version
+of itself which can also refer to itself. There are infinitely many
+such functions which can do this (and they are called fixed point
+combinators), but one of the most simple ones is called the Y
+combinator. Here it is:
 
 : Y = λf.(λx. f(x x))(λx. f(x x))
 
