@@ -215,7 +215,7 @@ such functions which can do this (and they are called fixed point
 combinators), but one of the most simple ones is called the Y
 combinator. Here it is:
 
-: Y = λf.(λx. f(x x))(λx. f(x x))
+: Y = λf.(λx.f(x x))(λx.f(x x))
 
 To see it in action, let's define a recursive add. In the below
 example, a is merely a parameter which means "add":
@@ -256,8 +256,8 @@ Here are the reducers:
 :         return term
 
 Note how ~applicative_reduce~ evaluates both the operator and the
-operand, while normal_reduce merely passes in the operand. Neither do
-anything when the term is an abstraction.
+operand, while ~normal_reduce~ merely passes in the operand. Neither
+do anything when the term is an abstraction.
 
 : def substitute(param, body, x):
 :     if param == body:
@@ -285,7 +285,7 @@ abstraction as is except for the body, which we substitute.
 : def fix(reducer, term):
 :     prev = None
 :     while term != prev:
-:       prev, term = term, reducer(term)
+:         prev, term = term, reducer(term)
 :     return term
 
 ** TODO Finish lambda calculus reducer with explanation of ~fix~
@@ -295,23 +295,24 @@ abstraction as is except for the body, which we substitute.
 
 * Uses for lambda calculus
 
-Lambda calculus remains a classic way of model computation. The
+Lambda calculus remains a classic way of modeling computation. The
 concepts are simple enough to be understood by beginners, yet
 introduces enough complexity to model any algorithm. Many issues with
-language implementation are worked out with lambda calculus reducers:
-for example, alpha renaming is a real compilation strategy which
-simplifies (and possibly optimizes) variable lookup. Modern languages
-as diverse as Python and Haskell are indebted to lambda calculus and
-the research accomplished using it.
+language implementation are worked out with lambda calculus
+implementations: for example, alpha renaming is a real compilation
+strategy which simplifies (and possibly optimizes) variable
+lookup. More broadly, modern languages as diverse as Python and
+Haskell are indebted to lambda calculus and the research accomplished
+using it.
 
-A lambda calculus reducer is so simple to implement, that it is often
-used to prove Turing-completeness. When a language is Turing-complete,
-it shares with Lambda calculus the power of being able to simulate any
-algorithm. When a language has this power, it is impossible to prove
-that a program in that language will halt. That is to say, there
-exists no algorithm which accepts any program written in a
-Turing-complete language and returns whether or not that program runs
-forever. In fact, the notion of Turing-completeness, and lambda
+A lambda calculus reducer is simple enough to implement that it is
+often used to prove Turing-completeness. When a language is
+Turing-complete, it shares with Lambda calculus the power of being
+able to simulate any algorithm. When a language has this power, it is
+impossible to prove that a program in that language will halt. That is
+to say, there exists no algorithm which accepts every program written
+in a Turing-complete language and returns whether or not that program
+runs forever. In fact, the notion of Turing-completeness, and lambda
 calculus itself, were originally invented as proof of this. Many other
 "languages", as diverse as Conway's Game of Life, SQL, a number of
 video games such as Minecraft, etc. are Turing-complete. However,

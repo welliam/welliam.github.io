@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-09-26 Mon 07:12 -->
+<!-- 2016-09-26 Mon 08:48 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lambda calculus</title>
@@ -505,7 +505,7 @@ combinator. Here it is:
 </p>
 
 <pre class="example">
-Y = λf.(λx. f(x x))(λx. f(x x))
+Y = λf.(λx.f(x x))(λx.f(x x))
 </pre>
 
 <p>
@@ -565,8 +565,8 @@ def normal_reduce(term):
 
 <p>
 Note how <code>applicative_reduce</code> evaluates both the operator and the
-operand, while normal<sub>reduce</sub> merely passes in the operand. Neither do
-anything when the term is an abstraction.
+operand, while <code>normal_reduce</code> merely passes in the operand. Neither
+do anything when the term is an abstraction.
 </p>
 
 <pre class="example">
@@ -600,7 +600,7 @@ abstraction as is except for the body, which we substitute.
 def fix(reducer, term):
     prev = None
     while term != prev:
-      prev, term = term, reducer(term)
+        prev, term = term, reducer(term)
     return term
 </pre>
 </div>
@@ -623,25 +623,26 @@ def fix(reducer, term):
 <h2 id="orgheadline14"><span class="section-number-2">6</span> Uses for lambda calculus</h2>
 <div class="outline-text-2" id="text-6">
 <p>
-Lambda calculus remains a classic way of model computation. The
+Lambda calculus remains a classic way of modeling computation. The
 concepts are simple enough to be understood by beginners, yet
 introduces enough complexity to model any algorithm. Many issues with
-language implementation are worked out with lambda calculus reducers:
-for example, alpha renaming is a real compilation strategy which
-simplifies (and possibly optimizes) variable lookup. Modern languages
-as diverse as Python and Haskell are indebted to lambda calculus and
-the research accomplished using it.
+language implementation are worked out with lambda calculus
+implementations: for example, alpha renaming is a real compilation
+strategy which simplifies (and possibly optimizes) variable
+lookup. More broadly, modern languages as diverse as Python and
+Haskell are indebted to lambda calculus and the research accomplished
+using it.
 </p>
 
 <p>
-A lambda calculus reducer is so simple to implement, that it is often
-used to prove Turing-completeness. When a language is Turing-complete,
-it shares with Lambda calculus the power of being able to simulate any
-algorithm. When a language has this power, it is impossible to prove
-that a program in that language will halt. That is to say, there
-exists no algorithm which accepts any program written in a
-Turing-complete language and returns whether or not that program runs
-forever. In fact, the notion of Turing-completeness, and lambda
+A lambda calculus reducer is simple enough to implement that it is
+often used to prove Turing-completeness. When a language is
+Turing-complete, it shares with Lambda calculus the power of being
+able to simulate any algorithm. When a language has this power, it is
+impossible to prove that a program in that language will halt. That is
+to say, there exists no algorithm which accepts every program written
+in a Turing-complete language and returns whether or not that program
+runs forever. In fact, the notion of Turing-completeness, and lambda
 calculus itself, were originally invented as proof of this. Many other
 "languages", as diverse as Conway's Game of Life, SQL, a number of
 video games such as Minecraft, etc. are Turing-complete. However,
