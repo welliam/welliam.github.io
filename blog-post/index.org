@@ -180,14 +180,14 @@ particular, we care about whether a functions argument gets reduced
 before it gets substituted as an argument. If we do reduce an argument
 fully before applying it, we are using applicative order. Otherwise,
 we are using normal order. This is glossing over an important fact of
-lambda calculus, and the way that it is /not/ a programming
-language: there is no single way to reduce a function
-application. However, more useful for us is normal order
-reduction. Although this is not how programming languages are normally
-evaluated (Python, including others, are applicative order; lazy
-languages like Haskell more closely resemble normal order), we choose
-it because it means that if a function has a "finished" form, that
-form will be returned. Take, for example, the following:
+lambda calculus, and the way that it is /not/ a programming language:
+there is no single way to reduce a function application. However, more
+useful for us is normal order reduction. Although this is not how
+programming languages are normally evaluated (Python, including
+others, are applicative order; lazy languages like Haskell more
+closely resemble normal order), we choose it because it means that if
+a function has a "finished" form, that form will be returned. Take,
+for example, the following:
 
 : (λi.x) ((λx.x x)(λx.x x))
 

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-09-26 Mon 08:48 -->
+<!-- 2016-10-20 Thu 13:57 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lambda calculus</title>
@@ -94,7 +94,6 @@
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   /*]]>*/-->
 </style>
-<script type="text/javascript" src="lambda.js"></script>
 <style type="text/css">body {color: #333333; max-width: 50em; margin: auto;} a {color: #333333;}</style>
 <script type="text/javascript">
 /*
@@ -161,15 +160,9 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#orgheadline7">3. Reduction strategies</a></li>
 <li><a href="#orgheadline8">4. Recursion</a></li>
-<li><a href="#orgheadline13">5. A lambda calculus reducer in Python</a>
-<ul>
-<li><a href="#orgheadline9">5.1. <span class="todo TODO">TODO</span> Finish lambda calculus reducer with explanation of <code>fix</code></a></li>
-<li><a href="#orgheadline10">5.2. <span class="todo TODO">TODO</span> Implement lambda calculus parser so we can run examples in code</a></li>
-<li><a href="#orgheadline11">5.3. <span class="todo TODO">TODO</span> Make lambda calculator iterative?</a></li>
-<li><a href="#orgheadline12">5.4. <span class="todo TODO">TODO</span> Implement, explain alpha renamer</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline14">6. Uses for lambda calculus</a></li>
+<li><a href="#orgheadline9">5. A lambda calculus reducer in Python</a></li>
+<li><a href="#orgheadline10">6. Even simpler</a></li>
+<li><a href="#orgheadline11">7. Uses for lambda calculus</a></li>
 </ul>
 </div>
 </div>
@@ -184,7 +177,7 @@ wondering about how to classify formal languages (like programming
 languages). In particular, lambda calculus was provided as an
 example of a language with language that one cannot prove will or will
 not halt. lambda calculus is interesting because, despite its
-simplicity, it can be used to model any computer language!
+simplicity, it can be used to model any computer algorithm!
 </p>
 
 <p>
@@ -210,8 +203,7 @@ function. This can be used to represent functions of many parameters,
 and is called "currying." Furthermore, notice how <code>f x y</code> means "apply
 <code>f</code> to <code>x</code>, then that result to <code>y</code>." Finally, in lambda calculus
 there are no "unbound variable errors." A variable which is "unbound"
-is instead said to be "free" in lambda calculus, and is merely
-returned as is.
+is instead said to be "free" in lambda calculus.
 </p>
 </div>
 </div>
@@ -473,8 +465,8 @@ reduction, we enter an infinite loop:
 </p>
 
 <pre class="example">
-(λi.x) ((λx.x x)(λx.x x))
-(λi.x) ((λx.x x)(λx.x x))
+= (λi.x) ((λx.x x)(λx.x x))
+= (λi.x) ((λx.x x)(λx.x x))
 </pre>
 <p>
 etc.
@@ -482,7 +474,7 @@ etc.
 
 <p>
 However, if we do not attempt to unravel the operand first, we
-immediately return the free variable x.
+immediately return the free variable <code>x</code>.
 </p>
 </div>
 </div>
@@ -493,19 +485,18 @@ immediately return the free variable x.
 <p>
 How about loops? Clearly we don't have any sort of iteration
 structure. Can we recur? The answer is yes, but without a way to
-define values, how are we supposed to have a function refer to itself?
-First we define our recursive function instead as a function which
-takes a parameter which means "me" or "recur", and returns how it
-would normally be defined. Then we write a function which takes a
-function as its argument and hands that function itself, but a version
-of itself which can also refer to itself. There are infinitely many
-such functions which can do this (and they are called fixed point
-combinators), but one of the most simple ones is called the Y
-combinator. Here it is:
+define values, how are we supposed to refer to a value that hasn't yet
+been defined? First we define our recursive function instead as a
+function which takes a parameter which means "me" or "recur", and
+returns how it would normally be defined. Then we write a function
+which takes a function as its argument and hands that function itself,
+but a version of itself which can also refer to itself. There are
+infinitely many such functions which can do this , but one of the most
+simple ones is called the Y combinator. Here it is:
 </p>
 
 <pre class="example">
-Y = λf.(λx.f(x x))(λx.f(x x))
+Y = λf.(λx. f(x x))(λx. f(x x))
 </pre>
 
 <p>
@@ -523,13 +514,13 @@ ADD = Y (λa.λm.λn. IF (ZERO? m) n (a (SUB1 m) (ADD1 n)))
 </div>
 </div>
 
-<div id="outline-container-orgheadline13" class="outline-2">
-<h2 id="orgheadline13"><span class="section-number-2">5</span> A lambda calculus reducer in Python</h2>
+<div id="outline-container-orgheadline9" class="outline-2">
+<h2 id="orgheadline9"><span class="section-number-2">5</span> A lambda calculus reducer in Python</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Here is a lambda calculus reducer in Python, with both normal order
 and applicative order reducers. Here, an <code>abstraction</code> indicates a
-lambda abstraction. For example, <code>λf.f f</code> is entered like so:
+lambda abstraction. For example, <code>λf.f f</code> is expressed like so:
 </p>
 
 <pre class="example">
@@ -544,29 +535,29 @@ Here are the reducers:
 from collections import namedtuple
 
 abstraction = namedtuple('abstraction', 'param body')
-application = namedtuple('application', 'lhs rhs')
+application = namedtuple('application', 'operator operand)
 
 
 def applicative_reduce(term):
     if isinstance(term, application):
-        param, body = applicative_reduce(term.rhs)
-        return substitute(param, body, applicative_reduce(term.lhs))
+        param, body = applicative_reduce(term.operand)
+        return substitute(param, body, applicative_reduce(term.operator))
     else:
         return term
 
 
 def normal_reduce(term):
     if isinstance(term, application):
-        param, body = applicative_reduce(term.rhs)
-        return substitute(param, body, term.lhs)
+        param, body = applicative_reduce(term.operand)
+        return substitute(param, body, term.operator)
     else:
         return term
 </pre>
 
 <p>
 Note how <code>applicative_reduce</code> evaluates both the operator and the
-operand, while <code>normal_reduce</code> merely passes in the operand. Neither
-do anything when the term is an abstraction.
+operand, while normal<sub>reduce</sub> merely passes in the operand. Neither do
+anything when the term is an abstraction.
 </p>
 
 <pre class="example">
@@ -576,10 +567,10 @@ def substitute(param, body, x):
     elif isinstance(body, str):
         return body
     elif isinstance(body, application):
-        lhs, rhs = application
+        operator, operand = application
         return application(
-            substitute(param, lhs, x),
-            substitute(param, rhs, x)
+            substitute(param, operator, x),
+            substitute(param, operand, x)
         )
     elif param == body.param:
         return body
@@ -600,49 +591,102 @@ abstraction as is except for the body, which we substitute.
 def fix(reducer, term):
     prev = None
     while term != prev:
-        prev, term = term, reducer(term)
+      prev, term = term, reducer(term)
     return term
 </pre>
-</div>
 
-<div id="outline-container-orgheadline9" class="outline-3">
-<h3 id="orgheadline9"><span class="section-number-3">5.1</span> <span class="todo TODO">TODO</span> Finish lambda calculus reducer with explanation of <code>fix</code></h3>
-</div>
-<div id="outline-container-orgheadline10" class="outline-3">
-<h3 id="orgheadline10"><span class="section-number-3">5.2</span> <span class="todo TODO">TODO</span> Implement lambda calculus parser so we can run examples in code</h3>
-</div>
-<div id="outline-container-orgheadline11" class="outline-3">
-<h3 id="orgheadline11"><span class="section-number-3">5.3</span> <span class="todo TODO">TODO</span> Make lambda calculator iterative?</h3>
-</div>
-<div id="outline-container-orgheadline12" class="outline-3">
-<h3 id="orgheadline12"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> Implement, explain alpha renamer</h3>
+<p>
+<code>fix</code> is necessary for the normal order reducer in order to reach
+normal form. It continually runs the reducer on the term until
+reaching a fixed point of the reducer (i.e., when it returns what it
+is inputted).
+</p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline14" class="outline-2">
-<h2 id="orgheadline14"><span class="section-number-2">6</span> Uses for lambda calculus</h2>
+<div id="outline-container-orgheadline10" class="outline-2">
+<h2 id="orgheadline10"><span class="section-number-2">6</span> Even simpler</h2>
 <div class="outline-text-2" id="text-6">
 <p>
-Lambda calculus remains a classic way of modeling computation. The
+The lambda calculus is very simple as is. However, it can be even
+simpler. It is possible to remove any abstraction in the lambda
+calculus (a process called abstraction elimination) and instead use
+only two defined functions, S and K. These can be expressed in lambda
+calculus as follows:
+</p>
+
+<pre class="example">
+S = λx.λy.λz.x z (y z)
+K = λx.λy.x
+</pre>
+
+<p>
+The system with just free variables, S, K, and applications is called
+SK combinator calculus. Typically, it is presented as SKI combinator
+calculus, with I being the identity function (<code>λx.x</code>). However, I is
+trivially expressed as either SKK or SKS:
+</p>
+
+<pre class="example">
+SKK
+= (λx.λy.λz.x z(y z))(λx.λy.x)(λx.λy.x)
+</pre>
+<p>
+Substitute <code>x</code>:
+</p>
+<pre class="example">
+= (λy.λz.(λx.λy.x) z (y z))(λx.λy.x)
+</pre>
+<p>
+Substitute <code>y</code>:
+</p>
+<pre class="example">
+= λz.(λx.λy.x) z ((λx.λy.x) z)
+</pre>
+<p>
+Simplify the first application in the body:
+</p>
+<pre class="example">
+= λz.(λy.z) ((λx.λy.x) z)
+</pre>
+<p>
+Simplify the second in the same way:
+</p>
+<pre class="example">
+= λz.(λy.z) (λy.z)
+</pre>
+<p>
+And finally, simplifying the last application:
+</p>
+<pre class="example">
+= λz.z
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-2">
+<h2 id="orgheadline11"><span class="section-number-2">7</span> Uses for lambda calculus</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Lambda calculus remains a classic way of model computation. The
 concepts are simple enough to be understood by beginners, yet
 introduces enough complexity to model any algorithm. Many issues with
-language implementation are worked out with lambda calculus
-implementations: for example, alpha renaming is a real compilation
-strategy which simplifies (and possibly optimizes) variable
-lookup. More broadly, modern languages as diverse as Python and
-Haskell are indebted to lambda calculus and the research accomplished
-using it.
+language implementation are worked out with lambda calculus reducers:
+for example, alpha renaming is a real compilation strategy which
+simplifies (and possibly optimizes) variable lookup. Modern languages
+as diverse as Python and Haskell are indebted to lambda calculus and
+the research accomplished using it.
 </p>
 
 <p>
-A lambda calculus reducer is simple enough to implement that it is
-often used to prove Turing-completeness. When a language is
-Turing-complete, it shares with Lambda calculus the power of being
-able to simulate any algorithm. When a language has this power, it is
-impossible to prove that a program in that language will halt. That is
-to say, there exists no algorithm which accepts every program written
-in a Turing-complete language and returns whether or not that program
-runs forever. In fact, the notion of Turing-completeness, and lambda
+A lambda calculus reducer is so simple to implement, that it is often
+used to prove Turing-completeness. When a language is Turing-complete,
+it shares with lambda calculus the power of being able to simulate any
+algorithm. When a language has this power, it is impossible to prove
+that a program in that language will halt. That is to say, there
+exists no algorithm which accepts any program written in a
+Turing-complete language and returns whether or not that program runs
+forever. In fact, the notion of Turing-completeness, and lambda
 calculus itself, were originally invented as proof of this. Many other
 "languages", as diverse as Conway's Game of Life, SQL, a number of
 video games such as Minecraft, etc. are Turing-complete. However,
