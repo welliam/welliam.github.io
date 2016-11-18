@@ -14,18 +14,13 @@
     <input id="n" type="number" min="0" value="10">
     <div>
       Generated primes:
-      <div id="o" style="white-space: pre-line;">(click "get primes!")</div>
+      <div id="o" style="white-space: pre-line;">(click "Get primes!")</div>
     </div>
     <div>
       This is a demo for my
       Scheme->JS transpiler <a href="https://github.com/welliam/scheme-to-js">here</a>.
       All JavaScript written for this page was generated from Scheme source code.
     </div>
-    <script src="output.js">
-      <!--
-          To generate this file, run this at the root of this repo:
-          racket -e '(require "src/compiler.rkt") (for ((f (list "examples/prelude.scm" "examples/primes.scm" "examples/primespage.scm"))) (display (compile-file f)))' > examples/output.js
-        -->
-    </script>
+    <script src="output.js"></script>
   </body>
 </html>
