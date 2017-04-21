@@ -274,7 +274,7 @@ PIANO = {}; // used for globally-visible functions
     gain.gain.value = 1;
     next = next || function() { stop(); };
     oscillator.frequency.value = noteFreq(i);
-    setTimeout(next, 500);
+    timeout = setTimeout(next, 500);
   }
 
   function play(s, i) {
