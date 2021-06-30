@@ -9,5 +9,6 @@ echo > blog-post/index.org "\
 
 for post in (ls blog-post | ag -v index | ag -v html)
     set -l name (head -1 ./blog-post/$post | cut -f 2- -d ' ' | xargs)
-    echo - [[./$post][$name]] >> blog-post/index.org
+    set -l date (g log --date=short --follow --format=%ad blog-post/$post | tail -1)
+    echo - [[./$post][$name ($date)]] >> blog-post/index.org
 end
