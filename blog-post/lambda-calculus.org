@@ -1,8 +1,9 @@
 #+TITLE:  Lambda calculus
 #+EMAIL:  well1912@gmail.com
-#+AUTHOR: Justin Lange
 #+HTML_HEAD: <script type="text/javascript" src="lambda.js"></script>
 #+HTML_HEAD: <style type="text/css">body {color: #333333; max-width: 50em; margin: auto;} a {color: #333333;}</style>
+#+options: toc:nil
+#+options: num:nil
 #+OPTIONS: html-postamble:nil
 
 * A simple programming language
@@ -167,7 +168,7 @@ created in the data structure. How about getting those values back?
 : TAIL = λp.p (λa.λb.b)
 
 ** Encoding with functions
-   
+
 The concept of encoding numbers, booleans, and other data types in
 lambda calculus using abstractions is called Church encoding. This is
 due to Alonzo Church, the inventor of lambda calculus.

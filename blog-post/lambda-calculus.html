@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2016-10-20 Thu 13:57 -->
-<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta  name="viewport" content="width=device-width, initial-scale=1" />
-<title>Lambda calculus</title>
-<meta  name="generator" content="Org-mode" />
-<meta  name="author" content="Justin Lange" />
+<!-- 2021-06-30 Wed 16:17 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title><a href="./lambda-calculus.html">Lambda calculus (September 26 2016)</a></title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="well" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -53,13 +53,98 @@
     border: 1px solid black;
   }
   pre.src:hover:before { display: inline;}
-  pre.src-sh:before    { content: 'sh'; }
-  pre.src-bash:before  { content: 'sh'; }
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
   pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-R:before     { content: 'R'; }
-  pre.src-perl:before  { content: 'Perl'; }
-  pre.src-java:before  { content: 'Java'; }
-  pre.src-sql:before   { content: 'SQL'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
 
   table { border-collapse:collapse; }
   caption.t-above { caption-side: top; }
@@ -92,15 +177,17 @@
     { font-size: 10px; font-weight: bold; white-space: nowrap; }
   .org-info-js_search-highlight
     { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
   /*]]>*/-->
 </style>
+<script type="text/javascript" src="lambda.js"></script>
 <style type="text/css">body {color: #333333; max-width: 50em; margin: auto;} a {color: #333333;}</style>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
 JavaScript code in this tag.
 
-Copyright (C) 2012-2013 Free Software Foundation, Inc.
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
 
 The JavaScript code in this tag is free software: you can
 redistribute it and/or modify it under the terms of the GNU
@@ -144,31 +231,37 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Lambda calculus</h1>
+<h1 class="title"><a href="./lambda-calculus.html">Lambda calculus (September 26 2016)</a></h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline1">1. A simple programming language</a></li>
-<li><a href="#orgheadline6">2. Church encoding</a>
+<li><a href="#orge831dba">1. A simple programming language</a></li>
+<li><a href="#org77761a1">2. Church encoding</a>
 <ul>
-<li><a href="#orgheadline2">2.1. Numbers</a></li>
-<li><a href="#orgheadline3">2.2. Booleans</a></li>
-<li><a href="#orgheadline4">2.3. Linked Lists</a></li>
-<li><a href="#orgheadline5">2.4. Encoding with functions</a></li>
+<li><a href="#orgad6aab5">2.1. Numbers</a></li>
+<li><a href="#org2e8ddd5">2.2. Booleans</a></li>
+<li><a href="#orgfbc5633">2.3. Linked Lists</a></li>
+<li><a href="#org1a2680f">2.4. Encoding with functions</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline7">3. Reduction strategies</a></li>
-<li><a href="#orgheadline8">4. Recursion</a></li>
-<li><a href="#orgheadline9">5. A lambda calculus reducer in Python</a></li>
-<li><a href="#orgheadline10">6. Even simpler</a></li>
-<li><a href="#orgheadline11">7. Uses for lambda calculus</a></li>
+<li><a href="#org9b05ce2">3. Reduction strategies</a></li>
+<li><a href="#org9799001">4. Recursion</a></li>
+<li><a href="#org4baf377">5. A lambda calculus reducer in Python</a>
+<ul>
+<li><a href="#org90e21ad">5.1. <span class="todo TODO">TODO</span> Finish lambda calculus reducer with explanation of <code>fix</code></a></li>
+<li><a href="#org21d4b8c">5.2. <span class="todo TODO">TODO</span> Implement lambda calculus parser so we can run examples in code</a></li>
+<li><a href="#org7210a69">5.3. <span class="todo TODO">TODO</span> Make lambda calculator iterative?</a></li>
+<li><a href="#orge56de88">5.4. <span class="todo TODO">TODO</span> Implement, explain alpha renamer</a></li>
+</ul>
+</li>
+<li><a href="#orgb652845">6. Uses for lambda calculus</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline1" class="outline-2">
-<h2 id="orgheadline1"><span class="section-number-2">1</span> A simple programming language</h2>
+<div id="outline-container-orge831dba" class="outline-2">
+<h2 id="orge831dba"><span class="section-number-2">1</span> A simple programming language</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Lambda calculus is a very simple programming language. It was
@@ -177,7 +270,7 @@ wondering about how to classify formal languages (like programming
 languages). In particular, lambda calculus was provided as an
 example of a language with language that one cannot prove will or will
 not halt. lambda calculus is interesting because, despite its
-simplicity, it can be used to model any computer algorithm!
+simplicity, it can be used to model any computer language!
 </p>
 
 <p>
@@ -195,6 +288,7 @@ x              ; x                               -&gt; x
 f x y          ; f(x)(y)
 λx.x y         ; (lambda x: x)(y)                -&gt; y
 (λx.λy.x) y z  ; (lambda x: (lambda y: x))(y)(z) -&gt; z
+
 </pre>
 
 <p>
@@ -203,13 +297,14 @@ function. This can be used to represent functions of many parameters,
 and is called "currying." Furthermore, notice how <code>f x y</code> means "apply
 <code>f</code> to <code>x</code>, then that result to <code>y</code>." Finally, in lambda calculus
 there are no "unbound variable errors." A variable which is "unbound"
-is instead said to be "free" in lambda calculus.
+is instead said to be "free" in lambda calculus, and is merely
+returned as is.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline6" class="outline-2">
-<h2 id="orgheadline6"><span class="section-number-2">2</span> Church encoding</h2>
+<div id="outline-container-org77761a1" class="outline-2">
+<h2 id="org77761a1"><span class="section-number-2">2</span> Church encoding</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 With just variables, functions, and applications, we have a
@@ -227,8 +322,8 @@ pretend those also mean "true" and "false."
 </p>
 </div>
 
-<div id="outline-container-orgheadline2" class="outline-3">
-<h3 id="orgheadline2"><span class="section-number-3">2.1</span> Numbers</h3>
+<div id="outline-container-orgad6aab5" class="outline-3">
+<h3 id="orgad6aab5"><span class="section-number-3">2.1</span> Numbers</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 It turns out that we can encode numbers as functions, in the same way
@@ -238,6 +333,7 @@ represent zero:
 
 <pre class="example">
 ZERO = λf.λx.x  ; lambda f: (lambda x: x)
+
 </pre>
 
 <p>
@@ -249,6 +345,7 @@ the application of f n times to the normal result of zero:
 ONE = λf.λx.f x            ; lambda f: (lambda x: f(x))
 TWO = λf.λx.f (f x)        ; lambda f: (lambda x: f(f(x)))
 THREE = λf.λx.f (f (f x))  ; lambda f: (lambda x: f(f(f(x))))
+
 </pre>
 <p>
 etc.
@@ -267,6 +364,7 @@ lambda_three = lambda f: (lambda x: f(f(f(x))))
 python_add1 = lambda x: x + 1
 python_zero = 0
 lambda_three(python_add1)(python_zero)  # 3
+
 </pre>
 
 <p>
@@ -275,6 +373,7 @@ We can abstract the concept of incrementing a number easily enough:
 
 <pre class="example">
 λn.λf.λx.(f (n f x))
+
 </pre>
 
 <p>
@@ -293,6 +392,7 @@ zero, we can supply "zero" as one of the numbers and add1 as itself:
 
 <pre class="example">
 λn.λm.n ADD1 m
+
 </pre>
 
 <p>
@@ -301,6 +401,7 @@ or, substituting ADD1 for its definition above:
 
 <pre class="example">
 λn.λm.n (λn.λf.λx.(f (n f x))) m
+
 </pre>
 
 <p>
@@ -315,6 +416,7 @@ sub1, the opposite of add1, is difficult to define. Here it is:
 
 <pre class="example">
 SUB1 = λn.λf.λx.n (λg.λh. h (g f)) (λu.x) (λu.u)
+
 </pre>
 
 <p>
@@ -325,8 +427,8 @@ encoding, 0-1 = 0).
 </div>
 </div>
 
-<div id="outline-container-orgheadline3" class="outline-3">
-<h3 id="orgheadline3"><span class="section-number-3">2.2</span> Booleans</h3>
+<div id="outline-container-org2e8ddd5" class="outline-3">
+<h3 id="org2e8ddd5"><span class="section-number-3">2.2</span> Booleans</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Here we define false and true. They are functions which take two
@@ -337,6 +439,7 @@ returned as meaning "false."
 <pre class="example">
 TRUE = λt.λf.t   ; lambda t: (lambda f: t)
 FALSE = λt.λf.f  ; lambda t: (lambda f: f)
+
 </pre>
 
 <p>
@@ -351,6 +454,7 @@ True and False:
 <pre class="example">
 (lambda t: (lambda f: t))(True)(False)  # True
 (lambda t: (lambda f: f))(True)(False)  # False
+
 </pre>
 
 <p>
@@ -360,6 +464,7 @@ the boolean to the then and else branches:
 
 <pre class="example">
 IF = λx.λt.λf.x t f  ; lambda x: (lambda t: (lambda f: x(t)(f)))
+
 </pre>
 
 <p>
@@ -370,6 +475,7 @@ expression":
 
 <pre class="example">
 λx ...
+
 </pre>
 
 <p>
@@ -379,6 +485,7 @@ expression, as well as <code>A</code> and <code>B</code>:
 
 <pre class="example">
 λx.(λx.λt.λf.x t f) x A B
+
 </pre>
 
 <p>
@@ -387,6 +494,7 @@ which has a body we can reduce to:
 
 <pre class="example">
 λx.x A B
+
 </pre>
 
 <p>
@@ -397,8 +505,8 @@ correct.
 </div>
 </div>
 
-<div id="outline-container-orgheadline4" class="outline-3">
-<h3 id="orgheadline4"><span class="section-number-3">2.3</span> Linked Lists</h3>
+<div id="outline-container-orgfbc5633" class="outline-3">
+<h3 id="orgfbc5633"><span class="section-number-3">2.3</span> Linked Lists</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Unsurprisingly, we can represent data structures as functions as
@@ -408,6 +516,7 @@ tuple:
 
 <pre class="example">
 PAIR = λa.λb.λf.f a b
+
 </pre>
 
 <p>
@@ -419,12 +528,13 @@ created in the data structure. How about getting those values back?
 <pre class="example">
 HEAD = λp.p (λa.λb.a)
 TAIL = λp.p (λa.λb.b)
+
 </pre>
 </div>
 </div>
 
-<div id="outline-container-orgheadline5" class="outline-3">
-<h3 id="orgheadline5"><span class="section-number-3">2.4</span> Encoding with functions</h3>
+<div id="outline-container-org1a2680f" class="outline-3">
+<h3 id="org1a2680f"><span class="section-number-3">2.4</span> Encoding with functions</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 The concept of encoding numbers, booleans, and other data types in
@@ -435,8 +545,8 @@ due to Alonzo Church, the inventor of lambda calculus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline7" class="outline-2">
-<h2 id="orgheadline7"><span class="section-number-2">3</span> Reduction strategies</h2>
+<div id="outline-container-org9b05ce2" class="outline-2">
+<h2 id="org9b05ce2"><span class="section-number-2">3</span> Reduction strategies</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Before we talk about recursion, it's important that we talk about two
@@ -445,18 +555,19 @@ particular, we care about whether a functions argument gets reduced
 before it gets substituted as an argument. If we do reduce an argument
 fully before applying it, we are using applicative order. Otherwise,
 we are using normal order. This is glossing over an important fact of
-lambda calculus, and the way that it is <i>not</i> a programming
-language: there is no single way to reduce a function
-application. However, more useful for us is normal order
-reduction. Although this is not how programming languages are normally
-evaluated (Python, including others, are applicative order; lazy
-languages like Haskell more closely resemble normal order), we choose
-it because it means that if a function has a "finished" form, that
-form will be returned. Take, for example, the following:
+lambda calculus, and the way that it is <i>not</i> a programming language:
+there is no single way to reduce a function application. However, more
+useful for us is normal order reduction. Although this is not how
+programming languages are normally evaluated (Python, including
+others, are applicative order; lazy languages like Haskell more
+closely resemble normal order), we choose it because it means that if
+a function has a "finished" form, that form will be returned. Take,
+for example, the following:
 </p>
 
 <pre class="example">
 (λi.x) ((λx.x x)(λx.x x))
+
 </pre>
 
 <p>
@@ -465,8 +576,9 @@ reduction, we enter an infinite loop:
 </p>
 
 <pre class="example">
-= (λi.x) ((λx.x x)(λx.x x))
-= (λi.x) ((λx.x x)(λx.x x))
+(λi.x) ((λx.x x)(λx.x x))
+(λi.x) ((λx.x x)(λx.x x))
+
 </pre>
 <p>
 etc.
@@ -474,29 +586,31 @@ etc.
 
 <p>
 However, if we do not attempt to unravel the operand first, we
-immediately return the free variable <code>x</code>.
+immediately return the free variable x.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline8" class="outline-2">
-<h2 id="orgheadline8"><span class="section-number-2">4</span> Recursion</h2>
+<div id="outline-container-org9799001" class="outline-2">
+<h2 id="org9799001"><span class="section-number-2">4</span> Recursion</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 How about loops? Clearly we don't have any sort of iteration
 structure. Can we recur? The answer is yes, but without a way to
-define values, how are we supposed to refer to a value that hasn't yet
-been defined? First we define our recursive function instead as a
-function which takes a parameter which means "me" or "recur", and
-returns how it would normally be defined. Then we write a function
-which takes a function as its argument and hands that function itself,
-but a version of itself which can also refer to itself. There are
-infinitely many such functions which can do this , but one of the most
-simple ones is called the Y combinator. Here it is:
+define values, how are we supposed to have a function refer to itself?
+First we define our recursive function instead as a function which
+takes a parameter which means "me" or "recur", and returns how it
+would normally be defined. Then we write a function which takes a
+function as its argument and hands that function itself, but a version
+of itself which can also refer to itself. There are infinitely many
+such functions which can do this (and they are called fixed point
+combinators), but one of the most simple ones is called the Y
+combinator. Here it is:
 </p>
 
 <pre class="example">
-Y = λf.(λx. f(x x))(λx. f(x x))
+Y = λf.(λx.f(x x))(λx.f(x x))
+
 </pre>
 
 <p>
@@ -506,25 +620,28 @@ example, a is merely a parameter which means "add":
 
 <pre class="example">
 ZERO? = λn.n (λx.TRUE) FALSE
+
 </pre>
 
 <pre class="example">
 ADD = Y (λa.λm.λn. IF (ZERO? m) n (a (SUB1 m) (ADD1 n)))
+
 </pre>
 </div>
 </div>
 
-<div id="outline-container-orgheadline9" class="outline-2">
-<h2 id="orgheadline9"><span class="section-number-2">5</span> A lambda calculus reducer in Python</h2>
+<div id="outline-container-org4baf377" class="outline-2">
+<h2 id="org4baf377"><span class="section-number-2">5</span> A lambda calculus reducer in Python</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Here is a lambda calculus reducer in Python, with both normal order
 and applicative order reducers. Here, an <code>abstraction</code> indicates a
-lambda abstraction. For example, <code>λf.f f</code> is expressed like so:
+lambda abstraction. For example, <code>λf.f f</code> is entered like so:
 </p>
 
 <pre class="example">
 abstraction('f', application('f', 'f'))
+
 </pre>
 
 <p>
@@ -535,29 +652,30 @@ Here are the reducers:
 from collections import namedtuple
 
 abstraction = namedtuple('abstraction', 'param body')
-application = namedtuple('application', 'operator operand)
+application = namedtuple('application', 'lhs rhs')
 
 
 def applicative_reduce(term):
     if isinstance(term, application):
-        param, body = applicative_reduce(term.operand)
-        return substitute(param, body, applicative_reduce(term.operator))
+        param, body = applicative_reduce(term.rhs)
+        return substitute(param, body, applicative_reduce(term.lhs))
     else:
         return term
 
 
 def normal_reduce(term):
     if isinstance(term, application):
-        param, body = applicative_reduce(term.operand)
-        return substitute(param, body, term.operator)
+        param, body = applicative_reduce(term.rhs)
+        return substitute(param, body, term.lhs)
     else:
         return term
+
 </pre>
 
 <p>
 Note how <code>applicative_reduce</code> evaluates both the operator and the
-operand, while normal<sub>reduce</sub> merely passes in the operand. Neither do
-anything when the term is an abstraction.
+operand, while <code>normal_reduce</code> merely passes in the operand. Neither
+do anything when the term is an abstraction.
 </p>
 
 <pre class="example">
@@ -567,15 +685,16 @@ def substitute(param, body, x):
     elif isinstance(body, str):
         return body
     elif isinstance(body, application):
-        operator, operand = application
+        lhs, rhs = application
         return application(
-            substitute(param, operator, x),
-            substitute(param, operand, x)
+            substitute(param, lhs, x),
+            substitute(param, rhs, x)
         )
     elif param == body.param:
         return body
     else:
         return abstraction(body.param, substitute(param, body.body, x))
+
 </pre>
 
 <p>
@@ -591,102 +710,50 @@ abstraction as is except for the body, which we substitute.
 def fix(reducer, term):
     prev = None
     while term != prev:
-      prev, term = term, reducer(term)
+        prev, term = term, reducer(term)
     return term
+
 </pre>
+</div>
 
-<p>
-<code>fix</code> is necessary for the normal order reducer in order to reach
-normal form. It continually runs the reducer on the term until
-reaching a fixed point of the reducer (i.e., when it returns what it
-is inputted).
-</p>
+<div id="outline-container-org90e21ad" class="outline-3">
+<h3 id="org90e21ad"><span class="section-number-3">5.1</span> <span class="todo TODO">TODO</span> Finish lambda calculus reducer with explanation of <code>fix</code></h3>
+</div>
+<div id="outline-container-org21d4b8c" class="outline-3">
+<h3 id="org21d4b8c"><span class="section-number-3">5.2</span> <span class="todo TODO">TODO</span> Implement lambda calculus parser so we can run examples in code</h3>
+</div>
+<div id="outline-container-org7210a69" class="outline-3">
+<h3 id="org7210a69"><span class="section-number-3">5.3</span> <span class="todo TODO">TODO</span> Make lambda calculator iterative?</h3>
+</div>
+<div id="outline-container-orge56de88" class="outline-3">
+<h3 id="orge56de88"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> Implement, explain alpha renamer</h3>
 </div>
 </div>
 
-<div id="outline-container-orgheadline10" class="outline-2">
-<h2 id="orgheadline10"><span class="section-number-2">6</span> Even simpler</h2>
+<div id="outline-container-orgb652845" class="outline-2">
+<h2 id="orgb652845"><span class="section-number-2">6</span> Uses for lambda calculus</h2>
 <div class="outline-text-2" id="text-6">
 <p>
-The lambda calculus is very simple as is. However, it can be even
-simpler. It is possible to remove any abstraction in the lambda
-calculus (a process called abstraction elimination) and instead use
-only two defined functions, S and K. These can be expressed in lambda
-calculus as follows:
-</p>
-
-<pre class="example">
-S = λx.λy.λz.x z (y z)
-K = λx.λy.x
-</pre>
-
-<p>
-The system with just free variables, S, K, and applications is called
-SK combinator calculus. Typically, it is presented as SKI combinator
-calculus, with I being the identity function (<code>λx.x</code>). However, I is
-trivially expressed as either SKK or SKS:
-</p>
-
-<pre class="example">
-SKK
-= (λx.λy.λz.x z(y z))(λx.λy.x)(λx.λy.x)
-</pre>
-<p>
-Substitute <code>x</code>:
-</p>
-<pre class="example">
-= (λy.λz.(λx.λy.x) z (y z))(λx.λy.x)
-</pre>
-<p>
-Substitute <code>y</code>:
-</p>
-<pre class="example">
-= λz.(λx.λy.x) z ((λx.λy.x) z)
-</pre>
-<p>
-Simplify the first application in the body:
-</p>
-<pre class="example">
-= λz.(λy.z) ((λx.λy.x) z)
-</pre>
-<p>
-Simplify the second in the same way:
-</p>
-<pre class="example">
-= λz.(λy.z) (λy.z)
-</pre>
-<p>
-And finally, simplifying the last application:
-</p>
-<pre class="example">
-= λz.z
-</pre>
-</div>
-</div>
-
-<div id="outline-container-orgheadline11" class="outline-2">
-<h2 id="orgheadline11"><span class="section-number-2">7</span> Uses for lambda calculus</h2>
-<div class="outline-text-2" id="text-7">
-<p>
-Lambda calculus remains a classic way of model computation. The
+Lambda calculus remains a classic way of modeling computation. The
 concepts are simple enough to be understood by beginners, yet
 introduces enough complexity to model any algorithm. Many issues with
-language implementation are worked out with lambda calculus reducers:
-for example, alpha renaming is a real compilation strategy which
-simplifies (and possibly optimizes) variable lookup. Modern languages
-as diverse as Python and Haskell are indebted to lambda calculus and
-the research accomplished using it.
+language implementation are worked out with lambda calculus
+implementations: for example, alpha renaming is a real compilation
+strategy which simplifies (and possibly optimizes) variable
+lookup. More broadly, modern languages as diverse as Python and
+Haskell are indebted to lambda calculus and the research accomplished
+using it.
 </p>
 
 <p>
-A lambda calculus reducer is so simple to implement, that it is often
-used to prove Turing-completeness. When a language is Turing-complete,
-it shares with lambda calculus the power of being able to simulate any
-algorithm. When a language has this power, it is impossible to prove
-that a program in that language will halt. That is to say, there
-exists no algorithm which accepts any program written in a
-Turing-complete language and returns whether or not that program runs
-forever. In fact, the notion of Turing-completeness, and lambda
+A lambda calculus reducer is simple enough to implement that it is
+often used to prove Turing-completeness. When a language is
+Turing-complete, it shares with Lambda calculus the power of being
+able to simulate any algorithm. When a language has this power, it is
+impossible to prove that a program in that language will halt. That is
+to say, there exists no algorithm which accepts every program written
+in a Turing-complete language and returns whether or not that program
+runs forever. In fact, the notion of Turing-completeness, and lambda
 calculus itself, were originally invented as proof of this. Many other
 "languages", as diverse as Conway's Game of Life, SQL, a number of
 video games such as Minecraft, etc. are Turing-complete. However,
