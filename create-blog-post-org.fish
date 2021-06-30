@@ -7,8 +7,17 @@ echo > blog-post/index.org "\
 #+OPTIONS: num:nil
 #+OPTIONS: html-postamble:nil"
 
-for post in (ls blog-post | ag -v index | ag -v html)
+
+for post in (
+    git ls-files -z -- ./blog-post/ \
+    | xargs -0 -n1 -I{} -- sh -c 'git log -1 --format="%at {}" {}  \
+    | tail -1' \
+    | sort \
+    | cut -d " " -f2- \
+    | cut -d "/" -f2 \
+    | ag -v index \
+    | ag -v html)
     set -l name (head -1 ./blog-post/$post | cut -f 2- -d ' ' | xargs)
     set -l date (g log --date=short --follow --format=%ad blog-post/$post | tail -1)
-    echo - [[./$post][$name ($date)]] >> blog-post/index.org
+    echo - [[./$post][$name \($date\)]] >> blog-post/index.org
 end

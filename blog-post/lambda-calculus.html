@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2021-06-30 Wed 16:17 -->
+<!-- 2021-06-30 Wed 16:47 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title><a href="./lambda-calculus.html">Lambda calculus (September 26 2016)</a></title>
+<title>Lambda calculus</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="well" />
 <style type="text/css">
@@ -231,38 +231,11 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title"><a href="./lambda-calculus.html">Lambda calculus (September 26 2016)</a></h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#orge831dba">1. A simple programming language</a></li>
-<li><a href="#org77761a1">2. Church encoding</a>
-<ul>
-<li><a href="#orgad6aab5">2.1. Numbers</a></li>
-<li><a href="#org2e8ddd5">2.2. Booleans</a></li>
-<li><a href="#orgfbc5633">2.3. Linked Lists</a></li>
-<li><a href="#org1a2680f">2.4. Encoding with functions</a></li>
-</ul>
-</li>
-<li><a href="#org9b05ce2">3. Reduction strategies</a></li>
-<li><a href="#org9799001">4. Recursion</a></li>
-<li><a href="#org4baf377">5. A lambda calculus reducer in Python</a>
-<ul>
-<li><a href="#org90e21ad">5.1. <span class="todo TODO">TODO</span> Finish lambda calculus reducer with explanation of <code>fix</code></a></li>
-<li><a href="#org21d4b8c">5.2. <span class="todo TODO">TODO</span> Implement lambda calculus parser so we can run examples in code</a></li>
-<li><a href="#org7210a69">5.3. <span class="todo TODO">TODO</span> Make lambda calculator iterative?</a></li>
-<li><a href="#orge56de88">5.4. <span class="todo TODO">TODO</span> Implement, explain alpha renamer</a></li>
-</ul>
-</li>
-<li><a href="#orgb652845">6. Uses for lambda calculus</a></li>
-</ul>
-</div>
-</div>
+<h1 class="title">Lambda calculus</h1>
 
-<div id="outline-container-orge831dba" class="outline-2">
-<h2 id="orge831dba"><span class="section-number-2">1</span> A simple programming language</h2>
-<div class="outline-text-2" id="text-1">
+<div id="outline-container-orge485335" class="outline-2">
+<h2 id="orge485335">A simple programming language</h2>
+<div class="outline-text-2" id="text-orge485335">
 <p>
 Lambda calculus is a very simple programming language. It was
 created as a way of modeling algorithms in the 1930s when people were
@@ -303,9 +276,9 @@ returned as is.
 </div>
 </div>
 
-<div id="outline-container-org77761a1" class="outline-2">
-<h2 id="org77761a1"><span class="section-number-2">2</span> Church encoding</h2>
-<div class="outline-text-2" id="text-2">
+<div id="outline-container-org8ecc8e0" class="outline-2">
+<h2 id="org8ecc8e0">Church encoding</h2>
+<div class="outline-text-2" id="text-org8ecc8e0">
 <p>
 With just variables, functions, and applications, we have a
 way of replicating any algorithm. How can this be true if our language
@@ -322,9 +295,9 @@ pretend those also mean "true" and "false."
 </p>
 </div>
 
-<div id="outline-container-orgad6aab5" class="outline-3">
-<h3 id="orgad6aab5"><span class="section-number-3">2.1</span> Numbers</h3>
-<div class="outline-text-3" id="text-2-1">
+<div id="outline-container-orgd6f9b09" class="outline-3">
+<h3 id="orgd6f9b09">Numbers</h3>
+<div class="outline-text-3" id="text-orgd6f9b09">
 <p>
 It turns out that we can encode numbers as functions, in the same way
 that we're used to having numbers represent strings. First, we
@@ -427,9 +400,9 @@ encoding, 0-1 = 0).
 </div>
 </div>
 
-<div id="outline-container-org2e8ddd5" class="outline-3">
-<h3 id="org2e8ddd5"><span class="section-number-3">2.2</span> Booleans</h3>
-<div class="outline-text-3" id="text-2-2">
+<div id="outline-container-org80be313" class="outline-3">
+<h3 id="org80be313">Booleans</h3>
+<div class="outline-text-3" id="text-org80be313">
 <p>
 Here we define false and true. They are functions which take two
 values, one to be returned as meaning "true" and the other to be
@@ -505,9 +478,9 @@ correct.
 </div>
 </div>
 
-<div id="outline-container-orgfbc5633" class="outline-3">
-<h3 id="orgfbc5633"><span class="section-number-3">2.3</span> Linked Lists</h3>
-<div class="outline-text-3" id="text-2-3">
+<div id="outline-container-org8fae56a" class="outline-3">
+<h3 id="org8fae56a">Linked Lists</h3>
+<div class="outline-text-3" id="text-org8fae56a">
 <p>
 Unsurprisingly, we can represent data structures as functions as
 well. Here is a function which takes two values and binds them as a
@@ -533,9 +506,9 @@ TAIL = λp.p (λa.λb.b)
 </div>
 </div>
 
-<div id="outline-container-org1a2680f" class="outline-3">
-<h3 id="org1a2680f"><span class="section-number-3">2.4</span> Encoding with functions</h3>
-<div class="outline-text-3" id="text-2-4">
+<div id="outline-container-orge288dde" class="outline-3">
+<h3 id="orge288dde">Encoding with functions</h3>
+<div class="outline-text-3" id="text-orge288dde">
 <p>
 The concept of encoding numbers, booleans, and other data types in
 lambda calculus using abstractions is called Church encoding. This is
@@ -545,9 +518,9 @@ due to Alonzo Church, the inventor of lambda calculus.
 </div>
 </div>
 
-<div id="outline-container-org9b05ce2" class="outline-2">
-<h2 id="org9b05ce2"><span class="section-number-2">3</span> Reduction strategies</h2>
-<div class="outline-text-2" id="text-3">
+<div id="outline-container-org7891290" class="outline-2">
+<h2 id="org7891290">Reduction strategies</h2>
+<div class="outline-text-2" id="text-org7891290">
 <p>
 Before we talk about recursion, it's important that we talk about two
 major ways of making lambda calculus expressions more simple. In
@@ -591,9 +564,9 @@ immediately return the free variable x.
 </div>
 </div>
 
-<div id="outline-container-org9799001" class="outline-2">
-<h2 id="org9799001"><span class="section-number-2">4</span> Recursion</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-org7c7b739" class="outline-2">
+<h2 id="org7c7b739">Recursion</h2>
+<div class="outline-text-2" id="text-org7c7b739">
 <p>
 How about loops? Clearly we don't have any sort of iteration
 structure. Can we recur? The answer is yes, but without a way to
@@ -630,9 +603,9 @@ ADD = Y (λa.λm.λn. IF (ZERO? m) n (a (SUB1 m) (ADD1 n)))
 </div>
 </div>
 
-<div id="outline-container-org4baf377" class="outline-2">
-<h2 id="org4baf377"><span class="section-number-2">5</span> A lambda calculus reducer in Python</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-org3c17c81" class="outline-2">
+<h2 id="org3c17c81">A lambda calculus reducer in Python</h2>
+<div class="outline-text-2" id="text-org3c17c81">
 <p>
 Here is a lambda calculus reducer in Python, with both normal order
 and applicative order reducers. Here, an <code>abstraction</code> indicates a
@@ -716,23 +689,23 @@ def fix(reducer, term):
 </pre>
 </div>
 
-<div id="outline-container-org90e21ad" class="outline-3">
-<h3 id="org90e21ad"><span class="section-number-3">5.1</span> <span class="todo TODO">TODO</span> Finish lambda calculus reducer with explanation of <code>fix</code></h3>
+<div id="outline-container-orgc6a491c" class="outline-3">
+<h3 id="orgc6a491c"><span class="todo TODO">TODO</span> Finish lambda calculus reducer with explanation of <code>fix</code></h3>
 </div>
-<div id="outline-container-org21d4b8c" class="outline-3">
-<h3 id="org21d4b8c"><span class="section-number-3">5.2</span> <span class="todo TODO">TODO</span> Implement lambda calculus parser so we can run examples in code</h3>
+<div id="outline-container-orgb5e6b0a" class="outline-3">
+<h3 id="orgb5e6b0a"><span class="todo TODO">TODO</span> Implement lambda calculus parser so we can run examples in code</h3>
 </div>
-<div id="outline-container-org7210a69" class="outline-3">
-<h3 id="org7210a69"><span class="section-number-3">5.3</span> <span class="todo TODO">TODO</span> Make lambda calculator iterative?</h3>
+<div id="outline-container-org4f9a83b" class="outline-3">
+<h3 id="org4f9a83b"><span class="todo TODO">TODO</span> Make lambda calculator iterative?</h3>
 </div>
-<div id="outline-container-orge56de88" class="outline-3">
-<h3 id="orge56de88"><span class="section-number-3">5.4</span> <span class="todo TODO">TODO</span> Implement, explain alpha renamer</h3>
+<div id="outline-container-orgc1161b8" class="outline-3">
+<h3 id="orgc1161b8"><span class="todo TODO">TODO</span> Implement, explain alpha renamer</h3>
 </div>
 </div>
 
-<div id="outline-container-orgb652845" class="outline-2">
-<h2 id="orgb652845"><span class="section-number-2">6</span> Uses for lambda calculus</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-org63e278d" class="outline-2">
+<h2 id="org63e278d">Uses for lambda calculus</h2>
+<div class="outline-text-2" id="text-org63e278d">
 <p>
 Lambda calculus remains a classic way of modeling computation. The
 concepts are simple enough to be understood by beginners, yet

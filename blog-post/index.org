@@ -4,3 +4,5 @@
 #+OPTIONS: toc:nil
 #+OPTIONS: num:nil
 #+OPTIONS: html-postamble:nil
+- [[./lambda-calculus.org][Lambda calculus (2016-09-26)]]
+- [[./why-opinionated.org][Blog post (2021-06-30)]]
