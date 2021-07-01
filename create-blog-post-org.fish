@@ -16,6 +16,7 @@ for post in (
     | cut -d " " -f2- \
     | cut -d "/" -f2 \
     | ag -v index \
+    | ag -v lambda-calculus \
     | ag -v html)
     set -l name (head -1 ./blog-post/$post | cut -f 2- -d ' ' | xargs)
     set -l date (g log --date=short --follow --format=%ad blog-post/$post | tail -1)
