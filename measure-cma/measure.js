@@ -20,15 +20,22 @@ function calculateCMA(dots) {
 
 function dotLocationOnSlope(dot1, dot2, x, y) {
   const line_slope = (dot2.y - dot1.y) / (dot2.x - dot1.x)
-  const line_c = dot1.y - (line_slope * dot1.x);
 
-  const dot_slope = -(1 / line_slope);
-  const dot_c = y - (dot_slope * x);
+  if (line_slope === Infinity) {
+    return {x: dot1.x, y};
+  } else if (line_slope === 0) {
+    return {x, y: dot1.y};
+  } else {
+    const line_c = dot1.y - (line_slope * dot1.x);
 
-  const intersect_x = (line_c - dot_c) / (dot_slope - line_slope);
-  const intersect_y = line_slope * intersect_x + line_c;
+    const dot_slope = -(1 / line_slope);
+    const dot_c = y - (dot_slope * x);
 
-  return {x: intersect_x, y: intersect_y};
+    const intersect_x = (line_c - dot_c) / (dot_slope - line_slope);
+    const intersect_y = line_slope * intersect_x + line_c;
+
+    return {x: intersect_x, y: intersect_y};
+  }
 }
 
 function addDot(dots, x, y) {

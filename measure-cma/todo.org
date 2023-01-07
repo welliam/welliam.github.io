@@ -1,5 +1,6 @@
+* DONE handle infinity case
 * TODO perpendicular brackets on diameter line
-* TODO make design not bad
+- don't do dot line until two dots exist
 * TODO dot "clicking" logic
 - find closest dot
 - give up if farther than treshold
@@ -10,3 +11,5 @@
 - use dot clicking logic
 * TODO let user write on image
 - auto label cma?
+* TODO make design not bad
+- implementation: move styles out of js, into css, add classes instead
