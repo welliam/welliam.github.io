@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CMA</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="measure.js"></script>
+  </head>
+  <body>
+    <input id="image-input" type="file" />
+    <img style="display: none" id="source" />
+    <div id="cma-display"></div>
+    <button id="download-canvas">Download</button>
+    <button id="clear-dots">Clear</button>
+    <div style="position: relative">
+      <canvas
+        id="image-canvas"
+        width="700"
+        height="700"
+        style="
+          border: solid thin;
+          position: absolute;
+          left: 0;
+          top: 0;
+          z-index: 0;
+        "
+      ></canvas>
+      <canvas
+        id="drawing-canvas"
+        width="700"
+        height="700"
+        style="position: absolute; left: 0; top: 0; z-index: 1"
+      ></canvas>
+    </div>
+  </body>
+</html>
