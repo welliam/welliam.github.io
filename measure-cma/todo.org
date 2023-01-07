@@ -1,7 +1,9 @@
 * DONE handle infinity case
+* DONE fix cma calc
 * TODO perpendicular brackets on diameter line
 - don't do dot line until two dots exist
 * TODO media type on file uploader for images
+* TODO show diameter
 * TODO dot "clicking" logic
 - find closest dot
 - give up if farther than treshold
@@ -12,5 +14,6 @@
 - use dot clicking logic
 * TODO let user write on image
 - auto label cma?
+- or just a "optional label/cma" option
 * TODO make design not bad
 - implementation: move styles out of js, into css, add classes instead

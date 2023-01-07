@@ -1,14 +1,41 @@
 // math
 
+function distanceBetween(dot1, dot2) {
+  return Math.sqrt(
+    (dot2.x - dot1.x) ** 2 +
+      (dot2.y - dot1.y) ** 2
+  );
+}
+
+function sortDots(dots) {
+  if (dots.length <= 1) {
+    return [...dots];
+  }
+  return (
+    dots[0].y === dots[1].y
+      ? [...dots].sort((dot1, dot2) => dot1.x - dot2.x)
+      : [...dots].sort((dot1, dot2) => dot1.y - dot2.y)
+  );
+}
+
+function diameterOf(dots) {
+  if (dots.length <= 1) {
+    return null;
+  }
+  const sorted = sortDots(dots);
+  return distanceBetween(sorted[0], sorted[sorted.length - 1]);
+}
+
 function calculateCMA(dots) {
   if (dots.length == 6) {
-    const ys = dots.map((dot) => dot.y);
-    ys.sort((a, b) => a - b);
-    const first = ys[0];
-    const rest = ys.slice(1);
-    const diffs = rest.map((y, i) => y - (i === 0 ? first : rest[i - 1]));
+    const sorted = sortDots(dots);
+    const diameter = diameterOf(dots);
+
+    const first = sorted[0];
+    const rest = sorted.slice(1);
+    const diffs = rest.map((dot, i) => distanceBetween(dot, (i === 0 ? first : rest[i - 1])));
     const [c1, m1, a, m2, c2] = diffs;
-    const diameter = ys[ys.length - 1] - ys[0];
+
     const cPart = (c1 + c2) / 2 / diameter;
     const mPart = (m1 + m2) / 2 / diameter;
     const aPart = a / diameter;
