@@ -39,7 +39,7 @@ function renderDotsOnCanvas(dots, context) {
   }
 }
 
-function render(state) {
+function render({ state, setMode }) {
   const canvas = document.getElementById("drawing-canvas");
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -59,33 +59,61 @@ function render(state) {
   } else {
     document.getElementById("cma-display").innerHTML = "";
   }
+
+  const controls = [
+    "Align", "Measure",
+  ].map(mode => {
+    const button = document.createElement("span");
+    button.innerHTML = mode;
+    button.onclick = () => {
+      setMode(mode);
+    }
+    button.style.border = 'solid thin';
+    if (mode === state.mode) {
+      button.style.color = 'white';
+      button.style.backgroundColor = 'black';
+    }
+    button.style.cursor = 'pointer';
+    return button;
+  });
+  const controlsContainer = document.getElementById("controls");
+  controlsContainer.innerHTML = '';
+  controls.forEach(control => controlsContainer.appendChild(control));
 }
 
 // canvas manipulation and loading
 
 function loadImage(e) {
-  const canvas = document.getElementById("image-canvas");
-  const ctx = canvas.getContext("2d");
+  const imageCanvas = document.getElementById("image-canvas");
+  const drawingCanvas = document.getElementById("drawing-canvas");
+  const context = imageCanvas.getContext("2d");
+  context.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
 
   var reader = new FileReader();
   reader.onload = function (event) {
     var img = new Image();
     img.onload = function () {
       // load image, preserving aspect ratio but resizing
-      const maxHeight = canvas.height;
-      const maxWidth = canvas.width;
+      const maxHeight = 1000;
+      const maxWidth = 1000;
+
+      let dHeight, dWidth;
 
       if (img.height > img.width) {
         // scale down height to fit
-        const dHeight = maxHeight;
-        const dWidth = img.width * (maxHeight / img.height);
-        ctx.drawImage(img, 0, 0, dWidth, dHeight);
+        dHeight = maxHeight;
+        dWidth = img.width * (maxHeight / img.height);
       } else {
         // scale down width to fit
-        const dWidth = maxWidth;
-        const dHeight = img.height * (maxWidth / img.width);
-        ctx.drawImage(img, 0, 0, dWidth, dHeight);
+        dWidth = maxWidth;
+        dHeight = img.height * (maxWidth / img.width);
       }
+      drawingCanvas.height = dHeight;
+      drawingCanvas.width = dWidth;
+      imageCanvas.height = dHeight;
+      imageCanvas.width = dWidth;
+      console.log(dHeight, dWidth);
+      imageCanvas.getContext("2d").drawImage(img, 0, 0, dWidth, dHeight);
     };
     img.src = event.target.result;
   };
@@ -106,17 +134,37 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
   link.click();
 }
 
+function rotateCanvasImageByLine(canvas, x1, y1, x2, y2) {
+  var tempCanvas = document.createElement("canvas"),
+      tempCtx = tempCanvas.getContext("2d");
+
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
+  // put our data onto the temp canvas
+  tempCtx.drawImage(canvas,0,0,canvas.width,canvas.height);
+
+  // Now clear the portion to rotate.
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0,0,200,200);
+  ctx.save();
+  // Translate (190/2 is half of the box we drew)
+  ctx.translate(190/2, 0);
+  // Scale
+  ctx.scale(0.5,0.5);
+  // Rotate it
+  ctx.rotate(45*Math.PI/180);
+  // Finally draw the image data from the temp canvas.
+  ctx.drawImage(tempCanvas,0,0,200,200,10,10,190,190);
+  ctx.restore();
+}
+
 // state
 
 function drawingState() {
   let state = {
     dots: [],
+    mode: "Align",
   };
-
-  function setState(newState) {
-    state = { ...state, ...newState };
-    render(state);
-  }
 
   function addDot(x, y) {
     const { dots } = state;
@@ -131,20 +179,42 @@ function drawingState() {
     }
   }
 
+  function click(x, y) {
+    if (mode === 'Measure') {
+      console.log('hi');
+    } else if (mode === 'Align') {
+      addDot(x, y);
+    }
+  }
+
   function clearDots() {
     setState({ dots: [] });
+  }
+
+  function setMode(mode) {
+    setState({ mode });
+  }
+
+  function renderWithState() {
+    render(({ state, setMode }));
+  }
+
+  function setState(newState) {
+    state = { ...state, ...newState };
+    renderWithState();
   }
 
   return {
     state,
     addDot,
     clearDots,
+    render: renderWithState,
   };
 }
 
 // initialization
 window.onload = function () {
-  const { state, addDot, clearDots } = drawingState();
+  const { state, addDot, clearDots, render } = drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
 
@@ -176,4 +246,6 @@ window.onload = function () {
   document
     .getElementById("clear-dots")
     .addEventListener("click", clearDots, false);
+
+  render();
 };
