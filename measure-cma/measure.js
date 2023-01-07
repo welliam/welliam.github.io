@@ -171,7 +171,7 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
   link.click();
 }
 
-function drawGuide(canvas, mouseLocation, dots, x, y) {
+function drawGuide(canvas, mode, mouseLocation, dots, x, y) {
   const context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
   renderDotsOnCanvas(dots, context);
@@ -182,12 +182,11 @@ function drawGuide(canvas, mouseLocation, dots, x, y) {
 
   if (dots.length === 1) {
     const [dot] = dots;
-
     context.beginPath();
     context.moveTo(dot.x, dot.y);
     context.lineTo(x, y);
     context.stroke();
-  } else if (dots.length > 1) {
+  } else if (dots.length > 1 && dots.length < 6) {
     const dotOnSlope = dotLocationOnSlope(dots[0], dots[1], x, y);
     renderDot(context, dotOnSlope.x, dotOnSlope.y);
   }
@@ -282,7 +281,7 @@ window.onload = function () {
       const y = event.clientY - rect.top;
       const state = getState();
       mouseMove();
-      drawGuide(drawingCanvas, state.mouseLocation, state.dots, x, y)
+      drawGuide(drawingCanvas, state.mode, state.mouseLocation, state.dots, x, y)
     }
   );
 

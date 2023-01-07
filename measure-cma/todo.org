@@ -1,6 +1,7 @@
 * DONE handle infinity case
 * TODO perpendicular brackets on diameter line
 - don't do dot line until two dots exist
+* TODO media type on file uploader for images
 * TODO dot "clicking" logic
 - find closest dot
 - give up if farther than treshold
