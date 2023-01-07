@@ -24,3 +24,12 @@
 - for example, model with start and end dot, and have the inner dots be distances along that line
   - this would simplify CMA calculation, but make display logic more complicated
   - function that "recovers" dots from this wouldn't be difficult though
+* TODO idea for image size flexibility
+- right now max size is hardcoded, would be nice if this were configurable or something
+- problem is that redrawing image by resizing is annoying
+- could allow user to resize canvas, then center image
+* TODO realign tool
+- rotate by 90 deg is easy, others is harder
+- maybe shouldn't do
+* TODO crop tool
+- maybe shouldn't do
