@@ -1,21 +1,16 @@
 // math
 
 function distanceBetween(dot1, dot2) {
-  return Math.sqrt(
-    (dot2.x - dot1.x) ** 2 +
-      (dot2.y - dot1.y) ** 2
-  );
+  return Math.sqrt((dot2.x - dot1.x) ** 2 + (dot2.y - dot1.y) ** 2);
 }
 
 function sortDots(dots) {
   if (dots.length <= 1) {
     return [...dots];
   }
-  return (
-    dots[0].y === dots[1].y
-      ? [...dots].sort((dot1, dot2) => dot1.x - dot2.x)
-      : [...dots].sort((dot1, dot2) => dot1.y - dot2.y)
-  );
+  return dots[0].y === dots[1].y
+    ? [...dots].sort((dot1, dot2) => dot1.x - dot2.x)
+    : [...dots].sort((dot1, dot2) => dot1.y - dot2.y);
 }
 
 function diameterOf(dots) {
@@ -27,14 +22,16 @@ function diameterOf(dots) {
 }
 
 function perpendicularSlopeOf(dot1, dot2) {
-  if (dot2.x == dot1.x) { // flat
+  if (dot2.x == dot1.x) {
+    // flat
     return Infinity;
   }
-  if (dot2.y == dot1.y) { // infinite
+  if (dot2.y == dot1.y) {
+    // infinite
     return 0;
   }
   const slope = (dot2.y - dot1.y) / (dot2.x - dot1.x);
-  return 1 / (-slope)
+  return 1 / -slope;
 }
 
 function perpendicularAway(dot, byAmount, perpendicularSlope) {
@@ -55,7 +52,9 @@ function calculateCMA(dots) {
 
     const first = sorted[0];
     const rest = sorted.slice(1);
-    const diffs = rest.map((dot, i) => distanceBetween(dot, (i === 0 ? first : rest[i - 1])));
+    const diffs = rest.map((dot, i) =>
+      distanceBetween(dot, i === 0 ? first : rest[i - 1])
+    );
     const [c1, m1, a, m2, c2] = diffs;
 
     const cPart = (c1 + c2) / 2 / diameter;
@@ -68,28 +67,28 @@ function calculateCMA(dots) {
 }
 
 function dotLocationOnSlope(dot1, dot2, x, y) {
-  const line_slope = (dot2.y - dot1.y) / (dot2.x - dot1.x)
+  const line_slope = (dot2.y - dot1.y) / (dot2.x - dot1.x);
 
   if (line_slope === Infinity) {
-    return {x: dot1.x, y};
+    return { x: dot1.x, y };
   } else if (line_slope === 0) {
-    return {x, y: dot1.y};
+    return { x, y: dot1.y };
   } else {
-    const line_c = dot1.y - (line_slope * dot1.x);
+    const line_c = dot1.y - line_slope * dot1.x;
 
     const dot_slope = -(1 / line_slope);
-    const dot_c = y - (dot_slope * x);
+    const dot_c = y - dot_slope * x;
 
     const intersect_x = (line_c - dot_c) / (dot_slope - line_slope);
     const intersect_y = line_slope * intersect_x + line_c;
 
-    return {x: intersect_x, y: intersect_y};
+    return { x: intersect_x, y: intersect_y };
   }
 }
 
 function addDot(dots, x, y) {
   if (dots.length <= 1) {
-    return [...dots, {x, y}];
+    return [...dots, { x, y }];
   }
 
   if (dots.length === 6) {
@@ -121,7 +120,6 @@ function renderDotsOnCanvas(dots, context) {
 
   dots = [...dots];
   dots.sort((dot1, dot2) => dot1.y - dot2.y);
-
 
   dots.forEach(({ x, y }) => {
     renderDot(context, x, y, perpendicularSlope);
@@ -156,25 +154,23 @@ function render({ state, setMode }) {
     document.getElementById("cma-display").innerHTML = "";
   }
 
-  const controls = [
-    "Measure",
-  ].map(mode => {
+  const controls = ["Measure"].map((mode) => {
     const button = document.createElement("span");
     button.innerHTML = mode;
     button.onclick = () => {
       setMode(mode);
-    }
-    button.style.border = 'solid thin';
+    };
+    button.style.border = "solid thin";
     if (mode === state.mode) {
-      button.style.color = 'white';
-      button.style.backgroundColor = 'black';
+      button.style.color = "white";
+      button.style.backgroundColor = "black";
     }
-    button.style.cursor = 'pointer';
+    button.style.cursor = "pointer";
     return button;
   });
   const controlsContainer = document.getElementById("controls");
-  controlsContainer.innerHTML = '';
-  controls.forEach(control => controlsContainer.appendChild(control));
+  controlsContainer.innerHTML = "";
+  controls.forEach((control) => controlsContainer.appendChild(control));
 }
 
 // canvas manipulation and loading
@@ -230,11 +226,11 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
 }
 
 function drawGuide(canvas, mode, mouseLocation, dots, x, y) {
-  const context = canvas.getContext('2d');
+  const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
   renderDotsOnCanvas(dots, context);
 
-  if (mouseLocation === 'out') {
+  if (mouseLocation === "out") {
     return;
   }
 
@@ -261,11 +257,11 @@ function drawingState() {
   };
 
   function addDotToState(x, y) {
-    return setState({dots: addDot(state.dots, x, y)});
+    return setState({ dots: addDot(state.dots, x, y) });
   }
 
   function clickCanvas(x, y) {
-    if (state.mode === 'Measure') {
+    if (state.mode === "Measure") {
       addDotToState(x, y);
     }
   }
@@ -287,7 +283,7 @@ function drawingState() {
   }
 
   function renderWithState() {
-    render(({ state, setMode }));
+    render({ state, setMode });
   }
 
   function setState(newState) {
@@ -311,7 +307,8 @@ function drawingState() {
 
 // initialization
 window.onload = function () {
-  const { getState, clickCanvas, clearDots, mouseMove, render, mouseOut } = drawingState();
+  const { getState, clickCanvas, clearDots, mouseMove, render, mouseOut } =
+    drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
 
@@ -328,21 +325,16 @@ window.onload = function () {
     false
   );
 
-  drawingCanvas.addEventListener(
-    "mouseout", () => mouseOut(),
-  )
+  drawingCanvas.addEventListener("mouseout", () => mouseOut());
 
-  drawingCanvas.addEventListener(
-    "mousemove",
-    function (event) {
-      const rect = drawingCanvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      const state = getState();
-      mouseMove();
-      drawGuide(drawingCanvas, state.mode, state.mouseLocation, state.dots, x, y)
-    }
-  );
+  drawingCanvas.addEventListener("mousemove", function (event) {
+    const rect = drawingCanvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const state = getState();
+    mouseMove();
+    drawGuide(drawingCanvas, state.mode, state.mouseLocation, state.dots, x, y);
+  });
 
   document
     .getElementById("image-input")
