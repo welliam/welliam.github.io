@@ -197,17 +197,6 @@ function drawingState() {
 
   function addDotToState(x, y) {
     return setState({dots: addDot(state.dots, x, y)});
-
-    // const { dots } = state;
-    // if (dots.length === 6) {
-    //   // do nothing
-    // } else if (dots.length > 0) {
-    //   const dot = dots[0];
-    //   // use dot[0]'s x, set y
-    //   setState({ dots: [...dots, { x: dot.x, y }] });
-    // } else {
-    //   setState({ dots: [{ x, y }] });
-    // }
   }
 
   function clickCanvas(x, y) {
