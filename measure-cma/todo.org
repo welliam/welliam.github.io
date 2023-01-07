@@ -1,0 +1,12 @@
+* TODO perpendicular brackets on diameter line
+* TODO make design not bad
+* TODO dot "clicking" logic
+- find closest dot
+- give up if farther than treshold
+- highlight dot if within range of pointer
+* TODO move mode
+- use dot clicking logic
+* TODO delete mode
+- use dot clicking logic
+* TODO let user write on image
+- auto label cma?
