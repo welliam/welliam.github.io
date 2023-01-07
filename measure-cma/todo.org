@@ -17,3 +17,10 @@
 - or just a "optional label/cma" option
 * TODO make design not bad
 - implementation: move styles out of js, into css, add classes instead
+* TODO dots state refactor?
+- invariant: dots should always be on a line
+- instead we could model the state in a way that makes it impossible
+  for that not to be the case
+- for example, model with start and end dot, and have the inner dots be distances along that line
+  - this would simplify CMA calculation, but make display logic more complicated
+  - function that "recovers" dots from this wouldn't be difficult though
