@@ -1,4 +1,4 @@
-// calculations
+// math
 
 function calculateCMA(dots) {
   if (dots.length == 6) {
@@ -18,17 +18,48 @@ function calculateCMA(dots) {
   }
 }
 
+function dotLocationOnSlope(dot1, dot2, x, y) {
+  const line_slope = (dot2.y - dot1.y) / (dot2.x - dot1.x)
+  const line_c = dot1.y - (line_slope * dot1.x);
+
+  const dot_slope = -(1 / line_slope);
+  const dot_c = y - (dot_slope * x);
+
+  const intersect_x = (line_c - dot_c) / (dot_slope - line_slope);
+  const intersect_y = line_slope * intersect_x + line_c;
+
+  return {x: intersect_x, y: intersect_y};
+}
+
+function addDot(dots, x, y) {
+  if (dots.length <= 1) {
+    return [...dots, {x, y}];
+  }
+
+  if (dots.length === 6) {
+    return dots;
+  }
+
+  const [dot1, dot2] = dots;
+
+  return [...dots, dotLocationOnSlope(dot1, dot2, x, y)];
+}
+
 // rendering
+
+function renderDot(context, x, y) {
+    context.beginPath();
+    context.moveTo(x, y);
+    context.lineTo(x + 30, y);
+    context.stroke();
+}
 
 function renderDotsOnCanvas(dots, context) {
   dots = [...dots];
   dots.sort((dot1, dot2) => dot1.y - dot2.y);
 
   dots.forEach(({ x, y }) => {
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x + 30, y);
-    context.stroke();
+    renderDot(context, x, y);
   });
 
   if (dots.length) {
@@ -158,38 +189,64 @@ function rotateCanvasImageByLine(x1, y1, x2, y2) {
   context.restore();
 }
 
+function drawGuide(canvas, mouseLocation, dots, x, y) {
+  const context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  renderDotsOnCanvas(dots, context);
+
+  if (mouseLocation === 'out') {
+    return;
+  }
+
+  if (dots.length === 1) {
+    const [dot] = dots;
+
+    context.beginPath();
+    context.moveTo(dot.x, dot.y);
+    context.lineTo(x, y);
+    context.stroke();
+  } else if (dots.length > 1) {
+    const dotOnSlope = dotLocationOnSlope(dots[0], dots[1], x, y);
+    renderDot(context, dotOnSlope.x, dotOnSlope.y);
+  }
+}
+
 // state
 
 function drawingState() {
   let state = {
     dots: [],
-    mode: "Align",
+    mode: "Measure",
+    mouseLocation: "out",
     alignStart: null,
   };
 
-  function addDot(x, y) {
-    const { dots } = state;
-    if (dots.length === 6) {
-      // do nothing
-    } else if (dots.length > 0) {
-      const dot = dots[0];
-      // use dot[0]'s x, set y
-      setState({ dots: [...dots, { x: dot.x, y }] });
-    } else {
-      setState({ dots: [{ x, y }] });
-    }
+  function addDotToState(x, y) {
+    return setState({dots: addDot(state.dots, x, y)});
+
+    // const { dots } = state;
+    // if (dots.length === 6) {
+    //   // do nothing
+    // } else if (dots.length > 0) {
+    //   const dot = dots[0];
+    //   // use dot[0]'s x, set y
+    //   setState({ dots: [...dots, { x: dot.x, y }] });
+    // } else {
+    //   setState({ dots: [{ x, y }] });
+    // }
   }
 
   function clickCanvas(x, y) {
     if (state.mode === 'Align') {
       if (state.alignStart !== null) {
+	// ;w;
 	rotateCanvasImageByLine(state.alignStart.x, state.alignStart.y, x, y);
 	setState({ alignStart: null });
       } else {
 	setState({ alignStart: {x, y} });
       }
     } else if (state.mode === 'Measure') {
-      addDot(x, y);
+      addDotToState(x, y);
     }
   }
 
@@ -199,6 +256,14 @@ function drawingState() {
 
   function setMode(mode) {
     setState({ mode, alignStart: null });
+  }
+
+  function mouseMove() {
+    setState({ mouseLocation: "in" });
+  }
+
+  function mouseOut() {
+    setState({ mouseLocation: "out" });
   }
 
   function renderWithState() {
@@ -218,27 +283,15 @@ function drawingState() {
     getState,
     clickCanvas,
     clearDots,
+    mouseMove,
+    mouseOut,
     render: renderWithState,
   };
 }
 
-function drawAlign(canvas, dots, alignStart, x, y) {
-  if (!alignStart) return;
-
-  const context = canvas.getContext('2d');
-  context.clearRect(0, 0, canvas.width, canvas.height);
-
-  renderDotsOnCanvas(dots, context);
-
-  context.beginPath();
-  context.moveTo(alignStart.x, alignStart.y);
-  context.lineTo(x, y);
-  context.stroke();
-}
-
 // initialization
 window.onload = function () {
-  const { getState, clickCanvas, clearDots, render } = drawingState();
+  const { getState, clickCanvas, clearDots, mouseMove, render, mouseOut } = drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
 
@@ -256,13 +309,18 @@ window.onload = function () {
   );
 
   drawingCanvas.addEventListener(
+    "mouseout", () => mouseOut(),
+  )
+
+  drawingCanvas.addEventListener(
     "mousemove",
     function (event) {
       const rect = drawingCanvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const state = getState();
-      drawAlign(drawingCanvas, state.dots, state.alignStart, x, y)
+      mouseMove();
+      drawGuide(drawingCanvas, state.mouseLocation, state.dots, x, y)
     }
   );
 
