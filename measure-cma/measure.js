@@ -138,7 +138,6 @@ function drawingState() {
   return {
     state,
     addDot,
-    setImage,
     clearDots,
   };
 }
