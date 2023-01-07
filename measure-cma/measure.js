@@ -154,6 +154,11 @@ function render({ state, setMode }) {
     document.getElementById("cma-display").innerHTML = "";
   }
 
+  const diameter = diameterOf(state.dots);
+  document.getElementById("diameter-display").innerHTML = diameter
+    ? `diameter = ${Math.round(diameter)}px`
+    : "";
+
   const controls = ["Measure"].map((mode) => {
     const button = document.createElement("span");
     button.innerHTML = mode;
