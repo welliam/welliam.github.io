@@ -92,7 +92,7 @@ function render({ state, setMode }) {
   }
 
   const controls = [
-    "Align", "Measure",
+    "Measure",
   ].map(mode => {
     const button = document.createElement("span");
     button.innerHTML = mode;
@@ -164,31 +164,6 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
   link.click();
 }
 
-function rotateCanvasImageByLine(x1, y1, x2, y2) {
-  console.log(x1, y1, x2, y2);
-
-  const canvas = document.getElementById('image-canvas');
-  const context = canvas.getContext("2d");
-
-  var tempCanvas = document.createElement("canvas"),
-      tempCtx = tempCanvas.getContext("2d");
-
-  tempCanvas.width = canvas.width;
-  tempCanvas.height = canvas.height;
-
-  tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-
-  const angle = (y2 - y1) / (x2 - x1)
-  console.log(angle);
-  context.clearRect(0, 0, canvas.width, canvas.height);
-
-  context.translate((canvas.width / 2), (canvas.height / 2));
-  context.rotate(angle);
-  context.translate(-(canvas.width / 2), -(canvas.height / 2));
-  context.drawImage(tempCanvas, 0, 0);
-  context.restore();
-}
-
 function drawGuide(canvas, mouseLocation, dots, x, y) {
   const context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -218,7 +193,6 @@ function drawingState() {
     dots: [],
     mode: "Measure",
     mouseLocation: "out",
-    alignStart: null,
   };
 
   function addDotToState(x, y) {
@@ -237,15 +211,7 @@ function drawingState() {
   }
 
   function clickCanvas(x, y) {
-    if (state.mode === 'Align') {
-      if (state.alignStart !== null) {
-	// ;w;
-	rotateCanvasImageByLine(state.alignStart.x, state.alignStart.y, x, y);
-	setState({ alignStart: null });
-      } else {
-	setState({ alignStart: {x, y} });
-      }
-    } else if (state.mode === 'Measure') {
+    if (state.mode === 'Measure') {
       addDotToState(x, y);
     }
   }
@@ -255,7 +221,7 @@ function drawingState() {
   }
 
   function setMode(mode) {
-    setState({ mode, alignStart: null });
+    setState({ mode });
   }
 
   function mouseMove() {
