@@ -112,7 +112,6 @@ function loadImage(e) {
       drawingCanvas.width = dWidth;
       imageCanvas.height = dHeight;
       imageCanvas.width = dWidth;
-      console.log(dHeight, dWidth);
       imageCanvas.getContext("2d").drawImage(img, 0, 0, dWidth, dHeight);
     };
     img.src = event.target.result;
@@ -134,7 +133,11 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
   link.click();
 }
 
-function rotateCanvasImageByLine(canvas, x1, y1, x2, y2) {
+function rotateCanvasImageByLine(x1, y1, x2, y2) {
+  console.log(x1, y1, x2, y2);
+  return;
+  const canvas = document.getElementById('drawing-canvas');
+
   var tempCanvas = document.createElement("canvas"),
       tempCtx = tempCanvas.getContext("2d");
 
@@ -164,6 +167,7 @@ function drawingState() {
   let state = {
     dots: [],
     mode: "Align",
+    alignStart: null,
   };
 
   function addDot(x, y) {
@@ -179,10 +183,15 @@ function drawingState() {
     }
   }
 
-  function click(x, y) {
-    if (mode === 'Measure') {
-      console.log('hi');
-    } else if (mode === 'Align') {
+  function clickCanvas(x, y) {
+    if (state.mode === 'Align') {
+      if (state.alignStart !== null) {
+	rotateCanvasImageByLine(state.alignStart.x, state.alignStart.y, x, y);
+	setState({ alignStart: null });
+      } else {
+	setState({ alignStart: {x, y} });
+      }
+    } else if (state.mode === 'Measure') {
       addDot(x, y);
     }
   }
@@ -192,7 +201,7 @@ function drawingState() {
   }
 
   function setMode(mode) {
-    setState({ mode });
+    setState({ mode, alignStart: null });
   }
 
   function renderWithState() {
@@ -204,17 +213,35 @@ function drawingState() {
     renderWithState();
   }
 
+  function getState() {
+    return state;
+  }
+
   return {
-    state,
-    addDot,
+    getState,
+    clickCanvas,
     clearDots,
     render: renderWithState,
   };
 }
 
+function drawAlign(canvas, dots, alignStart, x, y) {
+  if (!alignStart) return;
+
+  const context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  renderDotsOnCanvas(dots, context);
+
+  context.beginPath();
+  context.moveTo(alignStart.x, alignStart.y);
+  context.lineTo(x, y);
+  context.stroke();
+}
+
 // initialization
 window.onload = function () {
-  const { state, addDot, clearDots, render } = drawingState();
+  const { getState, clickCanvas, clearDots, render } = drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
 
@@ -226,9 +253,20 @@ window.onload = function () {
       const rect = drawingCanvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      addDot(x, y);
+      clickCanvas(x, y);
     },
     false
+  );
+
+  drawingCanvas.addEventListener(
+    "mousemove",
+    function (event) {
+      const rect = drawingCanvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const state = getState();
+      drawAlign(drawingCanvas, state.dots, state.alignStart, x, y)
+    }
   );
 
   document
