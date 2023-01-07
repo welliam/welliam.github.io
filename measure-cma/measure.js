@@ -143,7 +143,7 @@ function loadImage(e) {
       drawingCanvas.width = dWidth;
       imageCanvas.height = dHeight;
       imageCanvas.width = dWidth;
-      imageCanvas.getContext("2d").drawImage(img, 0, 0, dWidth, dHeight);
+      context.drawImage(img, 0, 0, dWidth, dHeight);
     };
     img.src = event.target.result;
   };
