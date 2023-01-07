@@ -94,8 +94,8 @@ function loadImage(e) {
     var img = new Image();
     img.onload = function () {
       // load image, preserving aspect ratio but resizing
-      const maxHeight = 1000;
-      const maxWidth = 1000;
+      const maxHeight = 500;
+      const maxWidth = 500;
 
       let dHeight, dWidth;
 
@@ -135,30 +135,27 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
 
 function rotateCanvasImageByLine(x1, y1, x2, y2) {
   console.log(x1, y1, x2, y2);
-  return;
-  const canvas = document.getElementById('drawing-canvas');
+
+  const canvas = document.getElementById('image-canvas');
+  const context = canvas.getContext("2d");
 
   var tempCanvas = document.createElement("canvas"),
       tempCtx = tempCanvas.getContext("2d");
 
   tempCanvas.width = canvas.width;
   tempCanvas.height = canvas.height;
-  // put our data onto the temp canvas
-  tempCtx.drawImage(canvas,0,0,canvas.width,canvas.height);
 
-  // Now clear the portion to rotate.
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0,0,200,200);
-  ctx.save();
-  // Translate (190/2 is half of the box we drew)
-  ctx.translate(190/2, 0);
-  // Scale
-  ctx.scale(0.5,0.5);
-  // Rotate it
-  ctx.rotate(45*Math.PI/180);
-  // Finally draw the image data from the temp canvas.
-  ctx.drawImage(tempCanvas,0,0,200,200,10,10,190,190);
-  ctx.restore();
+  tempCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+
+  const angle = (y2 - y1) / (x2 - x1)
+  console.log(angle);
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  context.translate((canvas.width / 2), (canvas.height / 2));
+  context.rotate(angle);
+  context.translate(-(canvas.width / 2), -(canvas.height / 2));
+  context.drawImage(tempCanvas, 0, 0);
+  context.restore();
 }
 
 // state
