@@ -26,6 +26,28 @@ function diameterOf(dots) {
   return distanceBetween(sorted[0], sorted[sorted.length - 1]);
 }
 
+function perpendicularSlopeOf(dot1, dot2) {
+  if (dot2.x == dot1.x) { // flat
+    return Infinity;
+  }
+  if (dot2.y == dot1.y) { // infinite
+    return 0;
+  }
+  const slope = (dot2.y - dot1.y) / (dot2.x - dot1.x);
+  return 1 / (-slope)
+}
+
+function perpendicularAway(dot, byAmount, perpendicularSlope) {
+  if (perpendicularSlope == Infinity) {
+    // special case-- flat line
+    return { x: dot.x, y: dot.y - byAmount };
+  }
+  const angle = Math.atan(perpendicularSlope);
+  const x = byAmount * Math.cos(angle);
+  const y = byAmount * Math.sin(angle);
+  return { x: x + dot.x, y: y + dot.y };
+}
+
 function calculateCMA(dots) {
   if (dots.length == 6) {
     const sorted = sortDots(dots);
@@ -81,19 +103,28 @@ function addDot(dots, x, y) {
 
 // rendering
 
-function renderDot(context, x, y) {
-    context.beginPath();
-    context.moveTo(x, y);
-    context.lineTo(x + 30, y);
-    context.stroke();
+function renderDot(context, x, y, perpendicularSlope) {
+  const dot = perpendicularAway({ x, y }, 30, perpendicularSlope);
+
+  context.beginPath();
+  context.moveTo(x, y);
+  context.lineTo(dot.x, dot.y);
+  context.stroke();
 }
 
 function renderDotsOnCanvas(dots, context) {
+  if (dots.length <= 1) {
+    return;
+  }
+
+  const perpendicularSlope = perpendicularSlopeOf(dots[0], dots[1]);
+
   dots = [...dots];
   dots.sort((dot1, dot2) => dot1.y - dot2.y);
 
+
   dots.forEach(({ x, y }) => {
-    renderDot(context, x, y);
+    renderDot(context, x, y, perpendicularSlope);
   });
 
   if (dots.length) {
@@ -159,8 +190,8 @@ function loadImage(e) {
     var img = new Image();
     img.onload = function () {
       // load image, preserving aspect ratio but resizing
-      const maxHeight = 500;
-      const maxWidth = 500;
+      const maxHeight = 1000;
+      const maxWidth = 1000;
 
       let dHeight, dWidth;
 
@@ -215,7 +246,8 @@ function drawGuide(canvas, mode, mouseLocation, dots, x, y) {
     context.stroke();
   } else if (dots.length > 1 && dots.length < 6) {
     const dotOnSlope = dotLocationOnSlope(dots[0], dots[1], x, y);
-    renderDot(context, dotOnSlope.x, dotOnSlope.y);
+    const perpendicularSlope = perpendicularSlopeOf(dots[0], dots[1]);
+    renderDot(context, dotOnSlope.x, dotOnSlope.y, perpendicularSlope);
   }
 }
 

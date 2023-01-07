@@ -1,6 +1,6 @@
 * DONE handle infinity case
 * DONE fix cma calc
-* TODO perpendicular brackets on diameter line
+* DONE perpendicular brackets on diameter line
 - don't do dot line until two dots exist
 * TODO media type on file uploader for images
 * TODO show diameter
@@ -33,3 +33,4 @@
 - maybe shouldn't do
 * TODO crop tool
 - maybe shouldn't do
+* TODO test suite and/or typescript
