@@ -23,12 +23,10 @@ function diameterOf(dots) {
 
 function perpendicularSlopeOf(dot1, dot2) {
   if (dot2.x == dot1.x) {
-    // flat
-    return Infinity;
+    return 0;
   }
   if (dot2.y == dot1.y) {
-    // infinite
-    return 0;
+    return Infinity;
   }
   const slope = (dot2.y - dot1.y) / (dot2.x - dot1.x);
   return 1 / -slope;
