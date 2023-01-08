@@ -715,5 +715,14 @@ window.onload = function () {
     toggleShowBreakdown();
   };
 
+  document.onkeydown = (event) => {
+    if (event.keyCode == 90 && event.ctrlKey) {
+      undoDots();
+    }
+    if (event.keyCode == 89 && event.ctrlKey) {
+      redoDots();
+    }
+  };
+
   render();
 };

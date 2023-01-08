@@ -1,22 +1,3 @@
-* TODO how to modal
-- include contact info
-- mention website doesn't save anything-- data stays on your computer
-- how to image
-- link or reference to CMA/Usnea resource
-* TODO breakdown of CMA calculation in pixels
-|               |   C |   M |   A |
-|               |   1 |   3 |   3 |
-|               |   3 |   3 |     |
-|---------------+-----+-----+-----|
-| average       |   2 |   3 |   3 |
-| % of diameter | 15% | 23% | 23% |
-
-diameter = 13
-* TODO hotkeys
-- undo
-- redo
-- make sure label text doesn't interfere
-- document on "what is this?" modal
 * TODO mobile enhancements
 fix dot on single click
 * TODO dots state refactor?
@@ -31,6 +12,25 @@ fix dot on single click
 - problem is that redrawing image by resizing is annoying
 - could allow user to resize canvas, then center image
 * TODO test suite and/or typescript
+* DONE hotkeys
+- undo
+- redo
+- make sure label text doesn't interfere
+- document on "what is this?" modal
+* DONE how to modal
+- include contact info
+- mention website doesn't save anything-- data stays on your computer
+- how to image
+- link or reference to CMA/Usnea resource
+* DONE breakdown of CMA calculation in pixels
+|               |   C |   M |   A |
+|               |   1 |   3 |   3 |
+|               |   3 |   3 |     |
+|---------------+-----+-----+-----|
+| average       |   2 |   3 |   3 |
+| % of diameter | 15% | 23% | 23% |
+
+diameter = 13
 * DONE bug: one dot state is weird
 - removed mobile thing ;w;
 * DONE fix filename of download
