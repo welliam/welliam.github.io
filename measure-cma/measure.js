@@ -319,7 +319,7 @@ function loadImage(e, fileLoaded) {
   reader.readAsDataURL(file);
 }
 
-function downloadCanvas(imageCanvas, drawingCanvas) {
+function downloadCanvas(state, imageCanvas, drawingCanvas) {
   const flattenedCanvas = document.createElement("canvas");
   flattenedCanvas.height = imageCanvas.height;
   flattenedCanvas.width = imageCanvas.width;
@@ -327,8 +327,25 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
   flattenedCanvasContex.drawImage(imageCanvas, 0, 0);
   flattenedCanvasContex.drawImage(drawingCanvas, 0, 0);
 
-  var link = document.createElement("a");
-  link.download = "filename.png";
+  const link = document.createElement("a");
+
+  const now = new Date();
+  const timestamp = now.toLocaleString("sv-SE", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  const filename =
+    (state.label ? state.label + " " : "") +
+    "CMA measurement" +
+    (state.label ? "" : " " + timestamp) +
+    ".png";
+
+  link.download = filename;
   link.href = flattenedCanvas.toDataURL();
   link.click();
 }
@@ -534,7 +551,7 @@ window.onload = function () {
     .getElementById("download-canvas")
     .addEventListener(
       "click",
-      () => downloadCanvas(imageCanvas, drawingCanvas),
+      () => downloadCanvas(getState(), imageCanvas, drawingCanvas),
       false
     );
 

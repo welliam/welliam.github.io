@@ -5,9 +5,10 @@
 - document on "what is this?" modal
 * TODO bug: when guide line is completely vertical, perp lines are wrong
 * TODO mobile enhancements
+fix dot on single click
 * DONE bug: one dot state is weird
 - removed mobile thing ;w;
-* TODO fix filename of download
+* DONE fix filename of download
 - no label= "CMA [datetime].png"
 - otherwise "CMA [label].png"
 * TODO dots state refactor?
