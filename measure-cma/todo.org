@@ -36,3 +36,4 @@
 * TODO test suite and/or typescript
 
 * TODO undo
+* TODO breakdown of CMA calculation in pixels

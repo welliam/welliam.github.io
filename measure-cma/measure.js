@@ -46,7 +46,7 @@ function perpendicularAway(dot, byAmount, perpendicularSlope) {
 }
 
 function calculateCMA(dots) {
-  if (dots.length == 6) {
+  if (dots && dots.length == 6) {
     const sorted = sortDots(dots);
     const diameter = diameterOf(dots);
 
@@ -139,33 +139,65 @@ function renderDotsOnCanvas(dots, context) {
   }
 }
 
-function render({ state, setMode }) {
-  const canvas = document.getElementById("drawing-canvas");
-  const context = canvas.getContext("2d");
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.lineWidth = 2;
-
-  renderDotsOnCanvas(state.dots, context);
-
+function cmaTextOf(state) {
   const cma = calculateCMA(state.dots);
   if (cma) {
     const { c, m, a } = cma;
     const cPercent = Math.round(c * 100);
     const mPercent = Math.round(m * 100);
     const aPercent = Math.round(a * 100);
+    return `CMA = ${cPercent} / ${mPercent} / ${aPercent}`;
+  }
+}
+
+function renderLabel(state, context) {
+  const cmaText = cmaTextOf(state);
+  context.fillStyle = "white";
+  context.font = "20px Arial";
+  let y = 30;
+  if (state.label) {
+    context.fillText(state.label, 30, y);
+    y += 30;
+  }
+  if (state.labelIncludeCMA && cmaText) {
+    context.fillText(cmaText, 30, y);
+  }
+}
+
+function renderCanvas(state, context) {
+  renderLabel(state, context)
+  renderDotsOnCanvas(state.dots, context);
+}
+
+function render({ state, setMode }) {
+  const canvas = document.getElementById("drawing-canvas");
+  const context = canvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.lineWidth = 2;
+
+  renderCanvas(state, context);
+
+  const cmaText = cmaTextOf(state);
+  if (cmaText) {
     document.getElementById(
       "cma-display"
-    ).innerHTML = `CMA = ${cPercent} / ${mPercent} / ${aPercent}`;
+    ).innerHTML = cmaText;
   } else {
     document.getElementById("cma-display").innerHTML = "";
   }
 
   document.getElementById("diameter-display").innerHTML = renderDiameter(diameterOf(state.dots));
+  document.getElementById("label-input").value = state.label;
+  document.getElementById("clear-dots").disabled = !state.fileLoaded;
+  document.getElementById("reset-image").disabled = !state.fileLoaded;
+  document.getElementById("download-canvas").disabled = !state.fileLoaded;
+  console.log(state.labelIncludeCMA);
+  document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
 }
 
 // canvas manipulation and loading
 
-function loadImage(e) {
+function loadImage(e, fileLoaded) {
   const imageCanvas = document.getElementById("image-canvas");
   const drawingCanvas = document.getElementById("drawing-canvas");
   const context = imageCanvas.getContext("2d");
@@ -199,11 +231,7 @@ function loadImage(e) {
       imageCanvas.width = dWidth;
       context.drawImage(img, 0, 0, dWidth, dHeight);
 
-      document.getElementById("label-input").value = file.name.replace(/\.[^\.]+$/, '');
-
-      document.getElementById("clear-dots").disabled = false
-      document.getElementById("reset-image").disabled = false
-      document.getElementById("download-canvas").disabled = false
+      fileLoaded(file.name.replace(/\.[^\.]+$/, ''));
     };
     img.src = event.target.result;
   };
@@ -224,10 +252,11 @@ function downloadCanvas(imageCanvas, drawingCanvas) {
   link.click();
 }
 
-function drawGuide(canvas, mode, mouseLocation, dots, x, y) {
+function drawGuide(state, canvas, x, y) {
+  const { mode, mouseLocation, dots } = state;
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
-  renderDotsOnCanvas(dots, context);
+  renderCanvas(state, context);
 
   if (mouseLocation === "out") {
     return;
@@ -261,6 +290,9 @@ function drawingState() {
     dots: [],
     mode: "Measure",
     mouseLocation: "out",
+    labelIncludeCMA: true,
+    label: "",
+    fileLoaded: false,
   };
 
   function addDotToState(x, y) {
@@ -302,6 +334,18 @@ function drawingState() {
     return state;
   }
 
+  function fileLoaded(filename) {
+    setState({ fileLoaded: true, label: filename });
+  }
+
+  function changeLabel(label) {
+    setState({ label });
+  }
+
+  function changeIncludeCMA(labelIncludeCMA) {
+    setState({ labelIncludeCMA });
+  }
+
   return {
     getState,
     clickCanvas,
@@ -309,6 +353,9 @@ function drawingState() {
     mouseMove,
     mouseOut,
     render: renderWithState,
+    fileLoaded,
+    changeLabel,
+    changeIncludeCMA,
   };
 }
 
@@ -321,7 +368,7 @@ function resetPage() {
 
 // initialization
 window.onload = function () {
-  const { getState, clickCanvas, clearDots, mouseMove, render, mouseOut } =
+  const { getState, clickCanvas, clearDots, mouseMove, render, mouseOut, fileLoaded, changeLabel, changeIncludeCMA } =
     drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
@@ -347,12 +394,12 @@ window.onload = function () {
     const y = event.clientY - rect.top;
     const state = getState();
     mouseMove();
-    drawGuide(drawingCanvas, state.mode, state.mouseLocation, state.dots, x, y);
+    drawGuide(state, drawingCanvas, x, y);
   });
 
   document
     .getElementById("image-input")
-    .addEventListener("change", (e) => loadImage(e));
+    .addEventListener("change", (e) => loadImage(e, fileLoaded));
 
   document
     .getElementById("download-canvas")
@@ -372,6 +419,15 @@ window.onload = function () {
     resetPage();
     }
   }, false);
+
+  document.getElementById("label-input").oninput = event => {
+    changeLabel(event.target.value);
+  }
+
+
+  document.getElementById("input-include-cma").onchange = event => {
+    changeIncludeCMA(event.target.checked);
+  }
 
   render();
 };

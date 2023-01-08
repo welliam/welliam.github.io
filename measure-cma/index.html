@@ -9,13 +9,12 @@
     <div>
       <img style="display: none" id="source" />
       <input id="image-input" type="file" accept="image/png, image/jpeg" />
-      <button id="download-canvas" disabled>Download</button>
       <button id="clear-dots" disabled>Clear measurements</button>
       <button id="reset-image" disabled>Reset</button>
+      <button id="download-canvas" disabled>Download</button>
       <div class="label-controls">
 	<label>Label <input id="label-input"></label>
-	<label><input type="checkbox"> Include CMA </label>
-	<label><input type="checkbox"> Include measurement bar </label>
+	<label><input id="input-include-cma" type="checkbox">Include CMA</label>
       </div>
       <div id="displays">
 	<span id="diameter-display"></span>
