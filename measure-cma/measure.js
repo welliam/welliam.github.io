@@ -290,7 +290,7 @@ function loadImage(e, fileLoaded) {
     var img = new Image();
     img.onload = function () {
       // load image, preserving aspect ratio but resizing
-      const maxHeight = 700;
+      const maxHeight = 600;
       const maxWidth = 700;
 
       let dHeight, dWidth;
@@ -586,6 +586,14 @@ window.onload = function () {
 
   document.getElementById("input-include-cma").onchange = (event) => {
     changeIncludeCMA(event.target.checked);
+  };
+
+  document.getElementById("what-is-this-button").onclick = () => {
+    document.getElementById("what-is-this-modal").className = "modal";
+  };
+
+  document.getElementById("close-modal").onclick = () => {
+    document.getElementById("what-is-this-modal").className = "hidden";
   };
 
   render();

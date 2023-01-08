@@ -1,6 +1,32 @@
 h1 {
   font-family: serif;
 }
+
+.hidden {
+  display: none;
+}
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 1);
+  z-index: 3;
+  max-width: 55rem;
+}
+
+.modal-content {
+}
+
+img {
+  display: block;
+  border: solid thin;
+  border-color: #777;
+  padding: 1rem;
+  margin: 1rem;
+}
+
 body {
   font-family: "Arial";
 }

@@ -1,4 +1,3 @@
-* DONE bug: when guide line is completely vertical, perp lines are wrong
 * TODO how to modal
 - include contact info
 - mention website doesn't save anything-- data stays on your computer
@@ -20,11 +19,6 @@ diameter = 13
 - document on "what is this?" modal
 * TODO mobile enhancements
 fix dot on single click
-* DONE bug: one dot state is weird
-- removed mobile thing ;w;
-* DONE fix filename of download
-- no label= "CMA [datetime].png"
-- otherwise "CMA [label].png"
 * TODO dots state refactor?
 - invariant: dots should always be on a line
 - instead we could model the state in a way that makes it impossible
@@ -37,6 +31,12 @@ fix dot on single click
 - problem is that redrawing image by resizing is annoying
 - could allow user to resize canvas, then center image
 * TODO test suite and/or typescript
+* DONE bug: one dot state is weird
+- removed mobile thing ;w;
+* DONE fix filename of download
+- no label= "CMA [datetime].png"
+- otherwise "CMA [label].png"
+* DONE bug: when guide line is completely vertical, perp lines are wrong
 * DONE handle infinity case
 * DONE fix cma calc
 * DONE perpendicular brackets on diameter line
