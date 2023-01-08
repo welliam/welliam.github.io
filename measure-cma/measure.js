@@ -166,7 +166,7 @@ function renderLabel(state, context) {
   const width = Math.max(
     0,
     context.measureText(state.label).width,
-    cmaText ? context.measureText(cmaText).width : 0,
+    includeCMA ? context.measureText(cmaText).width : 0,
   )
 
   const height = 30 * lines;

@@ -40,17 +40,18 @@ canvas {
 #displays {
     height: 2rem;
     margin-top: 0.5rem;
-}
-
-label {
-    margin-right: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 #displays > * {
     margin-right: 1rem;
 }
 
+label {
+    margin-right: 1rem;
+}
+
 .label-controls {
     height: 2rem;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
 }
