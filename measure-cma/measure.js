@@ -269,8 +269,12 @@ function render({ state, setMode }) {
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
 
-  document.getElementById("measurement-undo").disabled = !undoStackHasUndo(state.dotsUndoStack);
-  document.getElementById("measurement-redo").disabled = !undoStackHasRedo(state.dotsUndoStack);
+  document.getElementById("measurement-undo").disabled = !undoStackHasUndo(
+    state.dotsUndoStack
+  );
+  document.getElementById("measurement-redo").disabled = !undoStackHasRedo(
+    state.dotsUndoStack
+  );
 }
 
 // canvas manipulation and loading
@@ -381,7 +385,7 @@ function drawingState() {
   function setDotsState(dots) {
     if (undoStackGetState(state.dotsUndoStack).length < 6) {
       setState({
-	dotsUndoStack: undoStackPushState(state.dotsUndoStack, dots),
+        dotsUndoStack: undoStackPushState(state.dotsUndoStack, dots),
       });
     }
   }
