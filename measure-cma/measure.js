@@ -153,6 +153,8 @@ function renderDotsOnCanvas(state, context) {
 
   if (dots.length === 1) {
     if (state.mouseLocation === "out") {
+      context.beginPath();
+      context.fillStyle = "black";
       context.moveTo(dots[0].x, dots[0].y);
       context.arc(dots[0].x, dots[0].y, 5, 0, 2 * Math.PI);
       context.fill();
@@ -225,19 +227,16 @@ function renderLabel(state, context) {
 }
 
 function renderCanvas(state, context) {
+  console.log(state);
   if (state.fileLoaded) {
     renderLabel(state, context);
+    context.restore();
     renderDotsOnCanvas(state, context);
   } else {
     context.font = "20px Arial";
     const text = "Click to upload photo";
     const textWidth = context.measureText(text).width;
     context.fillText(
-      text,
-      context.canvas.width / 2 - textWidth / 2,
-      context.canvas.height / 2
-    );
-    console.log(
       text,
       context.canvas.width / 2 - textWidth / 2,
       context.canvas.height / 2
@@ -379,7 +378,11 @@ function drawingState() {
   };
 
   function resetPageState() {
-    setState({ fileLoaded: false, label: "", dotsUndoStack: { stack: [[]], index: 0 } });
+    setState({
+      fileLoaded: false,
+      label: "",
+      dotsUndoStack: { stack: [[]], index: 0 },
+    });
   }
 
   function setDotsState(dots) {

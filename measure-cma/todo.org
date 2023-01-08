@@ -1,5 +1,12 @@
+* TODO hotkeys
+- undo
+- redo
+- make sure label text doesn't interfere
+- document on "what is this?" modal
 * TODO bug: when guide line is completely vertical, perp lines are wrong
-* TODO bug: undoing state to initial results in weird white spots
+* TODO mobile enhancements
+* DONE bug: one dot state is weird
+- removed mobile thing ;w;
 * TODO fix filename of download
 - no label= "CMA [datetime].png"
 - otherwise "CMA [label].png"
