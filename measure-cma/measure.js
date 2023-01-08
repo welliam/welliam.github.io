@@ -118,7 +118,7 @@ function renderDot(context, x, y, perpendicularSlope) {
 }
 
 function renderDotsOnCanvas(state, context) {
-  const { dots, mode } = state;
+  let { dots, mode } = state;
   if (dots.length === 0) {
     return;
   }
