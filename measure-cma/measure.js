@@ -172,6 +172,9 @@ function loadImage(e) {
   context.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
 
   var reader = new FileReader();
+
+  const [file] = e.target.files;
+
   reader.onload = function (event) {
     var img = new Image();
     img.onload = function () {
@@ -196,13 +199,15 @@ function loadImage(e) {
       imageCanvas.width = dWidth;
       context.drawImage(img, 0, 0, dWidth, dHeight);
 
+      document.getElementById("label-input").value = file.name.replace(/\.[^\.]+$/, '');
+
       document.getElementById("clear-dots").disabled = false
       document.getElementById("reset-image").disabled = false
       document.getElementById("download-canvas").disabled = false
     };
     img.src = event.target.result;
   };
-  reader.readAsDataURL(e.target.files[0]);
+  reader.readAsDataURL(file);
 }
 
 function downloadCanvas(imageCanvas, drawingCanvas) {
