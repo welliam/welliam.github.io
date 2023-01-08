@@ -1,57 +1,76 @@
+h1 {
+  font-family: serif;
+}
+body {
+  font-family: "Arial";
+}
+
 #controls {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .control {
-    margin-right: 0.5rem;
-    border: solid thin;
-    border-radius: 0.3rem;
-    border-color: #666;
-    padding: 0.2rem;
+  margin-right: 0.5rem;
+  border: solid thin;
+  border-radius: 0.3rem;
+  border-color: #666;
+  padding: 0.2rem;
 }
 
 .control__selected {
-    color: white;
-    background-color: #666;
-    border-color: #555;
-    border-radius: 0.3rem;
+  color: white;
+  background-color: #666;
+  border-color: #555;
+  border-radius: 0.3rem;
 }
 
 .canvas-container {
-    position: relative;
+  position: relative;
 }
 
 canvas {
-    border: solid thin;
-    position: absolute;
-    left: 0;
-    top: 0;
+  border: solid thin;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 #image-canvas {
-    z-index: 0;
+  z-index: 0;
 }
 
 #drawing-canvas {
-    z-index: 1;
+  z-index: 1;
 }
 
 #displays {
-    height: 2rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+  height: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+header {
+  margin-bottom: 1rem;
+}
+h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+#image-input {
+  display: none;
 }
 
 #displays > * {
-    margin-right: 1rem;
+  margin-right: 1rem;
 }
 
 label {
-    margin-right: 1rem;
+  margin-right: 1rem;
 }
 
 .label-controls {
-    height: 2rem;
-    margin-top: 1rem;
+  height: 2rem;
+  margin-top: 1rem;
 }

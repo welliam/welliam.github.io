@@ -103,9 +103,7 @@ function addDot(dots, x, y) {
 // rendering
 
 function renderDiameter(diameter) {
-  return diameter
-    ? `Diameter = ${Math.round(diameter)}px`
-    : "";
+  return diameter ? `Diameter = ${Math.round(diameter)}px` : "";
 }
 
 function renderDot(context, x, y, perpendicularSlope) {
@@ -124,7 +122,7 @@ function renderDotsOnCanvas(state, context) {
   }
 
   if (dots.length === 1) {
-    if (state.mouseLocation === 'out') {
+    if (state.mouseLocation === "out") {
       context.moveTo(dots[0].x, dots[0].y);
       context.arc(dots[0].x, dots[0].y, 5, 0, 2 * Math.PI);
       context.fill();
@@ -176,8 +174,8 @@ function renderLabel(state, context) {
   const width = Math.max(
     0,
     context.measureText(state.label).width,
-    includeCMA ? context.measureText(cmaText).width : 0,
-  )
+    includeCMA ? context.measureText(cmaText).width : 0
+  );
 
   const height = 30 * lines;
 
@@ -197,8 +195,24 @@ function renderLabel(state, context) {
 }
 
 function renderCanvas(state, context) {
-  renderLabel(state, context)
-  renderDotsOnCanvas(state, context);
+  if (state.fileLoaded) {
+    renderLabel(state, context);
+    renderDotsOnCanvas(state, context);
+  } else {
+    context.font = "20px Arial";
+    const text = "Click to upload photo";
+    const textWidth = context.measureText(text).width;
+    context.fillText(
+      text,
+      context.canvas.width / 2 - textWidth / 2,
+      context.canvas.height / 2
+    );
+    console.log(
+      text,
+      context.canvas.width / 2 - textWidth / 2,
+      context.canvas.height / 2
+    );
+  }
 }
 
 function render({ state, setMode }) {
@@ -211,19 +225,18 @@ function render({ state, setMode }) {
 
   const cmaText = cmaTextOf(state);
   if (cmaText) {
-    document.getElementById(
-      "cma-display"
-    ).innerHTML = cmaText;
+    document.getElementById("cma-display").innerHTML = cmaText;
   } else {
     document.getElementById("cma-display").innerHTML = "";
   }
 
-  document.getElementById("diameter-display").innerHTML = renderDiameter(diameterOf(state.dots));
+  document.getElementById("diameter-display").innerHTML = renderDiameter(
+    diameterOf(state.dots)
+  );
   document.getElementById("label-input").value = state.label;
   document.getElementById("clear-dots").disabled = !state.fileLoaded;
   document.getElementById("reset-image").disabled = !state.fileLoaded;
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
-  console.log(state.labelIncludeCMA);
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
 }
 
@@ -263,7 +276,7 @@ function loadImage(e, fileLoaded) {
       imageCanvas.width = dWidth;
       context.drawImage(img, 0, 0, dWidth, dHeight);
 
-      fileLoaded(file.name.replace(/\.[^\.]+$/, ''));
+      fileLoaded(file.name.replace(/\.[^\.]+$/, ""));
     };
     img.src = event.target.result;
   };
@@ -301,13 +314,13 @@ function drawGuide(state, canvas, x, y) {
     context.lineTo(x, y);
     context.stroke();
 
-    const perpendicularSlope = perpendicularSlopeOf(dot, {x, y});
+    const perpendicularSlope = perpendicularSlopeOf(dot, { x, y });
     renderDot(context, x, y, perpendicularSlope);
     renderDot(context, dot.x, dot.y, perpendicularSlope);
 
-    document.getElementById("diameter-display").innerHTML =
-      renderDiameter(distanceBetween(dot, { x, y }));
-
+    document.getElementById("diameter-display").innerHTML = renderDiameter(
+      distanceBetween(dot, { x, y })
+    );
   } else if (dots.length > 1 && dots.length < 6) {
     const dotOnSlope = dotLocationOnSlope(dots[0], dots[1], x, y);
     const perpendicularSlope = perpendicularSlopeOf(dots[0], dots[1]);
@@ -327,13 +340,22 @@ function drawingState() {
     fileLoaded: false,
   };
 
+  function resetPageState() {
+    setState({ fileLoaded: false, label: "", dots: [] });
+  }
+
   function addDotToState(x, y) {
     return setState({ dots: addDot(state.dots, x, y) });
   }
 
   function clickCanvas(x, y) {
+    if (!state.fileLoaded) {
+      document.getElementById("image-input").click();
+      return;
+    }
     if (state.mode === "Measure") {
       addDotToState(x, y);
+      return;
     }
   }
 
@@ -367,7 +389,7 @@ function drawingState() {
   }
 
   function fileLoaded(filename) {
-    setState({ fileLoaded: true, label: filename });
+    setState({ fileLoaded: true, label: state.label || filename });
   }
 
   function changeLabel(label) {
@@ -388,20 +410,33 @@ function drawingState() {
     fileLoaded,
     changeLabel,
     changeIncludeCMA,
+    resetPageState,
   };
 }
 
 function resetPage() {
-  ["image-canvas", "drawing-canvas"].forEach(cname => {
+  ["drawing-canvas", "image-canvas"].forEach((cname) => {
     const canvas = document.getElementById(cname);
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = 300;
+    canvas.height = 150;
   });
 }
 
 // initialization
 window.onload = function () {
-  const { getState, clickCanvas, clearDots, mouseMove, render, mouseOut, fileLoaded, changeLabel, changeIncludeCMA } =
-    drawingState();
+  const {
+    getState,
+    clickCanvas,
+    clearDots,
+    resetPageState,
+    mouseMove,
+    render,
+    mouseOut,
+    fileLoaded,
+    changeLabel,
+    changeIncludeCMA,
+  } = drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
 
@@ -445,21 +480,28 @@ window.onload = function () {
     .getElementById("clear-dots")
     .addEventListener("click", clearDots, false);
 
-  document.getElementById("reset-image").addEventListener("click", () => {
-    if (window.confirm("This will clear your measurements as well as the image. Are you sure?")) {
-    clearDots();
-    resetPage();
-    }
-  }, false);
+  document.getElementById("reset-image").addEventListener(
+    "click",
+    () => {
+      if (
+        window.confirm(
+          "This will clear your measurements as well as the image. Are you sure?"
+        )
+      ) {
+        resetPage();
+        resetPageState();
+      }
+    },
+    false
+  );
 
-  document.getElementById("label-input").oninput = event => {
+  document.getElementById("label-input").oninput = (event) => {
     changeLabel(event.target.value);
-  }
+  };
 
-
-  document.getElementById("input-include-cma").onchange = event => {
+  document.getElementById("input-include-cma").onchange = (event) => {
     changeIncludeCMA(event.target.checked);
-  }
+  };
 
   render();
 };
