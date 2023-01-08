@@ -100,3 +100,20 @@ label {
   height: 2rem;
   margin-top: 1rem;
 }
+
+table {
+  border-collapse: collapse;
+  border: 2px solid rgb(200, 200, 200);
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+td,
+th {
+  border: 1px solid rgb(190, 190, 190);
+  padding: 5px 10px;
+}
+
+.table-number-cell {
+  text-align: right;
+}

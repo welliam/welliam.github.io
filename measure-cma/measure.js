@@ -55,10 +55,24 @@ function calculateCMA(dots) {
     );
     const [c1, m1, a, m2, c2] = diffs;
 
+    const cAverage = (c1 + c2) / 2;
+    const mAverage = (m1 + m2) / 2;
+
     const cPart = (c1 + c2) / 2 / diameter;
     const mPart = (m1 + m2) / 2 / diameter;
     const aPart = a / diameter;
-    return { c: cPart, m: mPart, a: aPart };
+    return {
+      c: cPart,
+      m: mPart,
+      a: aPart,
+      c1Pixels: c1,
+      m1Pixels: m1,
+      m2Pixels: m2,
+      c2Pixels: c2,
+      cPixelsAverage: cAverage,
+      mPixelsAverage: mAverage,
+      aPixels: a,
+    };
   } else {
     return null;
   }
@@ -242,6 +256,90 @@ function renderCanvas(state, context) {
   }
 }
 
+function element(name, children, attributes) {
+  const element = document.createElement(name);
+  (children || []).forEach((child) => {
+    if (typeof child === "string" || typeof child === "number") {
+      element.appendChild(document.createTextNode(child.toString()));
+    } else {
+      element.appendChild(child);
+    }
+  });
+  Object.entries(attributes || {}).map(([key, value]) => {
+    element[key] = value;
+  });
+  return element;
+}
+
+function pixels(n) {
+  return `${Math.round(n)}px`;
+}
+
+function percent(n) {
+  return `${Math.round(n * 100)}`;
+}
+
+function renderCMABreakdown(state) {
+  const dots = undoStackGetState(state.dotsUndoStack);
+  const cma = calculateCMA(dots);
+  if (cma) {
+    return element("table", [
+      element("thead", [
+        element("tr", [
+          element("th", [""]),
+          element("th", ["C"], { className: "table-number-cell" }),
+          element("th", ["M"], { className: "table-number-cell" }),
+          element("th", ["A"], { className: "table-number-cell" }),
+        ]),
+      ]),
+      element("tbody", [
+        element("tr", [
+          element("td", [""]),
+          element("td", [pixels(cma.c1Pixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.m1Pixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.aPixels)], {
+            className: "table-number-cell",
+          }),
+        ]),
+        element("tr", [
+          element("td", [""]),
+          element("td", [pixels(cma.c2Pixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.m2Pixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [""]),
+        ]),
+        element("tr", [
+          element("td", ["Average"]),
+          element("td", [pixels(cma.cPixelsAverage)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.mPixelsAverage)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.aPixels)], {
+            className: "table-number-cell",
+          }),
+        ]),
+        element("tr", [
+          element("td", ["% of diameter"]),
+          element("td", [percent(cma.c)], { className: "table-number-cell" }),
+          element("td", [percent(cma.m)], { className: "table-number-cell" }),
+          element("td", [percent(cma.a)], { className: "table-number-cell" }),
+        ]),
+      ]),
+    ]);
+  } else {
+    return null;
+  }
+}
+
 function render({ state, setMode }) {
   const canvas = document.getElementById("drawing-canvas");
   const context = canvas.getContext("2d");
@@ -253,8 +351,18 @@ function render({ state, setMode }) {
   const cmaText = cmaTextOf(state);
   if (cmaText) {
     document.getElementById("cma-display").innerHTML = cmaText;
+    document.getElementById("toggle-show-breakdown-button").style.display =
+      "inline";
   } else {
     document.getElementById("cma-display").innerHTML = "";
+    document.getElementById("toggle-show-breakdown-button").style.display =
+      "none";
+  }
+
+  document.getElementById("cma-calculation-breakdown").innerHTML = "";
+  const breakdown = renderCMABreakdown(state);
+  if (breakdown && state.showBreakdown) {
+    document.getElementById("cma-calculation-breakdown").appendChild(breakdown);
   }
 
   document.getElementById("diameter-display").innerHTML = renderDiameter(
@@ -390,6 +498,7 @@ function drawingState() {
     labelIncludeCMA: true,
     label: "",
     fileLoaded: false,
+    showBreakdown: false,
   };
 
   function resetPageState() {
@@ -469,6 +578,10 @@ function drawingState() {
     setState({ labelIncludeCMA });
   }
 
+  function toggleShowBreakdown() {
+    setState({ showBreakdown: !state.showBreakdown });
+  }
+
   return {
     getState,
     getDots: () => undoStackGetState(state.dotsUndoStack),
@@ -485,6 +598,7 @@ function drawingState() {
     changeLabel,
     changeIncludeCMA,
     resetPageState,
+    toggleShowBreakdown,
   };
 }
 
@@ -513,6 +627,7 @@ window.onload = function () {
     changeIncludeCMA,
     redoDots,
     undoDots,
+    toggleShowBreakdown,
   } = drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
@@ -594,6 +709,10 @@ window.onload = function () {
 
   document.getElementById("close-modal").onclick = () => {
     document.getElementById("what-is-this-modal").className = "hidden";
+  };
+
+  document.getElementById("toggle-show-breakdown-button").onclick = () => {
+    toggleShowBreakdown();
   };
 
   render();
