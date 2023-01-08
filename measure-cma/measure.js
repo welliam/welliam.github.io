@@ -164,13 +164,11 @@ function renderDotsOnCanvas(state, context) {
   }
 
   if (dots.length === 1) {
-    if (state.mouseLocation === "out") {
-      context.beginPath();
-      context.fillStyle = "black";
-      context.moveTo(dots[0].x, dots[0].y);
-      context.arc(dots[0].x, dots[0].y, 5, 0, 2 * Math.PI);
-      context.fill();
-    }
+    context.beginPath();
+    context.fillStyle = "black";
+    context.moveTo(dots[0].x, dots[0].y);
+    context.arc(dots[0].x, dots[0].y, 3, 0, 2 * Math.PI);
+    context.fill();
     return;
   }
 
