@@ -239,7 +239,6 @@ function renderLabel(state, context) {
 }
 
 function renderCanvas(state, context) {
-  console.log(state);
   if (state.fileLoaded) {
     renderLabel(state, context);
     context.restore();
@@ -510,7 +509,7 @@ function drawingState() {
   }
 
   function setDotsState(dots) {
-    if (undoStackGetState(state.dotsUndoStack).length < 6) {
+    if (dots.length <= 6) {
       setState({
         dotsUndoStack: undoStackPushState(state.dotsUndoStack, dots),
       });
