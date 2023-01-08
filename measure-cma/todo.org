@@ -32,6 +32,11 @@
 - right now max size is hardcoded, would be nice if this were configurable or something
 - problem is that redrawing image by resizing is annoying
 - could allow user to resize canvas, then center image
+* TODO how to modal
+- include contact info
+- mention website doesn't save anything-- data stays on your computer
+- how to image
+- link or reference to CMA/Usnea resource
 * TODO test suite and/or typescript
 * TODO undo
 * TODO breakdown of CMA calculation in pixels
