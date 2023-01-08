@@ -117,8 +117,18 @@ function renderDot(context, x, y, perpendicularSlope) {
   context.stroke();
 }
 
-function renderDotsOnCanvas(dots, context) {
-  if (dots.length <= 1) {
+function renderDotsOnCanvas(state, context) {
+  const { dots, mode } = state;
+  if (dots.length === 0) {
+    return;
+  }
+
+  if (dots.length === 1) {
+    if (state.mouseLocation === 'out') {
+      context.moveTo(dots[0].x, dots[0].y);
+      context.arc(dots[0].x, dots[0].y, 5, 0, 2 * Math.PI);
+      context.fill();
+    }
     return;
   }
 
@@ -188,7 +198,7 @@ function renderLabel(state, context) {
 
 function renderCanvas(state, context) {
   renderLabel(state, context)
-  renderDotsOnCanvas(state.dots, context);
+  renderDotsOnCanvas(state, context);
 }
 
 function render({ state, setMode }) {
