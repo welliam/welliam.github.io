@@ -34,3 +34,5 @@
 * TODO crop tool
 - maybe shouldn't do
 * TODO test suite and/or typescript
+
+* TODO undo

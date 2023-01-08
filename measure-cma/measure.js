@@ -102,6 +102,12 @@ function addDot(dots, x, y) {
 
 // rendering
 
+function renderDiameter(diameter) {
+  return diameter
+    ? `diameter = ${Math.round(diameter)}px`
+    : "";
+}
+
 function renderDot(context, x, y, perpendicularSlope) {
   const dot = perpendicularAway({ x, y }, 30, perpendicularSlope);
 
@@ -154,28 +160,25 @@ function render({ state, setMode }) {
     document.getElementById("cma-display").innerHTML = "";
   }
 
-  const diameter = diameterOf(state.dots);
-  document.getElementById("diameter-display").innerHTML = diameter
-    ? `diameter = ${Math.round(diameter)}px`
-    : "";
+  document.getElementById("diameter-display").innerHTML = renderDiameter(diameterOf(state.dots));
 
-  const controls = ["Measure"].map((mode) => {
-    const button = document.createElement("span");
-    button.innerHTML = mode;
-    button.onclick = () => {
-      setMode(mode);
-    };
-    button.style.border = "solid thin";
-    if (mode === state.mode) {
-      button.style.color = "white";
-      button.style.backgroundColor = "black";
-    }
-    button.style.cursor = "pointer";
-    return button;
-  });
-  const controlsContainer = document.getElementById("controls");
-  controlsContainer.innerHTML = "";
-  controls.forEach((control) => controlsContainer.appendChild(control));
+  // const controls = [
+  //   "Measure",
+  // ].map((mode) => {
+  //   const button = document.createElement("button");
+  //   button.innerHTML = mode;
+  //   button.onclick = () => {
+  //     setMode(mode);
+  //   };
+  //   button.className += "control"
+  //   if (mode === state.mode) {
+  //     button.className += " control__selected"
+  //   }
+  //   return button;
+  // });
+  // const controlsContainer = document.getElementById("controls");
+  // controlsContainer.innerHTML = "";
+  // controls.forEach((control) => controlsContainer.appendChild(control));
 }
 
 // canvas manipulation and loading
@@ -191,8 +194,8 @@ function loadImage(e) {
     var img = new Image();
     img.onload = function () {
       // load image, preserving aspect ratio but resizing
-      const maxHeight = 1000;
-      const maxWidth = 1000;
+      const maxHeight = 700;
+      const maxWidth = 700;
 
       let dHeight, dWidth;
 
@@ -210,6 +213,10 @@ function loadImage(e) {
       imageCanvas.height = dHeight;
       imageCanvas.width = dWidth;
       context.drawImage(img, 0, 0, dWidth, dHeight);
+
+      document.getElementById("clear-dots").disabled = false
+      document.getElementById("reset-image").disabled = false
+      document.getElementById("download-canvas").disabled = false
     };
     img.src = event.target.result;
   };
@@ -245,6 +252,9 @@ function drawGuide(canvas, mode, mouseLocation, dots, x, y) {
     context.moveTo(dot.x, dot.y);
     context.lineTo(x, y);
     context.stroke();
+
+    document.getElementById("diameter-display").innerHTML = renderDiameter(distanceBetween(dot, { x, y }));
+
   } else if (dots.length > 1 && dots.length < 6) {
     const dotOnSlope = dotLocationOnSlope(dots[0], dots[1], x, y);
     const perpendicularSlope = perpendicularSlopeOf(dots[0], dots[1]);
@@ -310,6 +320,13 @@ function drawingState() {
   };
 }
 
+function resetPage() {
+  ["image-canvas", "drawing-canvas"].forEach(cname => {
+    const canvas = document.getElementById(cname);
+    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  });
+}
+
 // initialization
 window.onload = function () {
   const { getState, clickCanvas, clearDots, mouseMove, render, mouseOut } =
@@ -356,6 +373,11 @@ window.onload = function () {
   document
     .getElementById("clear-dots")
     .addEventListener("click", clearDots, false);
+
+  document.getElementById("reset-image").addEventListener("click", () => {
+    clearDots();
+    resetPage();
+  }, false);
 
   render();
 };

@@ -1,0 +1,38 @@
+#controls {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.control {
+    margin-right: 0.5rem;
+    border: solid thin;
+    border-radius: 0.3rem;
+    border-color: #666;
+    padding: 0.2rem;
+}
+
+.control__selected {
+    color: white;
+    background-color: #666;
+    border-color: #555;
+    border-radius: 0.3rem;
+}
+
+.canvas-container {
+    position: relative;
+}
+
+canvas {
+    border: solid thin;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#image-canvas {
+    z-index: 0;
+}
+
+#drawing-canvas {
+    z-index: 1;
+}

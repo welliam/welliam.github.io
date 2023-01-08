@@ -6,28 +6,21 @@
     <script src="measure.js"></script>
   </head>
   <body>
-    <input id="image-input" type="file" accept="image/png, image/jpeg" />
-    <img style="display: none" id="source" />
-    <div id="diameter-display"></div>
-    <div id="cma-display"></div>
-    <button id="download-canvas">Download</button>
-    <button id="clear-dots">Clear</button>
-    <div id="controls"></div>
-    <div style="position: relative">
-      <canvas
-        id="image-canvas"
-        style="
-          border: solid thin;
-          position: absolute;
-          left: 0;
-          top: 0;
-          z-index: 0;
-        "
-      ></canvas>
-      <canvas
-        id="drawing-canvas"
-        style="position: absolute; left: 0; top: 0; z-index: 1"
-      ></canvas>
+    <div>
+      <img style="display: none" id="source" />
+      <input id="image-input" type="file" accept="image/png, image/jpeg" />
+      <button id="download-canvas" disabled>Download</button>
+      <button id="clear-dots" disabled>Clear measurements</button>
+      <button id="reset-image" disabled>Reset</button>
+      <div id="controls"></div>
+      <span id="diameter-display"></span>
+      <span id="cma-display"></span>
+    </div>
+    <div class="canvas-container">
+      <canvas id="image-canvas"></canvas>
+      <canvas id="drawing-canvas"></canvas>
+      <div id="image-upload">
+      </div>
     </div>
   </body>
 </html>
