@@ -152,9 +152,31 @@ function cmaTextOf(state) {
 
 function renderLabel(state, context) {
   const cmaText = cmaTextOf(state);
-  context.fillStyle = "white";
   context.font = "20px Arial";
-  let y = 30;
+
+  const yStart = 30;
+
+  const includeCMA = state.labelIncludeCMA && cmaText;
+  const lines = (state.label ? 1 : 0) + (includeCMA ? 1 : 0);
+
+  if (!lines) {
+    return;
+  }
+
+  const width = Math.max(
+    0,
+    context.measureText(state.label).width,
+    cmaText ? context.measureText(cmaText).width : 0,
+  )
+
+  const height = 30 * lines;
+
+  context.fillStyle = "black";
+  context.rect(25, yStart - 20, width + 10, height);
+  context.fill();
+
+  context.fillStyle = "white";
+  y = yStart;
   if (state.label) {
     context.fillText(state.label, 30, y);
     y += 30;
