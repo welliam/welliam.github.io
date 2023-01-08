@@ -379,7 +379,7 @@ function drawingState() {
   };
 
   function resetPageState() {
-    setState({ fileLoaded: false, label: "", dots: [] });
+    setState({ fileLoaded: false, label: "", dotsUndoStack: { stack: [[]], index: 0 } });
   }
 
   function setDotsState(dots) {

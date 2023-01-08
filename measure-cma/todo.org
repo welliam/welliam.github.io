@@ -1,23 +1,5 @@
-* DONE handle infinity case
-* DONE fix cma calc
-* DONE perpendicular brackets on diameter line
-- don't do dot line until two dots exist
-* DONE media type on file uploader for images
-* DONE show diameter
-* WONTDO dot "clicking" logic
-- find closest dot
-- give up if farther than treshold
-- highlight dot if within range of pointer
-* WONTDO move mode
-- use dot clicking logic
-* WONTDO delete mode
-- use dot clicking logic
-- dont need
-* DONE let user write on image
-- auto label cma?
-- or just a "optional label/cma" option
-* DONE make design not bad
-- implementation: move styles out of js, into css, add classes instead
+* TODO bug: when guide line is completely vertical, perp lines are wrong
+* TODO bug: undoing state to initial results in weird white spots
 * TODO fix filename of download
 - no label= "CMA [datetime].png"
 - otherwise "CMA [label].png"
@@ -38,7 +20,6 @@
 - how to image
 - link or reference to CMA/Usnea resource
 * TODO test suite and/or typescript
-* TODO undo
 * TODO breakdown of CMA calculation in pixels
 |               |   C |   M |   A |
 |               |   1 |   3 |   3 |
@@ -48,6 +29,27 @@
 | % of diameter | 15% | 23% | 23% |
 
 diameter = 13
+* DONE handle infinity case
+* DONE fix cma calc
+* DONE perpendicular brackets on diameter line
+- don't do dot line until two dots exist
+* DONE media type on file uploader for images
+* DONE show diameter
+* WONTDO dot "clicking" logic
+- find closest dot
+- give up if farther than treshold
+- highlight dot if within range of pointer
+* WONTDO move mode
+- use dot clicking logic
+* WONTDO delete mode
+- use dot clicking logic
+- dont need
+* DONE let user write on image
+- auto label cma?
+- or just a "optional label/cma" option
+* DONE make design not bad
+- implementation: move styles out of js, into css, add classes instead
+* DONE undo
 * WONTDO realign tool
 - rotate by 90 deg is easy, others is harder
 - maybe shouldn't do
