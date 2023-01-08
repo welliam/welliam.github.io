@@ -12,9 +12,15 @@
       <button id="download-canvas" disabled>Download</button>
       <button id="clear-dots" disabled>Clear measurements</button>
       <button id="reset-image" disabled>Reset</button>
-      <div id="controls"></div>
-      <span id="diameter-display"></span>
-      <span id="cma-display"></span>
+      <div class="label-controls">
+	<label>Label <input></label>
+	<label><input type="checkbox"> Include CMA </label>
+	<label><input type="checkbox"> Include measurement bar </label>
+      </div>
+      <div id="displays">
+	<span id="diameter-display"></span>
+	<span id="cma-display"></span>
+      </div>
     </div>
     <div class="canvas-container">
       <canvas id="image-canvas"></canvas>

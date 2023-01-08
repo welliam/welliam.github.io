@@ -104,7 +104,7 @@ function addDot(dots, x, y) {
 
 function renderDiameter(diameter) {
   return diameter
-    ? `diameter = ${Math.round(diameter)}px`
+    ? `Diameter = ${Math.round(diameter)}px`
     : "";
 }
 
@@ -161,24 +161,6 @@ function render({ state, setMode }) {
   }
 
   document.getElementById("diameter-display").innerHTML = renderDiameter(diameterOf(state.dots));
-
-  // const controls = [
-  //   "Measure",
-  // ].map((mode) => {
-  //   const button = document.createElement("button");
-  //   button.innerHTML = mode;
-  //   button.onclick = () => {
-  //     setMode(mode);
-  //   };
-  //   button.className += "control"
-  //   if (mode === state.mode) {
-  //     button.className += " control__selected"
-  //   }
-  //   return button;
-  // });
-  // const controlsContainer = document.getElementById("controls");
-  // controlsContainer.innerHTML = "";
-  // controls.forEach((control) => controlsContainer.appendChild(control));
 }
 
 // canvas manipulation and loading
@@ -253,7 +235,12 @@ function drawGuide(canvas, mode, mouseLocation, dots, x, y) {
     context.lineTo(x, y);
     context.stroke();
 
-    document.getElementById("diameter-display").innerHTML = renderDiameter(distanceBetween(dot, { x, y }));
+    const perpendicularSlope = perpendicularSlopeOf(dot, {x, y});
+    renderDot(context, x, y, perpendicularSlope);
+    renderDot(context, dot.x, dot.y, perpendicularSlope);
+
+    document.getElementById("diameter-display").innerHTML =
+      renderDiameter(distanceBetween(dot, { x, y }));
 
   } else if (dots.length > 1 && dots.length < 6) {
     const dotOnSlope = dotLocationOnSlope(dots[0], dots[1], x, y);
@@ -375,8 +362,10 @@ window.onload = function () {
     .addEventListener("click", clearDots, false);
 
   document.getElementById("reset-image").addEventListener("click", () => {
+    if (window.confirm("This will clear your measurements as well as the image. Are you sure?")) {
     clearDots();
     resetPage();
+    }
   }, false);
 
   render();

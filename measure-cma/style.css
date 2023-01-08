@@ -36,3 +36,21 @@ canvas {
 #drawing-canvas {
     z-index: 1;
 }
+
+#displays {
+    height: 2rem;
+    margin-top: 0.5rem;
+}
+
+label {
+    margin-right: 1rem;
+}
+
+#displays > * {
+    margin-right: 1rem;
+}
+
+.label-controls {
+    height: 2rem;
+    margin-top: 0.5rem;
+}
