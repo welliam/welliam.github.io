@@ -66,12 +66,19 @@
     </div>
     <div>
       <img style="display: none" id="source" />
-      <input id="image-input" type="file" accept="image/png, image/jpeg" />
       <button id="measurement-undo">&#x21B6;</button>
       <button id="measurement-redo">&#x21B7;</button>
       <button id="clear-dots" disabled>Clear measurements</button>
-      <button id="reset-image" disabled>Reset</button>
       <button id="download-canvas" disabled>Download</button>
+      <label for="image-input" id="image-input-label" class="hidden">
+        <button>New</button>
+      </label>
+      <input
+        id="image-input"
+        type="file"
+        accept="image/png, image/jpeg"
+        class="hidden"
+      />
       <div class="label-controls">
         <label>Label <input id="label-input" /></label>
         <label

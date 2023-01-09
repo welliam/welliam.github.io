@@ -84,9 +84,9 @@ h1 {
   font-size: 2rem;
 }
 
-#image-input {
-  display: none;
-}
+/* #image-input { */
+/*   display: none; */
+/* } */
 
 #displays > * {
   margin-right: 1rem;
@@ -116,4 +116,12 @@ th {
 
 .table-number-cell {
   text-align: right;
+}
+
+label#image-input-label {
+  margin-right: 0;
+}
+
+label#image-input-label > button {
+  pointer-events: none;
 }

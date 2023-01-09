@@ -377,7 +377,7 @@ function render({ state, setMode }) {
   );
   document.getElementById("label-input").value = state.label;
   document.getElementById("clear-dots").disabled = !state.fileLoaded;
-  document.getElementById("reset-image").disabled = !state.fileLoaded;
+  /* document.getElementById("reset-image").disabled = !state.fileLoaded; */
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
 
@@ -434,6 +434,12 @@ function loadImage(e, fileLoaded) {
       imageCanvas.height = dHeight;
       imageCanvas.width = dWidth;
       context.drawImage(img, 0, 0, dWidth, dHeight);
+
+      const imageInput = document.getElementById("image-input-label");
+      imageInput.className = imageInput.className
+        .split(" ")
+        .filter((name) => name !== "hidden")
+        .join(" ");
 
       fileLoaded(file.name.replace(/\.[^\.]+$/, ""));
     };
@@ -518,14 +524,6 @@ function drawingState() {
     showBreakdown: false,
   };
 
-  function resetPageState() {
-    setState({
-      fileLoaded: false,
-      label: "",
-      dotsUndoStack: { stack: [[]], index: 0 },
-    });
-  }
-
   function setDotsState(dots) {
     if (dots.length <= 6) {
       setState({
@@ -551,7 +549,9 @@ function drawingState() {
   }
 
   function clearDots() {
-    setDotsState([]);
+    if (undoStackGetState(state.dotsUndoStack).length > 0) {
+      setDotsState([]);
+    }
   }
 
   function setMode(mode) {
@@ -614,18 +614,8 @@ function drawingState() {
     fileLoaded,
     changeLabel,
     changeIncludeCMA,
-    resetPageState,
     toggleShowBreakdown,
   };
-}
-
-function resetPage() {
-  ["drawing-canvas", "image-canvas"].forEach((cname) => {
-    const canvas = document.getElementById(cname);
-    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-    canvas.width = 300;
-    canvas.height = 150;
-  });
 }
 
 // initialization
@@ -635,7 +625,6 @@ window.onload = function () {
     getDots,
     clickCanvas,
     clearDots,
-    resetPageState,
     mouseMove,
     render,
     mouseOut,
@@ -696,21 +685,6 @@ window.onload = function () {
   document
     .getElementById("clear-dots")
     .addEventListener("click", clearDots, false);
-
-  document.getElementById("reset-image").addEventListener(
-    "click",
-    () => {
-      if (
-        window.confirm(
-          "This will clear your measurements as well as the image. Are you sure?"
-        )
-      ) {
-        resetPage();
-        resetPageState();
-      }
-    },
-    false
-  );
 
   document.getElementById("label-input").oninput = (event) => {
     changeLabel(event.target.value);
