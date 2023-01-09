@@ -405,20 +405,30 @@ function loadImage(e, fileLoaded) {
     var img = new Image();
     img.onload = function () {
       // load image, preserving aspect ratio but resizing
-      const maxHeight = 600;
-      const maxWidth = 700;
+      const bodyDimensions = document.body.getBoundingClientRect();
+      const maxHeight =
+        window.innerHeight -
+        (bodyDimensions.height -
+          document.querySelector(".canvas-container").getBoundingClientRect()
+            .height) -
+        50;
+      const maxWidth = bodyDimensions.width - 2;
 
-      let dHeight, dWidth;
+      let dHeight = img.height;
+      let dWidth = img.width;
 
-      if (img.height > img.width) {
-        // scale down height to fit
-        dHeight = maxHeight;
-        dWidth = img.width * (maxHeight / img.height);
-      } else {
-        // scale down width to fit
-        dWidth = maxWidth;
-        dHeight = img.height * (maxWidth / img.width);
+      if (img.height >= maxHeight || img.width >= maxWidth) {
+        // height would be reduced by more; scale height down to fit
+        if (img.height - maxHeight > img.width - maxWidth) {
+          dHeight = maxHeight;
+          dWidth = img.width * (maxHeight / img.height);
+        } else {
+          // otherwise scale down width to fit
+          dWidth = maxWidth;
+          dHeight = img.height * (maxWidth / img.width);
+        }
       }
+
       drawingCanvas.height = dHeight;
       drawingCanvas.width = dWidth;
       imageCanvas.height = dHeight;
