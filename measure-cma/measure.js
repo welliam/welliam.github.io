@@ -1,5 +1,16 @@
 // math
 
+function cmaRound(c, m, a) {
+  // make up the difference in the a measurement
+  const roundedC = Math.round(c * 100);
+  const roundedM = Math.round(m * 100);
+  return {
+    c: roundedC,
+    m: roundedM,
+    a: 100 - roundedC * 2 - roundedM * 2,
+  };
+}
+
 function distanceBetween(dot1, dot2) {
   return Math.sqrt((dot2.x - dot1.x) ** 2 + (dot2.y - dot1.y) ** 2);
 }
@@ -193,10 +204,8 @@ function cmaTextOf(state) {
   const cma = calculateCMA(undoStackGetState(state.dotsUndoStack));
   if (cma) {
     const { c, m, a } = cma;
-    const cPercent = Math.round(c * 100);
-    const mPercent = Math.round(m * 100);
-    const aPercent = Math.round(a * 100);
-    return `CMA = ${cPercent} / ${mPercent} / ${aPercent}`;
+    const rounded = cmaRound(c, m, a);
+    return `CMA = ${rounded.c} / ${rounded.m} / ${rounded.a}`;
   }
 }
 
@@ -280,6 +289,7 @@ function renderCMABreakdown(state) {
   const dots = undoStackGetState(state.dotsUndoStack);
   const cma = calculateCMA(dots);
   if (cma) {
+    const rounded = cmaRound(cma.c, cma.m, cma.a);
     return element("table", [
       element("thead", [
         element("tr", [
@@ -326,9 +336,9 @@ function renderCMABreakdown(state) {
         ]),
         element("tr", [
           element("td", ["% of diameter"]),
-          element("td", [percent(cma.c)], { className: "table-number-cell" }),
-          element("td", [percent(cma.m)], { className: "table-number-cell" }),
-          element("td", [percent(cma.a)], { className: "table-number-cell" }),
+          element("td", [rounded.c], { className: "table-number-cell" }),
+          element("td", [rounded.m], { className: "table-number-cell" }),
+          element("td", [rounded.a], { className: "table-number-cell" }),
         ]),
       ]),
     ]);
