@@ -1,5 +1,3 @@
-* TODO mobile enhancements
-fix dot on single click
 * TODO dots state refactor?
 - invariant: dots should always be on a line
 - instead we could model the state in a way that makes it impossible
@@ -12,6 +10,8 @@ fix dot on single click
 - problem is that redrawing image by resizing is annoying
 - could allow user to resize canvas, then center image
 * TODO test suite and/or typescript
+* DONE mobile enhancements
+fix dot on single click
 * DONE hotkeys
 - undo
 - redo
