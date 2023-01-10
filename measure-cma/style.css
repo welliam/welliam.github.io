@@ -1,5 +1,48 @@
+body {
+  font-family: "Arial";
+}
+
 h1 {
   font-family: serif;
+  margin: 0;
+  font-size: 2rem;
+}
+
+img {
+  display: block;
+  border: solid thin;
+  border-color: #777;
+  padding: 1rem;
+  margin: 1rem;
+  max-width: 100%;
+}
+
+header {
+  margin-bottom: 1rem;
+}
+
+canvas {
+  border: solid thin;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+label {
+  margin-right: 1rem;
+}
+
+table {
+  border-collapse: collapse;
+  border: 2px solid rgb(200, 200, 200);
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+td,
+th {
+  border: 1px solid rgb(190, 190, 190);
+  padding: 5px 10px;
 }
 
 .hidden {
@@ -16,51 +59,30 @@ h1 {
   max-width: 55rem;
 }
 
-.modal-content {
+.canvas-container {
+  position: relative;
 }
 
-img {
-  display: block;
-  border: solid thin;
-  border-color: #777;
-  padding: 1rem;
-  margin: 1rem;
-  max-width: 100%;
+.label-controls {
+  height: 2rem;
+  margin-top: 1rem;
 }
 
-body {
-  font-family: "Arial";
+.table-number-cell {
+  text-align: right;
+}
+
+label#image-input-label {
+  margin-right: 0;
+}
+
+label#image-input-label > button {
+  pointer-events: none;
 }
 
 #controls {
   margin-top: 1rem;
   margin-bottom: 1rem;
-}
-
-.control {
-  margin-right: 0.5rem;
-  border: solid thin;
-  border-radius: 0.3rem;
-  border-color: #666;
-  padding: 0.2rem;
-}
-
-.control__selected {
-  color: white;
-  background-color: #666;
-  border-color: #555;
-  border-radius: 0.3rem;
-}
-
-.canvas-container {
-  position: relative;
-}
-
-canvas {
-  border: solid thin;
-  position: absolute;
-  left: 0;
-  top: 0;
 }
 
 #image-canvas {
@@ -77,52 +99,6 @@ canvas {
   margin-bottom: 0.5rem;
 }
 
-header {
-  margin-bottom: 1rem;
-}
-h1 {
-  margin: 0;
-  font-size: 2rem;
-}
-
-/* #image-input { */
-/*   display: none; */
-/* } */
-
 #displays > * {
   margin-right: 1rem;
-}
-
-label {
-  margin-right: 1rem;
-}
-
-.label-controls {
-  height: 2rem;
-  margin-top: 1rem;
-}
-
-table {
-  border-collapse: collapse;
-  border: 2px solid rgb(200, 200, 200);
-  letter-spacing: 1px;
-  margin-bottom: 1rem;
-}
-
-td,
-th {
-  border: 1px solid rgb(190, 190, 190);
-  padding: 5px 10px;
-}
-
-.table-number-cell {
-  text-align: right;
-}
-
-label#image-input-label {
-  margin-right: 0;
-}
-
-label#image-input-label > button {
-  pointer-events: none;
 }
