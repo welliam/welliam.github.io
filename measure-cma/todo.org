@@ -6,6 +6,8 @@
 * TODO clean up how DOM is updated
 - abstract out rendering and pass into state function so state functio nis clean
 - add pure rendering layer and separate from DOM updating layer
+- the state function could take lens/render function pairs which are deep compared with previous states to determine whether to render
+* TODO note rounding logic in breakdown
 * TODO test suite
 * TODO typescript
 * TODO dots state refactor?
