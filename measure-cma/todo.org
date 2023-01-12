@@ -1,3 +1,13 @@
+* TODO fix measurement line rendering
+- perpendicular lines should stay put, those are "correct"
+- bridge line should align based of 1/2 of line width
+* TODO fix dot "sticking" when placing 6 dots and undoing all
+* TODO abstract canvas out
+* TODO clean up how DOM is updated
+- abstract out rendering and pass into state function so state functio nis clean
+- add pure rendering layer and separate from DOM updating layer
+* TODO test suite
+* TODO typescript
 * TODO dots state refactor?
 - invariant: dots should always be on a line
 - instead we could model the state in a way that makes it impossible
@@ -5,11 +15,6 @@
 - for example, model with start and end dot, and have the inner dots be distances along that line
   - this would simplify CMA calculation, but make display logic more complicated
   - function that "recovers" dots from this wouldn't be difficult though
-* TODO test suite and/or typescript
-* TODO fix dot "sticking" when placing first dot and undoing
-* TODO fix measurement line rendering
-- perpendicular lines should stay put, those are "correct"
-- bridge line should align based of 1/2 of line width
 * DONE idea for image size flexibility
 - right now max size is hardcoded, would be nice if this were configurable or something
 - problem is that redrawing image by resizing is annoying

@@ -2,8 +2,6 @@
 
 // math
 
-function getProportionalToCanvas(value, canvas) {}
-
 function getScaledValue(value, rect, canvas) {
   return (canvas.width / rect.width) * value;
 }
@@ -143,37 +141,43 @@ function addDot(dots, x, y) {
 // undo stack
 
 class UndoStack {
-    constructor({ stack, index }) {
-        this.stack = stack;
-        this.index = index;
-    }
+  constructor({ stack, index }) {
+    this.stack = stack;
+    this.index = index;
+  }
 
-    pushState(state) {
-        const { stack, index } = this;
-        return new UndoStack({ stack: [...stack.slice(0, index + 1), state], index: index + 1 });
-    }
+  pushState(state) {
+    const { stack, index } = this;
+    return new UndoStack({
+      stack: [...stack.slice(0, index + 1), state],
+      index: index + 1,
+    });
+  }
 
-    getState() {
-        return this.stack[this.index];
-    }
+  getState() {
+    return this.stack[this.index];
+  }
 
-    redo() {
-        const { stack, index } = this;
-        return new UndoStack({ stack, index: Math.min(stack.length - 1, index + 1) });
-    }
+  redo() {
+    const { stack, index } = this;
+    return new UndoStack({
+      stack,
+      index: Math.min(stack.length - 1, index + 1),
+    });
+  }
 
-    undo() {
-        const { stack, index } = this;
-        return new UndoStack({ stack, index: Math.max(0, index - 1) });
-    }
+  undo() {
+    const { stack, index } = this;
+    return new UndoStack({ stack, index: Math.max(0, index - 1) });
+  }
 
-    hasRedo() {
-        return this.index < this.stack.length - 1;
-    }
+  hasRedo() {
+    return this.index < this.stack.length - 1;
+  }
 
-    hasUndo() {
-        return this.index > 0;
-    }
+  hasUndo() {
+    return this.index > 0;
+  }
 }
 
 // rendering
@@ -218,10 +222,7 @@ function renderDotsOnCanvas(state, context) {
   });
 
   if (dots.length) {
-    context.beginPath();
-    context.moveTo(dots[0].x, dots[0].y);
-    context.lineTo(dots[dots.length - 1].x, dots[dots.length - 1].y);
-    context.stroke();
+    drawBar(context, dots[0], dots[dots.length - 1]);
   }
 }
 
@@ -282,7 +283,6 @@ function renderLabel(state, context) {
 function renderCanvas(state, context) {
   if (state.fileLoaded) {
     renderLabel(state, context);
-    context.restore();
     renderDotsOnCanvas(state, context);
   } else {
     context.font = "20px Arial";
@@ -385,9 +385,7 @@ function render({ state, setMode }) {
   const canvas = document.getElementById("drawing-canvas");
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.lineWidth =
-    // getScaledValue(2, canvas.getBoundingClientRect(), canvas);
-    Math.max(Math.round(context.canvas.height / 250), 1);
+  context.lineWidth = Math.max(Math.round(context.canvas.height / 250), 1);
 
   renderCanvas(state, context);
 
@@ -413,12 +411,13 @@ function render({ state, setMode }) {
   );
   document.getElementById("label-input").value = state.label;
   document.getElementById("clear-dots").disabled = !state.fileLoaded;
-  /* document.getElementById("reset-image").disabled = !state.fileLoaded; */
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
 
-  document.getElementById("measurement-undo").disabled = !state.dotsUndoStack.hasUndo();
-  document.getElementById("measurement-redo").disabled = !state.dotsUndoStack.hasRedo();
+  document.getElementById("measurement-undo").disabled =
+    !state.dotsUndoStack.hasUndo();
+  document.getElementById("measurement-redo").disabled =
+    !state.dotsUndoStack.hasRedo();
 }
 
 // canvas manipulation and loading
@@ -436,31 +435,6 @@ function loadImage(e, fileLoaded) {
   reader.onload = function (event) {
     var img = new Image();
     img.onload = function () {
-      // load image, preserving aspect ratio but resizing
-      const bodyDimensions = document.body.getBoundingClientRect();
-      const maxHeight =
-        window.innerHeight -
-        (bodyDimensions.height -
-          document.querySelector(".canvas-container").getBoundingClientRect()
-            .height) -
-        50;
-      const maxWidth = bodyDimensions.width - 2;
-
-      let dHeight = img.height;
-      let dWidth = img.width;
-
-      if (img.height >= maxHeight || img.width >= maxWidth) {
-        // height would be reduced by more; scale height down to fit
-        if (img.height - maxHeight > img.width - maxWidth) {
-          dHeight = maxHeight;
-          dWidth = img.width * (maxHeight / img.height);
-        } else {
-          // otherwise scale down width to fit
-          dWidth = maxWidth;
-          dHeight = img.height * (maxWidth / img.width);
-        }
-      }
-
       drawingCanvas.width = img.width;
       drawingCanvas.height = img.height;
       imageCanvas.width = img.width;
@@ -512,6 +486,13 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
   link.click();
 }
 
+function drawBar(context, dotFrom, dotTo) {
+  context.beginPath();
+  context.moveTo(dotFrom.x, dotFrom.y);
+  context.lineTo(dotTo.x, dotTo.y);
+  context.stroke();
+}
+
 function drawGuide(state, canvas, x, y) {
   const { mode, mouseLocation } = state;
   const dots = state.dotsUndoStack.getState();
@@ -525,10 +506,7 @@ function drawGuide(state, canvas, x, y) {
 
   if (dots.length === 1) {
     const [dot] = dots;
-    context.beginPath();
-    context.moveTo(dot.x, dot.y);
-    context.lineTo(x, y);
-    context.stroke();
+    drawBar(context, dot, { x, y });
 
     const perpendicularSlope = perpendicularSlopeOf(dot, { x, y });
     renderDot(context, x, y, perpendicularSlope);
@@ -634,10 +612,8 @@ function drawingState() {
 
   return {
     getState,
-    undoDots: () =>
-      setState({ dotsUndoStack: state.dotsUndoStack.undo() }),
-    redoDots: () =>
-      setState({ dotsUndoStack: state.dotsUndoStack.redo() }),
+    undoDots: () => setState({ dotsUndoStack: state.dotsUndoStack.undo() }),
+    redoDots: () => setState({ dotsUndoStack: state.dotsUndoStack.redo() }),
     clickCanvas,
     clearDots,
     mouseMove,
@@ -746,11 +722,14 @@ window.onload = function () {
   };
 
   document.onkeydown = (event) => {
-    if (event.keyCode == 90 && event.ctrlKey) {
+    if (event.keyCode == "Z".charCodeAt(0) && event.ctrlKey) {
       undoDots();
     }
-    if (event.keyCode == 89 && event.ctrlKey) {
+    if (event.keyCode == "Y".charCodeAt(0) && event.ctrlKey) {
       redoDots();
+    }
+    if (event.keyCode == "N".charCodeAt(0) && event.ctrlKey) {
+      document.getElementById("image-input").click();
     }
   };
 
