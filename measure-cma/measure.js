@@ -142,31 +142,38 @@ function addDot(dots, x, y) {
 
 // undo stack
 
-function undoStackPushState(undoStack, state) {
-  const { stack, index } = undoStack;
-  return { stack: [...stack.slice(0, index + 1), state], index: index + 1 };
-}
+class UndoStack {
+    constructor({ stack, index }) {
+        this.stack = stack;
+        this.index = index;
+    }
 
-function undoStackGetState(undoStack) {
-  return undoStack.stack[undoStack.index];
-}
+    pushState(state) {
+        const { stack, index } = this;
+        return new UndoStack({ stack: [...stack.slice(0, index + 1), state], index: index + 1 });
+    }
 
-function undoStackRedo(undoStack) {
-  const { stack, index } = undoStack;
-  return { stack, index: Math.min(stack.length - 1, index + 1) };
-}
+    getState() {
+        return this.stack[this.index];
+    }
 
-function undoStackUndo(undoStack) {
-  const { stack, index } = undoStack;
-  return { stack, index: Math.max(0, index - 1) };
-}
+    redo() {
+        const { stack, index } = this;
+        return new UndoStack({ stack, index: Math.min(stack.length - 1, index + 1) });
+    }
 
-function undoStackHasRedo(undoStack) {
-  return undoStack.index < undoStack.stack.length - 1;
-}
+    undo() {
+        const { stack, index } = this;
+        return new UndoStack({ stack, index: Math.max(0, index - 1) });
+    }
 
-function undoStackHasUndo(undoStack) {
-  return undoStack.index > 0;
+    hasRedo() {
+        return this.index < this.stack.length - 1;
+    }
+
+    hasUndo() {
+        return this.index > 0;
+    }
 }
 
 // rendering
@@ -187,7 +194,7 @@ function renderDot(context, x, y, perpendicularSlope) {
 
 function renderDotsOnCanvas(state, context) {
   let { dotsUndoStack, mode } = state;
-  let dots = undoStackGetState(dotsUndoStack);
+  let dots = dotsUndoStack.getState();
   if (dots.length === 0) {
     return;
   }
@@ -219,7 +226,7 @@ function renderDotsOnCanvas(state, context) {
 }
 
 function cmaTextOf(state) {
-  const cma = calculateCMA(undoStackGetState(state.dotsUndoStack));
+  const cma = calculateCMA(state.dotsUndoStack.getState());
   if (cma) {
     const { c, m, a } = cma;
     const rounded = cmaRound(c, m, a);
@@ -313,7 +320,7 @@ function percent(n) {
 }
 
 function renderCMABreakdown(state) {
-  const dots = undoStackGetState(state.dotsUndoStack);
+  const dots = state.dotsUndoStack.getState();
   const cma = calculateCMA(dots);
   if (cma) {
     const rounded = cmaRound(cma.c, cma.m, cma.a);
@@ -402,7 +409,7 @@ function render({ state, setMode }) {
   }
 
   document.getElementById("diameter-display").innerHTML = renderDiameter(
-    diameterOf(undoStackGetState(state.dotsUndoStack))
+    diameterOf(state.dotsUndoStack.getState())
   );
   document.getElementById("label-input").value = state.label;
   document.getElementById("clear-dots").disabled = !state.fileLoaded;
@@ -410,12 +417,8 @@ function render({ state, setMode }) {
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
 
-  document.getElementById("measurement-undo").disabled = !undoStackHasUndo(
-    state.dotsUndoStack
-  );
-  document.getElementById("measurement-redo").disabled = !undoStackHasRedo(
-    state.dotsUndoStack
-  );
+  document.getElementById("measurement-undo").disabled = !state.dotsUndoStack.hasUndo();
+  document.getElementById("measurement-redo").disabled = !state.dotsUndoStack.hasRedo();
 }
 
 // canvas manipulation and loading
@@ -511,7 +514,7 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
 
 function drawGuide(state, canvas, x, y) {
   const { mode, mouseLocation } = state;
-  const dots = undoStackGetState(state.dotsUndoStack);
+  const dots = state.dotsUndoStack.getState();
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
   renderCanvas(state, context);
@@ -545,7 +548,7 @@ function drawGuide(state, canvas, x, y) {
 
 function drawingState() {
   let state = {
-    dotsUndoStack: { stack: [[]], index: 0 },
+    dotsUndoStack: new UndoStack({ stack: [[]], index: 0 }),
     mode: "Measure",
     mouseLocation: "out",
     labelIncludeCMA: true,
@@ -557,13 +560,13 @@ function drawingState() {
   function setDotsState(dots) {
     if (dots.length <= 6) {
       setState({
-        dotsUndoStack: undoStackPushState(state.dotsUndoStack, dots),
+        dotsUndoStack: state.dotsUndoStack.pushState(dots),
       });
     }
   }
 
   function addDotToState(x, y) {
-    const dots = undoStackGetState(state.dotsUndoStack);
+    const dots = state.dotsUndoStack.getState();
     return setDotsState(addDot(dots, x, y));
   }
 
@@ -579,7 +582,7 @@ function drawingState() {
   }
 
   function clearDots() {
-    if (undoStackGetState(state.dotsUndoStack).length > 0) {
+    if (state.dotsUndoStack.getState().length > 0) {
       setDotsState([]);
     }
   }
@@ -613,7 +616,7 @@ function drawingState() {
     setState({
       fileLoaded: true,
       label: state.label || filename,
-      dotsUndoStack: { stack: [[]], index: 0 },
+      dotsUndoStack: new UndoStack({ stack: [[]], index: 0 }),
     });
   }
 
@@ -631,11 +634,11 @@ function drawingState() {
 
   return {
     getState,
-    getDots: () => undoStackGetState(state.dotsUndoStack),
+    getDots: () => state.dotsUndoStack.getstate(),
     undoDots: () =>
-      setState({ dotsUndoStack: undoStackUndo(state.dotsUndoStack) }),
+      setState({ dotsUndoStack: state.dotsUndoStack.undo() }),
     redoDots: () =>
-      setState({ dotsUndoStack: undoStackRedo(state.dotsUndoStack) }),
+      setState({ dotsUndoStack: state.dotsUndoStack.redo() }),
     clickCanvas,
     clearDots,
     mouseMove,
