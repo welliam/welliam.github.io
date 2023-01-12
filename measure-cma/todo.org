@@ -5,11 +5,17 @@
 - for example, model with start and end dot, and have the inner dots be distances along that line
   - this would simplify CMA calculation, but make display logic more complicated
   - function that "recovers" dots from this wouldn't be difficult though
-* TODO idea for image size flexibility
+* TODO test suite and/or typescript
+* TODO fix dot "sticking" when placing first dot and undoing
+* TODO fix measurement line rendering
+- perpendicular lines should stay put, those are "correct"
+- bridge line should align based of 1/2 of line width
+* DONE idea for image size flexibility
 - right now max size is hardcoded, would be nice if this were configurable or something
 - problem is that redrawing image by resizing is annoying
 - could allow user to resize canvas, then center image
-* TODO test suite and/or typescript
+** resolved:
+- keep image size the same, use css to rerender canvas
 * DONE mobile enhancements
 fix dot on single click
 * DONE hotkeys
