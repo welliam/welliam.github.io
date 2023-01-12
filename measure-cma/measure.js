@@ -634,7 +634,6 @@ function drawingState() {
 
   return {
     getState,
-    getDots: () => state.dotsUndoStack.getstate(),
     undoDots: () =>
       setState({ dotsUndoStack: state.dotsUndoStack.undo() }),
     redoDots: () =>
@@ -655,7 +654,6 @@ function drawingState() {
 window.onload = function () {
   const {
     getState,
-    getDots,
     clickCanvas,
     clearDots,
     mouseMove,
