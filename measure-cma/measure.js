@@ -1,13 +1,20 @@
-'use strict';
+"use strict";
 
 // math
 
+function getProportionalToCanvas(value, canvas) {}
+
+function getScaledValue(value, rect, canvas) {
+  return (canvas.width / rect.width) * value;
+}
+
 function getScaledPoint(clientX, clientY, rect, canvas) {
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
-    const scaledX = (canvas.width / rect.width) * x;
-    const scaledY = (canvas.height / rect.height) * y;
-  return {x: scaledX, y: scaledY};
+  const x = clientX - rect.left;
+  const y = clientY - rect.top;
+  const scaledX = getScaledValue(x, rect, canvas);
+  const scaledY = getScaledValue(y, rect, canvas);
+
+  return { x: scaledX, y: scaledY };
 }
 
 function cmaRound(c, m, a) {
@@ -169,7 +176,8 @@ function renderDiameter(diameter) {
 }
 
 function renderDot(context, x, y, perpendicularSlope) {
-  const dot = perpendicularAway({ x, y }, 30, perpendicularSlope);
+  const away = Math.max(Math.round(context.canvas.height / 25), 1);
+  const dot = perpendicularAway({ x, y }, away, perpendicularSlope);
 
   context.beginPath();
   context.moveTo(x, y);
@@ -221,9 +229,13 @@ function cmaTextOf(state) {
 
 function renderLabel(state, context) {
   const cmaText = cmaTextOf(state);
-  context.font = "20px Arial";
+  const fontSizePx = Math.round(
+    Math.max(context.canvas.height, context.canvas.width) / 30
+  );
+  context.font = `${fontSizePx}px Arial`;
 
-  const yStart = 30;
+  // const yStart = 30;
+  const yStart = fontSizePx * 1.5;
 
   const includeCMA = state.labelIncludeCMA && cmaText;
   const lines = (state.label ? 1 : 0) + (includeCMA ? 1 : 0);
@@ -238,20 +250,25 @@ function renderLabel(state, context) {
     includeCMA ? context.measureText(cmaText).width : 0
   );
 
-  const height = 30 * lines;
+  const height = fontSizePx * 1.5 * lines;
 
   context.fillStyle = "black";
-  context.rect(25, yStart - 20, width + 10, height);
+  context.rect(
+    fontSizePx * 1.2,
+    yStart - fontSizePx,
+    width + fontSizePx / 2,
+    height
+  );
   context.fill();
 
   context.fillStyle = "white";
   let y = yStart;
   if (state.label) {
-    context.fillText(state.label, 30, y);
-    y += 30;
+    context.fillText(state.label, fontSizePx * 1.5, y);
+    y += fontSizePx * 1.5;
   }
   if (state.labelIncludeCMA && cmaText) {
-    context.fillText(cmaText, 30, y);
+    context.fillText(cmaText, fontSizePx * 1.5, y);
   }
 }
 
@@ -361,7 +378,9 @@ function render({ state, setMode }) {
   const canvas = document.getElementById("drawing-canvas");
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.lineWidth = 2;
+  context.lineWidth =
+    // getScaledValue(2, canvas.getBoundingClientRect(), canvas);
+    Math.max(Math.round(context.canvas.height / 250), 1);
 
   renderCanvas(state, context);
 
@@ -655,7 +674,12 @@ window.onload = function () {
     "mousedown",
     function (event) {
       const rect = drawingCanvas.getBoundingClientRect();
-      const { x, y } = getScaledPoint(event.clientX, event.clientY, rect, drawingCanvas);
+      const { x, y } = getScaledPoint(
+        event.clientX,
+        event.clientY,
+        rect,
+        drawingCanvas
+      );
       clickCanvas(x, y);
     },
     false
@@ -665,7 +689,12 @@ window.onload = function () {
 
   drawingCanvas.addEventListener("mousemove", function (event) {
     const rect = drawingCanvas.getBoundingClientRect();
-    const { x, y } = getScaledPoint(event.clientX, event.clientY, rect, drawingCanvas);
+    const { x, y } = getScaledPoint(
+      event.clientX,
+      event.clientY,
+      rect,
+      drawingCanvas
+    );
     const state = getState();
     mouseMove();
     drawGuide(state, drawingCanvas, x, y);

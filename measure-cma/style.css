@@ -100,8 +100,8 @@ label#image-input-label > button {
 }
 
 canvas {
-    max-width: 100%;
-    max-heigth: 100%;
+  max-width: 99%;
+  max-height: 130vh;
 }
 
 #displays > * {
