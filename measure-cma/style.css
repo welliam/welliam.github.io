@@ -99,6 +99,11 @@ label#image-input-label > button {
   margin-bottom: 0.5rem;
 }
 
+canvas {
+    max-width: 100%;
+    max-heigth: 100%;
+}
+
 #displays > * {
   margin-right: 1rem;
 }

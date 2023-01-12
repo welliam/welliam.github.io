@@ -1,4 +1,14 @@
+'use strict';
+
 // math
+
+function getScaledPoint(clientX, clientY, rect, canvas) {
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    const scaledX = (canvas.width / rect.width) * x;
+    const scaledY = (canvas.height / rect.height) * y;
+  return {x: scaledX, y: scaledY};
+}
 
 function cmaRound(c, m, a) {
   // make up the difference in the a measurement
@@ -235,7 +245,7 @@ function renderLabel(state, context) {
   context.fill();
 
   context.fillStyle = "white";
-  y = yStart;
+  let y = yStart;
   if (state.label) {
     context.fillText(state.label, 30, y);
     y += 30;
@@ -429,11 +439,12 @@ function loadImage(e, fileLoaded) {
         }
       }
 
-      drawingCanvas.height = dHeight;
-      drawingCanvas.width = dWidth;
-      imageCanvas.height = dHeight;
-      imageCanvas.width = dWidth;
-      context.drawImage(img, 0, 0, dWidth, dHeight);
+      drawingCanvas.width = img.width;
+      drawingCanvas.height = img.height;
+      imageCanvas.width = img.width;
+      imageCanvas.height = img.height;
+
+      context.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
 
       const imageInput = document.getElementById("image-input-label");
       imageInput.className = imageInput.className
@@ -452,7 +463,7 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
   const flattenedCanvas = document.createElement("canvas");
   flattenedCanvas.height = imageCanvas.height;
   flattenedCanvas.width = imageCanvas.width;
-  flattenedCanvasContex = flattenedCanvas.getContext("2d");
+  const flattenedCanvasContex = flattenedCanvas.getContext("2d");
   flattenedCanvasContex.drawImage(imageCanvas, 0, 0);
   flattenedCanvasContex.drawImage(drawingCanvas, 0, 0);
 
@@ -644,8 +655,7 @@ window.onload = function () {
     "mousedown",
     function (event) {
       const rect = drawingCanvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+      const { x, y } = getScaledPoint(event.clientX, event.clientY, rect, drawingCanvas);
       clickCanvas(x, y);
     },
     false
@@ -655,8 +665,7 @@ window.onload = function () {
 
   drawingCanvas.addEventListener("mousemove", function (event) {
     const rect = drawingCanvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const { x, y } = getScaledPoint(event.clientX, event.clientY, rect, drawingCanvas);
     const state = getState();
     mouseMove();
     drawGuide(state, drawingCanvas, x, y);
