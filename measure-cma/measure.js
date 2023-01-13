@@ -331,48 +331,66 @@ function renderCMABreakdown(state) {
     const rounded = cmaRound(cma.c, cma.m, cma.a);
     return element("table", [
       element("thead", [
-          element("th", [""]),
-          element("th", ["Raw"]),
-          element("th", ["Ave."]),
-          element("th", ["%"]),
+        element("th", [""]),
+        element("th", ["Raw"]),
+        element("th", ["Ave."]),
+        element("th", ["%"]),
       ]),
       element("tbody", [
-	element("tr", [
-	  element("td", ["C"], { className: "table-row-label" }),
-	  element("td", [pixels(cma.c1Pixels)], {className: "table-number-cell",}),
-	  element("td", [pixels(cma.cPixelsAverage)], {className: "table-number-cell",}),
-	  element("td", [rounded.c], {className: "table-number-cell",}),
-      ]),
-	element("tr", [
-	  element("td", ["M"], { className: "table-row-label" }),
-	  element("td", [pixels(cma.m1Pixels)], {className: "table-number-cell",}),
-	  element("td", [pixels(cma.mPixelsAverage)], {className: "table-number-cell",}),
-	  element("td", [rounded.m], {className: "table-number-cell",}),
-      ]),
-	element("tr", [
-	  element("td", ["A"], { className: "table-row-label" }),
-	  element("td", [pixels(cma.aPixels)], {className: "table-number-cell",}),
-	  element("td", [pixels(cma.aPixels)], {className: "table-number-cell",}),
-	  element("td", [rounded.a], {className: "table-number-cell",}),
-      ]),
-	element("tr", [
-	  element("td", ["M"], { className: "table-row-label" }),
-	  element("td", [pixels(cma.m2Pixels)], {className: "table-number-cell",}),
-	  // element("td", []),
-	  // element("td", []),
-	]),
-	element("tr", [
-	  element("td", ["C"], { className: "table-row-label" }),
-	  element("td", [pixels(cma.c2Pixels)], {className: "table-number-cell",}),
-	  // element("td", []),
-	  // element("td", []),
-	]),
-	element("tr", [
-	  element("td", ["Total"], { className: "table-row-label" }),
-	  element("td", [pixels(cma.diameter)], {className: "table-number-cell",}),
-	  // element("td", []),
-	  // element("td", []),
-	]),
+        element("tr", [
+          element("td", ["C"], { className: "table-row-label" }),
+          element("td", [pixels(cma.c1Pixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.cPixelsAverage)], {
+            className: "table-number-cell",
+          }),
+          element("td", [rounded.c], { className: "table-number-cell" }),
+        ]),
+        element("tr", [
+          element("td", ["M"], { className: "table-row-label" }),
+          element("td", [pixels(cma.m1Pixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.mPixelsAverage)], {
+            className: "table-number-cell",
+          }),
+          element("td", [rounded.m], { className: "table-number-cell" }),
+        ]),
+        element("tr", [
+          element("td", ["A"], { className: "table-row-label" }),
+          element("td", [pixels(cma.aPixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [pixels(cma.aPixels)], {
+            className: "table-number-cell",
+          }),
+          element("td", [rounded.a], { className: "table-number-cell" }),
+        ]),
+        element("tr", [
+          element("td", ["M"], { className: "table-row-label" }),
+          element("td", [pixels(cma.m2Pixels)], {
+            className: "table-number-cell",
+          }),
+          // element("td", []),
+          // element("td", []),
+        ]),
+        element("tr", [
+          element("td", ["C"], { className: "table-row-label" }),
+          element("td", [pixels(cma.c2Pixels)], {
+            className: "table-number-cell",
+          }),
+          // element("td", []),
+          // element("td", []),
+        ]),
+        element("tr", [
+          element("td", ["Total"], { className: "table-row-label" }),
+          element("td", [pixels(cma.diameter)], {
+            className: "table-number-cell",
+          }),
+          // element("td", []),
+          // element("td", []),
+        ]),
       ]),
     ]);
   } else {
@@ -489,8 +507,16 @@ function drawBar(context, dotFrom, dotTo) {
   // adjust long bar to fit perpendicular bars snugly
   const lineWidth = lineWidthOf(context.canvas.height);
   const perpendicularSlope = perpendicularSlopeOf(dotFrom, dotTo);
-  const adjustedFrom = perpendicularAway(dotFrom, lineWidth / 2, perpendicularSlope);
-  const adjustedTo = perpendicularAway(dotTo, lineWidth / 2, perpendicularSlope);
+  const adjustedFrom = perpendicularAway(
+    dotFrom,
+    lineWidth / 2,
+    perpendicularSlope
+  );
+  const adjustedTo = perpendicularAway(
+    dotTo,
+    lineWidth / 2,
+    perpendicularSlope
+  );
 
   context.beginPath();
   context.moveTo(adjustedFrom.x, adjustedFrom.y);

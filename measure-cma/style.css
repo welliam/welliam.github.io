@@ -110,12 +110,12 @@ table {
 }
 
 th {
-    font-weight: normal;
-    border: none;
+  font-weight: normal;
+  border: none;
 }
 
 td {
-    min-width: 35px;
+  min-width: 35px;
 }
 
 .table-number-cell {
