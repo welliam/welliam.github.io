@@ -333,7 +333,7 @@ function renderCMABreakdown(state) {
       element("thead", [
         element("th", [""]),
         element("th", ["Raw"]),
-        element("th", ["Ave."]),
+        element("th", ["Average"]),
         element("th", ["%"]),
       ]),
       element("tbody", [

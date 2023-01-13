@@ -1,3 +1,4 @@
+* TODO fix fuzzy "click to upload photo" (is it being upscaled? why)
 * TODO fix dot "sticking" when placing 6 dots and undoing all
 * TODO abstract canvas out
 * TODO clean up how DOM is updated
@@ -14,6 +15,10 @@
 - for example, model with start and end dot, and have the inner dots be distances along that line
   - this would simplify CMA calculation, but make display logic more complicated
   - function that "recovers" dots from this wouldn't be difficult though
+* DONE fix control problem
+- label is too long on mobile but the length is desirable on desktop
+  - media labels?
+  - horizontal scrollbar shows up
 * DONE fix measurement line rendering
 - perpendicular lines should stay put, those are "correct"
 - bridge line should align based of 1/2 of line width
