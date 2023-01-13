@@ -102,6 +102,7 @@ function calculateCMA(dots) {
       cPixelsAverage: cAverage,
       mPixelsAverage: mAverage,
       aPixels: a,
+      diameter,
     };
   } else {
     return null;
@@ -330,54 +331,48 @@ function renderCMABreakdown(state) {
     const rounded = cmaRound(cma.c, cma.m, cma.a);
     return element("table", [
       element("thead", [
-        element("tr", [
           element("th", [""]),
-          element("th", ["C"], { className: "table-number-cell" }),
-          element("th", ["M"], { className: "table-number-cell" }),
-          element("th", ["A"], { className: "table-number-cell" }),
-        ]),
+          element("th", ["Raw"]),
+          element("th", ["Ave."]),
+          element("th", ["%"]),
       ]),
       element("tbody", [
-        element("tr", [
-          element("td", [""]),
-          element("td", [pixels(cma.c1Pixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.m1Pixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.aPixels)], {
-            className: "table-number-cell",
-          }),
-        ]),
-        element("tr", [
-          element("td", [""]),
-          element("td", [pixels(cma.c2Pixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.m2Pixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [""]),
-        ]),
-        element("tr", [
-          element("td", ["Average"]),
-          element("td", [pixels(cma.cPixelsAverage)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.mPixelsAverage)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.aPixels)], {
-            className: "table-number-cell",
-          }),
-        ]),
-        element("tr", [
-          element("td", ["% of diameter"]),
-          element("td", [rounded.c], { className: "table-number-cell" }),
-          element("td", [rounded.m], { className: "table-number-cell" }),
-          element("td", [rounded.a], { className: "table-number-cell" }),
-        ]),
+	element("tr", [
+	  element("td", ["C"], { className: "table-row-label" }),
+	  element("td", [pixels(cma.c1Pixels)], {className: "table-number-cell",}),
+	  element("td", [pixels(cma.cPixelsAverage)], {className: "table-number-cell",}),
+	  element("td", [rounded.c], {className: "table-number-cell",}),
+      ]),
+	element("tr", [
+	  element("td", ["M"], { className: "table-row-label" }),
+	  element("td", [pixels(cma.m1Pixels)], {className: "table-number-cell",}),
+	  element("td", [pixels(cma.mPixelsAverage)], {className: "table-number-cell",}),
+	  element("td", [rounded.m], {className: "table-number-cell",}),
+      ]),
+	element("tr", [
+	  element("td", ["A"], { className: "table-row-label" }),
+	  element("td", [pixels(cma.aPixels)], {className: "table-number-cell",}),
+	  element("td", [pixels(cma.aPixels)], {className: "table-number-cell",}),
+	  element("td", [rounded.a], {className: "table-number-cell",}),
+      ]),
+	element("tr", [
+	  element("td", ["M"], { className: "table-row-label" }),
+	  element("td", [pixels(cma.m2Pixels)], {className: "table-number-cell",}),
+	  // element("td", []),
+	  // element("td", []),
+	]),
+	element("tr", [
+	  element("td", ["C"], { className: "table-row-label" }),
+	  element("td", [pixels(cma.c2Pixels)], {className: "table-number-cell",}),
+	  // element("td", []),
+	  // element("td", []),
+	]),
+	element("tr", [
+	  element("td", ["Total"], { className: "table-row-label" }),
+	  element("td", [pixels(cma.diameter)], {className: "table-number-cell",}),
+	  // element("td", []),
+	  // element("td", []),
+	]),
       ]),
     ]);
   } else {
@@ -546,6 +541,7 @@ function drawingState() {
   };
 
   function setDotsState(dots) {
+    console.log(dots);
     if (dots.length <= 6) {
       setState({
         dotsUndoStack: state.dotsUndoStack.pushState(dots),

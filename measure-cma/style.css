@@ -34,13 +34,6 @@ label {
   margin-right: 1rem;
 }
 
-table {
-  border-collapse: collapse;
-  border: 2px solid rgb(200, 200, 200);
-  letter-spacing: 1px;
-  margin-bottom: 1rem;
-}
-
 td,
 th {
   border: 1px solid rgb(190, 190, 190);
@@ -74,10 +67,6 @@ th {
   margin-top: 1rem;
 }
 
-.table-number-cell {
-  text-align: right;
-}
-
 label#image-input-label {
   margin-right: 0;
 }
@@ -107,4 +96,33 @@ label#image-input-label > button {
 
 #displays > * {
   margin-right: 1rem;
+}
+
+/*
+ * table styling
+ */
+
+table {
+  border-collapse: collapse;
+  border: 0;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+th {
+    font-weight: normal;
+    border: none;
+}
+
+td {
+    min-width: 35px;
+}
+
+.table-number-cell {
+  text-align: right;
+}
+
+.table-row-label {
+  text-align: center;
+  border: none;
 }
