@@ -2,6 +2,10 @@
 
 // math
 
+function lineWidthOf(canvasHeight) {
+  return Math.max(Math.round(canvasHeight / 250), 1);
+}
+
 function getScaledValue(value, rect, canvas) {
   return (canvas.width / rect.width) * value;
 }
@@ -385,7 +389,7 @@ function render({ state, setMode }) {
   const canvas = document.getElementById("drawing-canvas");
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.lineWidth = Math.max(Math.round(context.canvas.height / 250), 1);
+  context.lineWidth = lineWidthOf(context.canvas.height);
 
   renderCanvas(state, context);
 
@@ -487,9 +491,15 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
 }
 
 function drawBar(context, dotFrom, dotTo) {
+  // adjust long bar to fit perpendicular bars snugly
+  const lineWidth = lineWidthOf(context.canvas.height);
+  const perpendicularSlope = perpendicularSlopeOf(dotFrom, dotTo);
+  const adjustedFrom = perpendicularAway(dotFrom, lineWidth / 2, perpendicularSlope);
+  const adjustedTo = perpendicularAway(dotTo, lineWidth / 2, perpendicularSlope);
+
   context.beginPath();
-  context.moveTo(dotFrom.x, dotFrom.y);
-  context.lineTo(dotTo.x, dotTo.y);
+  context.moveTo(adjustedFrom.x, adjustedFrom.y);
+  context.lineTo(adjustedTo.x, adjustedTo.y);
   context.stroke();
 }
 
