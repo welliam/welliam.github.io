@@ -247,7 +247,6 @@ function renderLabel(state, context) {
   );
   context.font = `${fontSizePx}px Arial`;
 
-  // const yStart = 30;
   const yStart = fontSizePx * 1.5;
 
   const includeCMA = state.labelIncludeCMA && cmaText;
@@ -372,24 +371,18 @@ function renderCMABreakdown(state) {
           element("td", [pixels(cma.m2Pixels)], {
             className: "table-number-cell",
           }),
-          // element("td", []),
-          // element("td", []),
         ]),
         element("tr", [
           element("td", ["C"], { className: "table-row-label" }),
           element("td", [pixels(cma.c2Pixels)], {
             className: "table-number-cell",
           }),
-          // element("td", []),
-          // element("td", []),
         ]),
         element("tr", [
           element("td", ["Total"], { className: "table-row-label" }),
           element("td", [pixels(cma.diameter)], {
             className: "table-number-cell",
           }),
-          // element("td", []),
-          // element("td", []),
         ]),
       ]),
     ]);
@@ -505,6 +498,7 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
 
 function drawBar(context, dotFrom, dotTo) {
   // adjust long bar to fit perpendicular bars snugly
+
   const lineWidth = lineWidthOf(context.canvas.height);
   const perpendicularSlope = perpendicularSlopeOf(dotFrom, dotTo);
   const adjustedFrom = perpendicularAway(

@@ -1,3 +1,4 @@
+* TODO fix naming: draw vs render
 * TODO fix fuzzy "click to upload photo" (is it being upscaled? why)
 * TODO fix dot "sticking" when placing 6 dots and undoing all
 * TODO abstract canvas out
