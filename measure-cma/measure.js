@@ -591,9 +591,10 @@ function drawingState() {
   }
 
   function fileLoaded(filename) {
+    const label = state.fileLoaded ? filename : state.label || filename;
     setState({
       fileLoaded: true,
-      label: state.label || filename,
+      label,
       dotsUndoStack: new UndoStack({ stack: [[]], index: 0 }),
     });
   }
