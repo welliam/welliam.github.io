@@ -328,62 +328,67 @@ function renderCMABreakdown(state) {
   const cma = calculateCMA(dots);
   if (cma) {
     const rounded = cmaRound(cma.c, cma.m, cma.a);
-    return element("table", [
-      element("thead", [
-        element("th", [""]),
-        element("th", ["Raw"]),
-        element("th", ["Average"]),
-        element("th", ["%"]),
+    return element("div", [
+      element("table", [
+        element("thead", [
+          element("th", [""]),
+          element("th", ["Raw"]),
+          element("th", ["Average"]),
+          element("th", ["%"]),
+        ]),
+        element("tbody", [
+          element("tr", [
+            element("td", ["C"], { className: "table-row-label" }),
+            element("td", [pixels(cma.c1Pixels)], {
+              className: "table-number-cell",
+            }),
+            element("td", [pixels(cma.cPixelsAverage)], {
+              className: "table-number-cell",
+            }),
+            element("td", [rounded.c], { className: "table-number-cell" }),
+          ]),
+          element("tr", [
+            element("td", ["M"], { className: "table-row-label" }),
+            element("td", [pixels(cma.m1Pixels)], {
+              className: "table-number-cell",
+            }),
+            element("td", [pixels(cma.mPixelsAverage)], {
+              className: "table-number-cell",
+            }),
+            element("td", [rounded.m], { className: "table-number-cell" }),
+          ]),
+          element("tr", [
+            element("td", ["A"], { className: "table-row-label" }),
+            element("td", [pixels(cma.aPixels)], {
+              className: "table-number-cell",
+            }),
+            element("td", [pixels(cma.aPixels)], {
+              className: "table-number-cell",
+            }),
+            element("td", [rounded.a], { className: "table-number-cell" }),
+          ]),
+          element("tr", [
+            element("td", ["M"], { className: "table-row-label" }),
+            element("td", [pixels(cma.m2Pixels)], {
+              className: "table-number-cell",
+            }),
+          ]),
+          element("tr", [
+            element("td", ["C"], { className: "table-row-label" }),
+            element("td", [pixels(cma.c2Pixels)], {
+              className: "table-number-cell",
+            }),
+          ]),
+          element("tr", [
+            element("td", ["Total"], { className: "table-row-label" }),
+            element("td", [pixels(cma.diameter)], {
+              className: "table-number-cell",
+            }),
+          ]),
+        ]),
       ]),
-      element("tbody", [
-        element("tr", [
-          element("td", ["C"], { className: "table-row-label" }),
-          element("td", [pixels(cma.c1Pixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.cPixelsAverage)], {
-            className: "table-number-cell",
-          }),
-          element("td", [rounded.c], { className: "table-number-cell" }),
-        ]),
-        element("tr", [
-          element("td", ["M"], { className: "table-row-label" }),
-          element("td", [pixels(cma.m1Pixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.mPixelsAverage)], {
-            className: "table-number-cell",
-          }),
-          element("td", [rounded.m], { className: "table-number-cell" }),
-        ]),
-        element("tr", [
-          element("td", ["A"], { className: "table-row-label" }),
-          element("td", [pixels(cma.aPixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [pixels(cma.aPixels)], {
-            className: "table-number-cell",
-          }),
-          element("td", [rounded.a], { className: "table-number-cell" }),
-        ]),
-        element("tr", [
-          element("td", ["M"], { className: "table-row-label" }),
-          element("td", [pixels(cma.m2Pixels)], {
-            className: "table-number-cell",
-          }),
-        ]),
-        element("tr", [
-          element("td", ["C"], { className: "table-row-label" }),
-          element("td", [pixels(cma.c2Pixels)], {
-            className: "table-number-cell",
-          }),
-        ]),
-        element("tr", [
-          element("td", ["Total"], { className: "table-row-label" }),
-          element("td", [pixels(cma.diameter)], {
-            className: "table-number-cell",
-          }),
-        ]),
+      element("em", [
+        "Final axis value is calculated as 100 - C*2 - M*2 to adjust for rounding errors.",
       ]),
     ]);
   } else {
