@@ -1,21 +1,29 @@
-* TODO fix naming: draw vs render
-* TODO fix fuzzy "click to upload photo" (is it being upscaled? why)
-* TODO fix dot "sticking" when placing 6 dots and undoing all
-* TODO abstract canvas out
-* TODO clean up how DOM is updated
+* TODO bug: fix double tap case
+- double tap a measurement and the page breaks
+- this is a valid use case (e.g. u. longissima has no cortex)
+* TODO bug: fix help page screenshots/description
+"reset" -> new button
+* TODO improvement: indicate progress somehow
+* TODO improvement: mark breakdown as closed wehn dots are cleared or ctrl-z
+* TODO bug: fix jostling when finishing measurement (particularly annoying on mobile)
+* TODO bug: fix fuzzy "click to upload photo" (is it being upscaled? why)
+* TODO bug: fix dot "sticking" when placing 6 dots and undoing all
+* TODO refactor: fix naming: draw vs render
+* TODO refactor: abstract canvas out
+* TODO refactor: clean up how DOM is updated
 - abstract out rendering and pass into state function so state functio nis clean
 - add pure rendering layer and separate from DOM updating layer
 - the state function could take lens/render function pairs which are deep compared with previous states to determine whether to render
-* TODO note rounding logic in breakdown
-* TODO test suite
-* TODO typescript
-* TODO dots state refactor?
+* TODO refactor: test suite
+* TODO refactor: typescript
+* TODO refactor: dots state?
 - invariant: dots should always be on a line
 - instead we could model the state in a way that makes it impossible
   for that not to be the case
 - for example, model with start and end dot, and have the inner dots be distances along that line
   - this would simplify CMA calculation, but make display logic more complicated
   - function that "recovers" dots from this wouldn't be difficult though
+* DONE note rounding logic in breakdown
 * DONE fix control problem
 - label is too long on mobile but the length is desirable on desktop
   - media labels?
