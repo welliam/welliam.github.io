@@ -457,12 +457,6 @@ function loadImage(e, fileLoaded) {
 
       context.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
 
-      const imageInput = document.getElementById("image-input-label");
-      imageInput.className = imageInput.className
-        .split(" ")
-        .filter((name) => name !== "hidden")
-        .join(" ");
-
       fileLoaded(file.name.replace(/\.[^\.]+$/, ""));
     };
     img.src = event.target.result;
@@ -739,14 +733,6 @@ window.onload = function () {
 
   document.getElementById("input-include-cma").onchange = (event) => {
     changeIncludeCMA(event.target.checked);
-  };
-
-  document.getElementById("what-is-this-button").onclick = () => {
-    document.getElementById("what-is-this-modal").className = "modal";
-  };
-
-  document.getElementById("close-modal").onclick = () => {
-    document.getElementById("what-is-this-modal").className = "hidden";
   };
 
   document.getElementById("toggle-show-breakdown-button").onclick = () => {
