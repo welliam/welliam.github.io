@@ -457,6 +457,9 @@ function loadImage(e, fileLoaded) {
 
       context.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
 
+      // clear this so if the user reuploads the same image this event will fire again
+      document.getElementById("image-input").value = "";
+
       fileLoaded(file.name.replace(/\.[^\.]+$/, ""));
     };
     img.src = event.target.result;
