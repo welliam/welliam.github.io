@@ -1,0 +1,41 @@
+body {
+  font-family: "Arial";
+}
+
+li {
+    list-style: none;
+    margin-bottom: 0.5em;
+}
+
+h1 {
+  font-family: serif;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.hidden {
+  display: none;
+}
+
+img {
+  display: block;
+  border: solid thin;
+  border-color: #777;
+  padding: 1rem;
+  margin: 1rem;
+  max-width: calc(99% - 4rem);
+}
+
+header {
+  margin-bottom: 1rem;
+}
+
+canvas {
+  border: solid thin;
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 99%;
+  max-height: 130vh;
+}

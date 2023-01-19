@@ -1,14 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en">
   <head>
     <title>Scale DB</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="piano.js"></script>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-
 
   <body>
     <div id="top">
@@ -16,27 +15,31 @@
         <a href="#" id="closeaboutlink">X</a>
         <div>
           <p>
-            Look up scales by their notes. The number below the
-            keyboard identifies the current scale uniquely.
-          </p><p>
-            The scales in the lists to the right are sorted by
-            similarity to the current scale (hamming distance).
-          </p><p>
-            Click 'play' to listen to the current scale, and 'stop'
-            to stop listening.
-          </p><p>
+            Look up scales by their notes. The number below the keyboard
+            identifies the current scale uniquely.
+          </p>
+          <p>
+            The scales in the lists to the right are sorted by similarity to the
+            current scale (hamming distance).
+          </p>
+          <p>
+            Click 'play' to listen to the current scale, and 'stop' to stop
+            listening.
+          </p>
+          <p>
             To read about modes of limited transposition, check out
-            <a href="https://en.wikipedia.org/wiki/Modes_of_limited_transposition">
+            <a
+              href="https://en.wikipedia.org/wiki/Modes_of_limited_transposition"
+            >
               the wikipedia article
             </a>
-            and <a href="/molts/">what I've written about them</a>.
-          </p><p>
-            <ol id="hotkeys">
-              <li><span class="key">?</span> Show/hide this</li>
-              <li><span class="key">p</span> Play</li>
-              <li><span class="key">s</span> Stop</li>
-            </ol>
+            and <a href="../molts/">what I've written about them</a>.
           </p>
+          <ol id="hotkeys">
+            <li><span class="key">?</span> Show/hide this</li>
+            <li><span class="key">p</span> Play</li>
+            <li><span class="key">s</span> Stop</li>
+          </ol>
 
           <div id="bgcolors">
             <span class="bgcolor" id="bgcolorgreen"></span>
@@ -50,13 +53,17 @@
 
       <noscript><h1>Sorry, this page needs Javascript!</h1></noscript>
       <span id="titlespan">
-        <input type="text" id="title" class="adviceInput"
-               maxlength="26" placeholder="Enter title here" />
+        <input
+          type="text"
+          id="title"
+          class="adviceInput"
+          maxlength="26"
+          placeholder="Enter title here"
+        />
         <span class="advice">(enter to add)</span>
       </span>
       <a href="#" id="aboutlink">About</a>
     </div>
-
 
     <div id="pianopanel">
       <div id="controls">
@@ -74,7 +81,6 @@
       </span>
       <ul id="statslist"></ul>
     </div>
-
 
     <div id="listpanel">
       <div id="same">
@@ -97,7 +103,5 @@
         <ul id="supersetlist"></ul>
       </div>
     </div>
-
-
   </body>
 </html>

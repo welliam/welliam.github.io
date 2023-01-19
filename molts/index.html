@@ -4,12 +4,10 @@
   <title>MOLTs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link
-     rel="icon"
-     href="https://upload.wikimedia.org/wikipedia/commons/d/db/Chrysopoea_of_Cleopatra_1.gif"
-     />
-  <link href="scales-style.css"
-        rel="stylesheet"
-        type="text/css" />
+    rel="icon"
+    href="https://upload.wikimedia.org/wikipedia/commons/d/db/Chrysopoea_of_Cleopatra_1.gif"
+  />
+  <link rel="stylesheet" href="../base.css" />
   <script type="text/x-mathjax-config">
     MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
   </script>
@@ -17,310 +15,291 @@
 </head>
 
 <body>
-  <h2>Modes of Limited Transposition</h2>
+  <div class="text-page">
+    <h1>Modes of Limited Transposition</h1>
 
-  <div id="contents">
-    Contents:
-    <ul>
-      <li><a href="#finding">Musical explanation</a></li>
-      <li><a href="#numbers">MOLTs as numbers</a></li>
-      <li><a href="#equations">MOLT equations</a></li>
-      <li><a href="#haskell">Haskell code</a></li>
-    </ul>
-  </div>
+    <div id="contents">
+      Contents:
+      <ul>
+        <li><a href="#finding">Musical explanation</a></li>
+        <li><a href="#numbers">MOLTs as numbers</a></li>
+        <li><a href="#equations">MOLT equations</a></li>
+        <li><a href="#haskell">Haskell code</a></li>
+      </ul>
+    </div>
 
-  <div id="intro">
-    <p>
-      This page is about finding every possible mode of limited
-      transposition (MOLT) in arbitrary equal temperatements. It also
-      contains a list of every mode of limited transposition for some
-      equal temperaments.  Prime numbered tone scales are not included
-      because they have no MOLTs; rather, they are the basis for MOLTs
-      in composite numbered tone scales. Through interpolation of
-      these prime tone scales all modes of limited transposition in
-      all tone scales are derived. For a more detailed explanation,
-      see <a href="#finding">here</a>. For information about the
-      history and other properties about these scales, see
-      <a href="https://en.wikipedia.org/wiki/Modes_of_limited_transposition">
-      the wikipedia article on them</a>.
-    </p>
-    <p>
-      Because many of the scales listed cannot be expressed in the 12
-      tone scale, the lists numbers the scales from $0$ to $n-1$
-      for $n$-tone equal tempered scales. When it is possible to
-      represent the scales as notes of the 12 tone scale, the lists
-      start with C. When it is possible to translate the scale to the
-      24 scale this is done, again starting with C.
-    </p>
-    <p>
-      <b>Note:</b> my use of "scale" means simply a set of pitch
-      classes which includes at least the pitch class of the key. The
-      term "interpolation" is used as in Nicolas
-      Slonimsky's <i>Thesaurus of Scales and Melodic Patterns</i>, and
-      is <a href="#interpolation">described below</a>.
-    </p>
+    <div id="intro">
+      <p>
+        This page is about finding every possible mode of limited transposition
+        (MOLT) in arbitrary equal temperatements. It also contains a list of
+        every mode of limited transposition for some equal temperaments. Prime
+        numbered tone scales are not included because they have no MOLTs;
+        rather, they are the basis for MOLTs in composite numbered tone scales.
+        Through interpolation of these prime tone scales all modes of limited
+        transposition in all tone scales are derived. For a more detailed
+        explanation, see <a href="#finding">here</a>. For information about the
+        history and other properties about these scales, see
+        <a href="https://en.wikipedia.org/wiki/Modes_of_limited_transposition">
+          the wikipedia article on them</a
+        >.
+      </p>
+      <p>
+        Because many of the scales listed cannot be expressed in the 12 tone
+        scale, the lists numbers the scales from $0$ to $n-1$ for $n$-tone equal
+        tempered scales. When it is possible to represent the scales as notes of
+        the 12 tone scale, the lists start with C. When it is possible to
+        translate the scale to the 24 scale this is done, again starting with C.
+      </p>
+      <p>
+        <b>Note:</b> my use of "scale" means simply a set of pitch classes which
+        includes at least the pitch class of the key. The term "interpolation"
+        is used as in Nicolas Slonimsky's
+        <i>Thesaurus of Scales and Melodic Patterns</i>, and is
+        <a href="#interpolation">described below</a>.
+      </p>
 
-    <b>MOLT list:</b>
-    <ul>
-      <li><a href="moltslists/molts004.txt">4 tone scale</a></li>
-      <li><a href="moltslists/molts004-translated.txt">4 tone scale (in C)</a></li>
-      <li><a href="moltslists/molts006.txt">6 tone scale</a></li>
-      <li><a href="moltslists/molts006-translated.txt">6 tone scale (in C)</a></li>
-      <li><a href="moltslists/molts008.txt">8 tone scale</a></li>
-      <li><a href="moltslists/molts008-translated.txt">8 tone scale (in C)</a></li>
-      <li><a href="moltslists/molts009.txt">9 tone scale</a></li>
-      <li><a href="moltslists/molts010.txt">10 tone scale</a></li>
-      <li><a href="moltslists/molts012.txt">12 tone scale</a></li>
-      <li><a href="moltslists/molts012-translated.txt">12 tone scale (in C)</a></li>
-      <li><a href="moltslists/molts014.txt">14 tone scale</a></li>
-      <li><a href="moltslists/molts015.txt">15 tone scale</a></li>
-      <li><a href="moltslists/molts016.txt">16 tone scale</a></li>
-      <li><a href="moltslists/molts018.txt">18 tone scale</a></li>
-      <li><a href="moltslists/molts020.txt">20 tone scale</a></li>
-      <li><a href="moltslists/molts021.txt">21 tone scale</a></li>
-      <li><a href="moltslists/molts022.txt">22 tone scale</a></li>
-      <li><a href="moltslists/molts024.txt">24 tone scale</a></li>
-      <li><a href="moltslists/molts024-translated.txt">24 tone scale (in C)</a></li>
-      <li><a href="moltslists/molts025.txt">25 tone scale</a></li>
-      <li><a href="moltslists/molts049.txt">49 tone scale</a></li>
-      <li><a href="moltslists/molts121.txt">121 tone scale</a></li>
-      <li><a href="moltslists/molts169.txt">169 tone scale</a></li>
-    </ul>
-  </div>
+      <b>MOLT list:</b>
+      <ul>
+        <li><a href="moltslists/molts004.txt">4 tone scale</a></li>
+        <li>
+          <a href="moltslists/molts004-translated.txt">4 tone scale (in C)</a>
+        </li>
+        <li><a href="moltslists/molts006.txt">6 tone scale</a></li>
+        <li>
+          <a href="moltslists/molts006-translated.txt">6 tone scale (in C)</a>
+        </li>
+        <li><a href="moltslists/molts008.txt">8 tone scale</a></li>
+        <li>
+          <a href="moltslists/molts008-translated.txt">8 tone scale (in C)</a>
+        </li>
+        <li><a href="moltslists/molts009.txt">9 tone scale</a></li>
+        <li><a href="moltslists/molts010.txt">10 tone scale</a></li>
+        <li><a href="moltslists/molts012.txt">12 tone scale</a></li>
+        <li>
+          <a href="moltslists/molts012-translated.txt">12 tone scale (in C)</a>
+        </li>
+        <li><a href="moltslists/molts014.txt">14 tone scale</a></li>
+        <li><a href="moltslists/molts015.txt">15 tone scale</a></li>
+        <li><a href="moltslists/molts016.txt">16 tone scale</a></li>
+        <li><a href="moltslists/molts018.txt">18 tone scale</a></li>
+        <li><a href="moltslists/molts020.txt">20 tone scale</a></li>
+        <li><a href="moltslists/molts021.txt">21 tone scale</a></li>
+        <li><a href="moltslists/molts022.txt">22 tone scale</a></li>
+        <li><a href="moltslists/molts024.txt">24 tone scale</a></li>
+        <li>
+          <a href="moltslists/molts024-translated.txt">24 tone scale (in C)</a>
+        </li>
+        <li><a href="moltslists/molts025.txt">25 tone scale</a></li>
+        <li><a href="moltslists/molts049.txt">49 tone scale</a></li>
+        <li><a href="moltslists/molts121.txt">121 tone scale</a></li>
+        <li><a href="moltslists/molts169.txt">169 tone scale</a></li>
+      </ul>
+    </div>
 
-  <div id="finding">
-    <h3>Finding MOLTs</h3>
-    <p>
-      The concept of a mode of limited transposition (MOLT) is usually
-      defined in two ways; a scale with a limited number of
-      transpositions before the scale's notes repeat themselves, or a
-      scale which has less modes than notes in the scale. These two
-      explanations describe the same set of scales. Although some of
-      the scales were used before him, Messiaen defined MOLTs
-      originally, and his definition also did not allow MOLTs which
-      were truncations of other MOLTs. Although he also listed all the
-      possible MOLTs, his list contradicted this rule; only two MOLTs
-      (both of which were included in his list&ndash; his 3rd and 7th
-      MOLTs) are not truncations of other MOLTs. For the sake of
-      simplicity, we consider truncations to be MOLTs too.
-    </p>
-    <p>
-      Finding MOLTs for the 12 tone equal tempered scale is somewhat
-      simple. First, we take the prime factors of 12, because 12 is
-      the number of tones in our scale. These prime factors are 2 and
-      3. We then divide up our scale by those intervals and get the
-      tritone {0, 6} and the augmented chord {0, 4, 8}. We call these
-      prime scales.
-    </p>
-    <p>
-      Any interpolation of either of these prime scales is a MOLT. If we
-      continue to interpolate both of these scales we will find every
-      MOLT; that is to say, there are no MOLTs which cannot be
-      discovered through interpolation of these notes.
-    </p>
-    <p id="interpolation">
-      Interpolation is a process for deriving new scales from another,
-      smaller scale. To interpolate, start with a scale, e.g.  {0,
-      4, 8}, and add a note either below or above each note. An
-      interpolation might be {<b>0</b>, 1, <b>4</b>, 5, <b>8</b>, 9}
-      (bolded notes are those which are part of the original scale);
-      we might call this an interpolation of one semitone. An
-      interpolation of one whole tone would be {<b>0</b>, 2, <b>4</b>,
-      6, <b>8</b>, 10}; this is the whole tone scale. We can
-      interpolate a scale more than once. However, when we interpolate
-      the second time, we do not interpolate with the already
-      interpolated notes. For example, if we were to interpolate the
-      tritone, {0, 6}, twice, we would first interpolate it by the
-      first interval (e.g., a semitone, the result being {<b>0</b>,
-      1, <b>6</b>, 7}), and then by the second (e.g., a minor third,
-      the final result being {<b>0</b>, 1, 3, <b>6</b>, 7, 9}). Thus,
-      the initial intervals in the first scale form a tree of related
-      scales through interpolation.
-    </p>
-    <p>
-      A disadvantage of using this method is that there will be
-      duplicate scales derived from both prime factors. For example,
-      we can find the whole tone scale by interpolating the augmented
-      chord once by a whole tone, or by interpolating the tritone
-      twice by a whole tone and a major third. MOLTs which can be
-      found by either prime scale have a number of notes which is
-      divisible by both prime factors of 12.
-    </p>
-    <p>
-      This process works equally well for all equal tempered
-      scales. For example, finding the MOLTs of the 10 tone scale
-      involves first prime factorizing 10 (2 and 5, which in turn
-      yield the prime scales {0, 5}, the tritone, and {0, 2, 4, 6,
-      8}). After this, we interpolate until we find all the scales
-      (<a href="moltslists/molts010.txt">there are 17 in all</a>, if we
-      include the PSSes and the "chromatic" 10 tone scale). Because
-      both 12 and 10 have 2 as a prime factor, the scales share a PSS,
-      the tritone.
-    </p>
-    <p>
-      The relationship between PSSes and equal tempered scales is also
-      interesting. The 3 tone scale, for example, is merely the 3 PSS in
-      the 12 tone scale, i.e. the augmented chord. Similarly, the 6 tone
-      scale is a subset of the 12 tone scale. In fact, the 6 tone system
-      is simply the whole tone scale. Because of this, we can write 6
-      tone scales in terms of notes from the 12 tone scale. Thus, the 6
-      tone equal tempered scale is a "sub-system" of our 12 tone
-      scale. Naturally, all MOLTs of the 6 tone scale remain MOLTs in
-      the 12 tone scale.
-    </p>
-    <p>
-      True MOLTs&ndash; that is, the MOLTs which are not truncations
-      of other MOLTs&ndash; are the chromatic scales with a single PSS
-      removed. One might also think of this as "uninterpolating" a
-      PSS. For example, Messiaen's 7th MOLT is the chromatic scale
-      with a tritone removed, and his 3rd is the chromatic scale with
-      an augmented chord removed.
-    </p>
-  </div>
+    <div id="finding">
+      <h3>Finding MOLTs</h3>
+      <p>
+        The concept of a mode of limited transposition (MOLT) is usually defined
+        in two ways; a scale with a limited number of transpositions before the
+        scale's notes repeat themselves, or a scale which has less modes than
+        notes in the scale. These two explanations describe the same set of
+        scales. Although some of the scales were used before him, Messiaen
+        defined MOLTs originally, and his definition also did not allow MOLTs
+        which were truncations of other MOLTs. Although he also listed all the
+        possible MOLTs, his list contradicted this rule; only two MOLTs (both of
+        which were included in his list&ndash; his 3rd and 7th MOLTs) are not
+        truncations of other MOLTs. For the sake of simplicity, we consider
+        truncations to be MOLTs too.
+      </p>
+      <p>
+        Finding MOLTs for the 12 tone equal tempered scale is somewhat simple.
+        First, we take the prime factors of 12, because 12 is the number of
+        tones in our scale. These prime factors are 2 and 3. We then divide up
+        our scale by those intervals and get the tritone {0, 6} and the
+        augmented chord {0, 4, 8}. We call these prime scales.
+      </p>
+      <p>
+        Any interpolation of either of these prime scales is a MOLT. If we
+        continue to interpolate both of these scales we will find every MOLT;
+        that is to say, there are no MOLTs which cannot be discovered through
+        interpolation of these notes.
+      </p>
+      <p id="interpolation">
+        Interpolation is a process for deriving new scales from another, smaller
+        scale. To interpolate, start with a scale, e.g. {0, 4, 8}, and add a
+        note either below or above each note. An interpolation might be
+        {<b>0</b>, 1, <b>4</b>, 5, <b>8</b>, 9} (bolded notes are those which
+        are part of the original scale); we might call this an interpolation of
+        one semitone. An interpolation of one whole tone would be {<b>0</b>, 2,
+        <b>4</b>, 6, <b>8</b>, 10}; this is the whole tone scale. We can
+        interpolate a scale more than once. However, when we interpolate the
+        second time, we do not interpolate with the already interpolated notes.
+        For example, if we were to interpolate the tritone, {0, 6}, twice, we
+        would first interpolate it by the first interval (e.g., a semitone, the
+        result being {<b>0</b>, 1, <b>6</b>, 7}), and then by the second (e.g.,
+        a minor third, the final result being {<b>0</b>, 1, 3, <b>6</b>, 7, 9}).
+        Thus, the initial intervals in the first scale form a tree of related
+        scales through interpolation.
+      </p>
+      <p>
+        A disadvantage of using this method is that there will be duplicate
+        scales derived from both prime factors. For example, we can find the
+        whole tone scale by interpolating the augmented chord once by a whole
+        tone, or by interpolating the tritone twice by a whole tone and a major
+        third. MOLTs which can be found by either prime scale have a number of
+        notes which is divisible by both prime factors of 12.
+      </p>
+      <p>
+        This process works equally well for all equal tempered scales. For
+        example, finding the MOLTs of the 10 tone scale involves first prime
+        factorizing 10 (2 and 5, which in turn yield the prime scales {0, 5},
+        the tritone, and {0, 2, 4, 6, 8}). After this, we interpolate until we
+        find all the scales (<a href="moltslists/molts010.txt"
+          >there are 17 in all</a
+        >, if we include the PSSes and the "chromatic" 10 tone scale). Because
+        both 12 and 10 have 2 as a prime factor, the scales share a PSS, the
+        tritone.
+      </p>
+      <p>
+        The relationship between PSSes and equal tempered scales is also
+        interesting. The 3 tone scale, for example, is merely the 3 PSS in the
+        12 tone scale, i.e. the augmented chord. Similarly, the 6 tone scale is
+        a subset of the 12 tone scale. In fact, the 6 tone system is simply the
+        whole tone scale. Because of this, we can write 6 tone scales in terms
+        of notes from the 12 tone scale. Thus, the 6 tone equal tempered scale
+        is a "sub-system" of our 12 tone scale. Naturally, all MOLTs of the 6
+        tone scale remain MOLTs in the 12 tone scale.
+      </p>
+      <p>
+        True MOLTs&ndash; that is, the MOLTs which are not truncations of other
+        MOLTs&ndash; are the chromatic scales with a single PSS removed. One
+        might also think of this as "uninterpolating" a PSS. For example,
+        Messiaen's 7th MOLT is the chromatic scale with a tritone removed, and
+        his 3rd is the chromatic scale with an augmented chord removed.
+      </p>
+    </div>
 
-  <div id="numbers">
-    <h3>How The Program Works</h3>
-    <p>
-      Scales from any $n$&ndash;tone equal temperament scale (TET)
-      can be represented as a binary number with $n$ digits
-      (including leading zero digits). For example, the C major scale in
-      12-TET:
+    <div id="numbers">
+      <h3>How The Program Works</h3>
+      <p>
+        Scales from any $n$&ndash;tone equal temperament scale (TET) can be
+        represented as a binary number with $n$ digits (including leading zero
+        digits). For example, the C major scale in 12-TET:
+      </p>
       <pre>
         1  0  1  0  1  0  1  1  0  1  0  1 = 101010110101b
         B  A&sharp; A  G&sharp; G  F&sharp; F  E  D&sharp; D  C&sharp; C
       </pre>
-      which is $2741$ in base 10. (This method of representing scales is
-      key-agnostic and the key of C was chosen for readability.)
-      Notice how the least significant bit represents the lowest note
-      in the scale. Every scale is represented as the odd numbers as
-      we do not considers sets of notes which do not include the first
-      note to be scales (the least significant bit of odd numbers in
-      base 2 is always 1).
-    </p>
-    <p>
-      Finding all the MOLTs first involves finding the unique prime
-      factors of the TET, then using the factors $p$ to
-      generate a scale which equally divides the TET into $p$
-      notes (called the prime scale). For each of these prime
-      factors $p$ of TET $t$, the corresponding prime
-      scale is $\sum_{n=0}^{p-1} 2^{t/pn}$.
-      For example, the prime factors of 12 are 2 and 3, which means its
-      prime scales are
-      $\sum_{n=0}^1 2^{12/2n} = 65$ (the tritone) and
-      $\sum_{n=0}^2 2^{12/3n} = 273$ (the augmented chord).
-      This sum is of a geometric series and can be rewritten:
+      <p>
+        which is $2741$ in base 10. (This method of representing scales is
+        key-agnostic and the key of C was chosen for readability.) Notice how
+        the least significant bit represents the lowest note in the scale. Every
+        scale is represented as the odd numbers as we do not considers sets of
+        notes which do not include the first note to be scales (the least
+        significant bit of odd numbers in base 2 is always 1).
+      </p>
+      <p>
+        Finding all the MOLTs first involves finding the unique prime factors of
+        the TET, then using the factors $p$ to generate a scale which equally
+        divides the TET into $p$ notes (called the prime scale). For each of
+        these prime factors $p$ of TET $t$, the corresponding prime scale is
+        $\sum_{n=0}^{p-1} 2^{t/pn}$. For example, the prime factors of 12 are 2
+        and 3, which means its prime scales are $\sum_{n=0}^1 2^{12/2n} = 65$
+        (the tritone) and $\sum_{n=0}^2 2^{12/3n} = 273$ (the augmented chord).
+        This sum is of a geometric series and can be rewritten:
+        $$\sum_{n=0}^{p-1} 2^{t/pn} = \frac{2^t-1}{2^{t/p}-1}$$ These prime
+        scales are MOLTs, and overlapping transpositions of these prime scales
+        are MOLTs. The formula $S = p(2n+1)$ while $S$ is less than $2^tet$
+        represents all the MOLTs from prime scale $p$.
+      </p>
+      <p>
+        The number of MOLTs for a TET $t$ generated by its prime factor $p$ is
+        given from the formula $2^{t/p-1}$. The total number of MOLTs in a TET
+        is the sum of these for each prime factor of that TET. Note that this
+        counts duplicate scales found by each prime twice or more. For example,
+        the whole tone scale 1365 is both $65(20 + 1)$ and $273(4 + 1)$ (i.e.
+        interpolation of the tritone by a whole tone and a major third and
+        interpolation of the augmented chord once by a whole tone). Currently I
+        don't see any way to skip these duplicates without manual checking.
+      </p>
+    </div>
 
-      $$\sum_{n=0}^{p-1} 2^{t/pn} = \frac{2^t-1}{2^{t/p}-1}$$
+    <div id="equations">
+      <h3>Equations</h3>
+      <p>
+        Because scales are numbers, we can manipulate scales using arithmetic
+        operations. For example, the union of scales $S1$ and $S2$ is given with
+        $S1 + S2$ where neither scale has any bits both equal to 1 (i.e. no base
+        2 carries occur; in reality this is a
+        <a href="https://en.wikipedia.org/wiki/Bitwise_operation#OR"
+          >bitwise OR</a
+        >).
+      </p>
+      <h4>
+        The prime scale given by prime factor $p$ of TET $t$: $$\sum_{n=0}^{p-1}
+        2^{t/pn}$$
+      </h4>
+      <p>
+        As mentioned above, the sum of unique scales is the combination of those
+        scales. $2^n$ for any non-negative integer always creates scales which
+        are unique from one another: $$2^0 = 001b$$ $$2^1 = 010b$$ $$2^2 =
+        100b$$ etc. This example also demonstrates that $2^n+S$ where $S$ does
+        not already contain the $n$th note means "$S$ with the $n$th note."
+        $2^n$ itself is just $n$th note.
+      </p>
+      <p>
+        To see what is meant by $2^{t/pn}$, we look at the augmented chord
+        (where $t$ is 12 and $p$ is 3): $$2^{12/3(0)} = 1 = 000000000001b = C$$
+        $$2^{12/3(1)} = 16 = 000000010000b = E$$ $$2^{12/3(2)} = 256 =
+        000100000000b = G&sharp;$$ The difference of the digit position of 1
+        between each note is 4 (that is, $p/t$). Prime scales of prime $p$ are
+        scales $p$ notes that are equally distributed.
+      </p>
 
-      These prime scales are MOLTs, and overlapping transpositions of
-      these prime scales are MOLTs. The formula $S = p(2n+1)$
-      while $S$ is less than $2^tet$ represents all the MOLTs from
-      prime scale $p$.
-    </p>
-    <p>
-      The number of MOLTs for a TET $t$ generated by its prime factor
-      $p$ is given from the formula $2^{t/p-1}$.
-      The total number of MOLTs in a TET is the sum of these for each
-      prime factor of that TET. Note that this counts duplicate scales
-      found by each prime twice or more. For example, the whole tone
-      scale 1365 is both $65(20 + 1)$ and $273(4 + 1)$ (i.e. interpolation
-      of the tritone by a whole tone and a major third and interpolation
-      of the augmented chord once by a whole tone). Currently I don't
-      see any way to skip these duplicates without manual checking.
-    </p>
-  </div>
-
-  <div id="equations">
-    <h3>Equations</h3>
-    <p>
-      Because scales are numbers, we can manipulate scales using
-      arithmetic operations. For example, the union of scales
-      $S1$ and $S2$ is given with $S1 + S2$ where neither scale has
-      any bits both equal to 1 (i.e. no base 2 carries occur; in
-      reality this is a
-      <a href="https://en.wikipedia.org/wiki/Bitwise_operation#OR">bitwise
-        OR</a>).
-    </p>
-    <h4>
-      The prime scale given by prime factor $p$ of TET $t$:
-      $$\sum_{n=0}^{p-1} 2^{t/pn}$$
-    </h4>
-    <p>
-      As mentioned above, the sum of unique scales is the combination
-      of those scales. $2^n$ for any non-negative integer always
-      creates scales which are unique from one another:
-      $$2^0 = 001b$$
-      $$2^1 = 010b$$
-      $$2^2 = 100b$$
-      etc.
-      This example also demonstrates that $2^n+S$ where $S$ does not
-      already contain the $n$th note means "$S$ with the $n$th note."
-      $2^n$ itself is just $n$th note.
-    </p>
-    <p>
-      To see what is meant by $2^{t/pn}$, we look at the augmented
-      chord (where $t$ is 12 and $p$ is 3):
-        $$2^{12/3(0)} = 1 = 000000000001b = C$$
-        $$2^{12/3(1)} = 16  = 000000010000b = E$$
-        $$2^{12/3(2)} = 256 = 000100000000b = G&sharp;$$
-      The difference of the digit position of 1 between each note is
-      4 (that is, $p/t$). Prime scales of prime $p$ are scales $p$
-      notes that are equally distributed.
-    </p>
-
-    <p>
-      As stated above, the sum can be rewritten as:
-    </p>
+      <p>As stated above, the sum can be rewritten as:</p>
       $$\frac{2^t-1}{2^{t/p}-1}$$
-    <p>
-      The numerator, $2^t-1$, is the chromatic scale in TET $t$. $2^n$
-      is the $n$th note, regardless of TET, and is only a scale when
-      it is the 0th note (because scales must include the first note);
-      $2^n-1$ means "every note up to but not including the $n$th
-      note". It is a scale containing the first $t/p$ notes of its
-      TET.
-    </p>
-    <p>
-      Division means the inverse of interpolation. So this equation
-      states that the prime scale from prime factor $p$ of TET $t$,
-      when interpolated by every note up to but not including the
-      $t/p$th note (i.e. $2^{t/p}-1$), produces the chromatic scale
-      (i.e. $2^t-1$).
-    </p>
-  </div>
+      <p>
+        The numerator, $2^t-1$, is the chromatic scale in TET $t$. $2^n$ is the
+        $n$th note, regardless of TET, and is only a scale when it is the 0th
+        note (because scales must include the first note); $2^n-1$ means "every
+        note up to but not including the $n$th note". It is a scale containing
+        the first $t/p$ notes of its TET.
+      </p>
+      <p>
+        Division means the inverse of interpolation. So this equation states
+        that the prime scale from prime factor $p$ of TET $t$, when interpolated
+        by every note up to but not including the $t/p$th note (i.e.
+        $2^{t/p}-1$), produces the chromatic scale (i.e. $2^t-1$).
+      </p>
+    </div>
 
-    <h4>
-      MOLTs from a prime scale $p$:
-      $$S = f(n) = p(2n+1)$$
-    </h4>
+    <h4>MOLTs from a prime scale $p$: $$S = f(n) = p(2n+1)$$</h4>
     <p>
-      Multiplication of prime scale $P$ by another scale $S$ means
-      interpolating $P$ by each note in $S$. For example, the whole tone
-      scale is $65\times21$. $65$ is the tritone $1000001b$, and $21$ is
-      $10101b$, which is C D E in the key of C. Through multiplication
-      the pattern C D E is transposed to each note contained in the
-      tritone, yielding C D E (i.e. $21\times1$, where $1$ is the first
-      note contained in $65$) plus F&sharp; G&sharp; A&sharp;
-      ($21\times64$, $64$ being the second note contained in the
-      tritone).
+      Multiplication of prime scale $P$ by another scale $S$ means interpolating
+      $P$ by each note in $S$. For example, the whole tone scale is
+      $65\times21$. $65$ is the tritone $1000001b$, and $21$ is $10101b$, which
+      is C D E in the key of C. Through multiplication the pattern C D E is
+      transposed to each note contained in the tritone, yielding C D E (i.e.
+      $21\times1$, where $1$ is the first note contained in $65$) plus F&sharp;
+      G&sharp; A&sharp; ($21\times64$, $64$ being the second note contained in
+      the tritone).
     </p>
     <p>
-      Essentially, this formula says that every possible scale
-      (i.e. $2n + 1$) between $1$ and the first non-one interval
-      of a prime scale multiplied by that prime scale is a MOLT.
+      Essentially, this formula says that every possible scale (i.e. $2n + 1$)
+      between $1$ and the first non-one interval of a prime scale multiplied by
+      that prime scale is a MOLT.
     </p>
 
-  <div id="haskell">
-    <h3>Haskell Code</h3>
-    <p>
-      The Haskell code below is more concise than the old code I wrote
-      in Scheme, due to the new method of representing scales as
-      numbers; it is also more efficient. Most of the time spent
-      running the program is probably in translating the numbers into
-      readable scales for printing. The old Scheme program was used to
-      produce the lists on this page.
-    </p>
-    <pre>
+    <div id="haskell">
+      <h3>Haskell Code</h3>
+      <p>
+        The Haskell code below is more concise than the old code I wrote in
+        Scheme, due to the new method of representing scales as numbers; it is
+        also more efficient. Most of the time spent running the program is
+        probably in translating the numbers into readable scales for printing.
+        The old Scheme program was used to produce the lists on this page.
+      </p>
+      <pre>
 primeFactors :: Integer -> [Integer]
 primeFactors x = [pf | pf <- filterPrimes [2..x-1], x `mod` pf == 0]
 
@@ -349,10 +328,8 @@ showScale :: [a] -> Integer -> [a]
 showScale t s = [k | (k, n) <- zip t (bits s), n `mod` 2 == 1]
 
 printMolts :: [Integer] -> Integer -> IO ()
-printMolts scale ntet = mapM_ (print . showScale scale) (molts ntet)</pre>
-    <p>
-      Please don't kill me for the shitty prime factorer, an
-      efficient/reasonable one is overkill.
-    </p>
+printMolts scale ntet = mapM_ (print . showScale scale) (molts ntet)</pre
+      >
+    </div>
   </div>
 </body>
