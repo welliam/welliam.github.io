@@ -39,3 +39,7 @@ canvas {
   max-width: 99%;
   max-height: 130vh;
 }
+
+.text-page {
+  max-width: 55rem;
+}
