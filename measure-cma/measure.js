@@ -130,6 +130,10 @@ function dotLocationOnSlope(dot1, dot2, x, y) {
 }
 
 function addDot(dots, x, y) {
+  if (dots.some((dot) => dot.x === x && dot.y === y)) {
+    return dots;
+  }
+
   if (dots.length <= 1) {
     return [...dots, { x, y }];
   }
