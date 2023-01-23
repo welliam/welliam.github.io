@@ -2,6 +2,15 @@
 
 // math
 
+function textHeight(context, text) {
+  const metrics = context.measureText(text);
+  return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+}
+
+function sum(xs) {
+  return xs.reduce((x, y) => x + y, 0);
+}
+
 function lineWidthOf(canvasHeight) {
   return Math.max(Math.round(canvasHeight / 250), 1);
 }
@@ -244,14 +253,13 @@ function cmaTextOf(state) {
   }
 }
 
+//lower by 14
 function renderLabel(state, context) {
   const cmaText = cmaTextOf(state);
   const fontSizePx = Math.round(
     Math.max(context.canvas.height, context.canvas.width) / 30
   );
   context.font = `${fontSizePx}px Arial`;
-
-  const yStart = fontSizePx * 1.5;
 
   const includeCMA = state.labelIncludeCMA && cmaText;
   const lines = (state.label ? 1 : 0) + (includeCMA ? 1 : 0);
@@ -260,32 +268,61 @@ function renderLabel(state, context) {
     return;
   }
 
-  const width = Math.max(
+  const textLines = [];
+
+  if (state.label) {
+    textLines.push(state.label);
+  }
+
+  if (state.labelIncludeCMA && cmaText) {
+    textLines.push(cmaText);
+  }
+
+  const textWidth = Math.max(
     0,
     context.measureText(state.label).width,
     includeCMA ? context.measureText(cmaText).width : 0
   );
 
+  const lineSpacing = fontSizePx * 0.4;
+  const margin = fontSizePx * 0.4;
+
+  const xOuterStart = fontSizePx * 0.3;
+  const yOuterStart = xOuterStart;
+
+  const xInnerStart = xOuterStart + margin;
+  const yInnerStart = yOuterStart + margin;
+
+  const xInnerEnd = xInnerStart + textWidth;
+  const yInnerEnd =
+    yInnerStart +
+    sum(textLines.map((line) => textHeight(context, line) + lineSpacing)) -
+    lineSpacing;
+
+  const xOuterEnd = xInnerEnd + margin;
+  const yOuterEnd = yInnerEnd + margin;
+
   const height = fontSizePx * 1.5 * lines;
 
+  context.beginPath();
   context.fillStyle = "black";
   context.rect(
-    fontSizePx * 1.2,
-    yStart - fontSizePx,
-    width + fontSizePx / 2,
-    height
+    xOuterStart,
+    yOuterStart,
+    xOuterEnd - xOuterStart,
+    yOuterEnd - yOuterStart
   );
   context.fill();
 
   context.fillStyle = "white";
-  let y = yStart;
-  if (state.label) {
-    context.fillText(state.label, fontSizePx * 1.5, y);
-    y += fontSizePx * 1.5;
-  }
-  if (state.labelIncludeCMA && cmaText) {
-    context.fillText(cmaText, fontSizePx * 1.5, y);
-  }
+
+  let textY = yInnerStart;
+  textLines.forEach((line) => {
+    textY += textHeight(context, line);
+    context.beginPath();
+    context.fillText(line, xInnerStart, textY);
+    textY += lineSpacing;
+  });
 }
 
 function renderCanvas(state, context) {
@@ -567,7 +604,6 @@ function drawingState() {
   };
 
   function setDotsState(dots) {
-    console.log(dots);
     if (dots.length <= 6) {
       setState({
         dotsUndoStack: state.dotsUndoStack.pushState(dots),
