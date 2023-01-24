@@ -13,7 +13,7 @@ th {
 }
 
 .label-controls {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 label#image-input-label {
@@ -40,14 +40,11 @@ label#image-input-label > button {
 #displays {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  height: 16px;
 }
 
 #displays > * {
   margin-right: 1rem;
-}
-
-#cma-calculation-breakdown {
-  margin-bottom: 1rem;
 }
 
 /*

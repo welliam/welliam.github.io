@@ -228,15 +228,14 @@ function renderDotsOnCanvas(state, context) {
 
   const perpendicularSlope = perpendicularSlopeOf(dots[0], dots[1]);
 
-  dots = [...dots];
-  dots.sort((dot1, dot2) => dot1.y - dot2.y);
+  const sortedDots = sortDots(dots);
 
-  dots.forEach(({ x, y }) => {
+  sortedDots.forEach(({ x, y }) => {
     renderDot(context, x, y, perpendicularSlope);
   });
 
-  if (dots.length) {
-    drawBar(context, dots[0], dots[dots.length - 1]);
+  if (sortedDots.length) {
+    drawBar(context, sortedDots[0], sortedDots[sortedDots.length - 1]);
   }
 }
 
@@ -249,7 +248,6 @@ function cmaTextOf(state) {
   }
 }
 
-//lower by 14
 function renderLabel(state, context) {
   const cmaText = cmaTextOf(state);
   const fontSizePx = Math.round(
@@ -454,6 +452,7 @@ function render({ state, setMode }) {
 
   document.getElementById("cma-calculation-breakdown").innerHTML = "";
   const breakdown = renderCMABreakdown(state);
+    console.log(breakdown && state.showBreakdown);
   if (breakdown && state.showBreakdown) {
     document.getElementById("cma-calculation-breakdown").appendChild(breakdown);
   }
@@ -599,11 +598,25 @@ function drawingState() {
     showBreakdown: false,
   };
 
+  function setDotsUndoStack(dotsUndoStack) {
+    if (dotsUndoStack.getState().length < 6) {
+      setState({ dotsUndoStack, showBreakdown: false });
+    } else {
+      setState({ dotsUndoStack });
+    }
+  }
+
+  function undoDots() {
+    setDotsUndoStack(state.dotsUndoStack.undo());
+  }
+
+  function redoDots() {
+    setDotsUndoStack(state.dotsUndoStack.redo());
+  }
+
   function setDotsState(dots) {
     if (dots.length <= 6) {
-      setState({
-        dotsUndoStack: state.dotsUndoStack.pushState(dots),
-      });
+      setDotsUndoStack(state.dotsUndoStack.pushState(dots));
     }
   }
 
@@ -679,8 +692,8 @@ function drawingState() {
 
   return {
     getState,
-    undoDots: () => setState({ dotsUndoStack: state.dotsUndoStack.undo() }),
-    redoDots: () => setState({ dotsUndoStack: state.dotsUndoStack.redo() }),
+    undoDots,
+    redoDots,
     clickCanvas,
     clearDots,
     mouseMove,

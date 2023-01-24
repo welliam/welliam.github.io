@@ -3,8 +3,8 @@ body {
 }
 
 li {
-    list-style: none;
-    margin-bottom: 0.5em;
+  list-style: none;
+  margin-bottom: 0.5em;
 }
 
 h1 {
@@ -42,4 +42,9 @@ canvas {
 
 .text-page {
   max-width: 55rem;
+}
+
+button {
+  vertical-align: bottom;
+  line-height: 16px;
 }

@@ -1,11 +1,13 @@
-* TODO bug: fix double tap case
-- double tap a measurement and the page breaks
-- this is a valid use case (e.g. u. longissima has no cortex)
 * TODO bug: fix help page screenshots/description
-"reset" -> new button
+"reset" -> new button and others
 * TODO improvement: indicate progress somehow
-* TODO improvement: mark breakdown as closed wehn dots are cleared or ctrl-z
+* TODO improvement: mark breakdown as closed when dots are cleared or ctrl-z
 * TODO bug: fix jostling when finishing measurement (particularly annoying on mobile)
+* TODO bug: visual bugs on button control layer
+- undo/redo and text buttons are different sizes
+- buttons are also not vertically aligned
+- solution 1: make emoji buttons smaller
+- solution 2: give other buttons default height
 * TODO bug: fix fuzzy "click to upload photo" (is it being upscaled? why)
 * TODO bug: fix dot "sticking" when placing 6 dots and undoing all
 * TODO refactor: fix naming: draw vs render
@@ -23,6 +25,30 @@
 - for example, model with start and end dot, and have the inner dots be distances along that line
   - this would simplify CMA calculation, but make display logic more complicated
   - function that "recovers" dots from this wouldn't be difficult though
+* DONE bug: flat line doesn't show bar line all the way through
+dots init state that breaks:
+[
+    {
+      "x": 388.9922071135593,
+      "y": 839.7733083941023
+    },
+    {
+      "x": 480.2862965381701,
+      "y": 839.7733083941023
+    },
+    {
+      "x": 448.53183065134897,
+      "y": 839.7733083941023
+    },
+    {
+      "x": 424.71598123623306,
+      "y": 839.7733083941023
+    }
+  ]
+* DONE bug: fix double tap case
+- double tap a measurement and the page breaks
+- this is a valid use case (e.g. u. longissima has no cortex)
+- disabled this instead
 * DONE note rounding logic in breakdown
 * DONE fix control problem
 - label is too long on mobile but the length is desirable on desktop
