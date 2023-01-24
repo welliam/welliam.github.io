@@ -147,10 +147,6 @@ function addDot(dots, x, y) {
     return [...dots, { x, y }];
   }
 
-  if (dots.length === 6) {
-    return dots;
-  }
-
   const [dot1, dot2] = dots;
 
   return [...dots, dotLocationOnSlope(dot1, dot2, x, y)];
@@ -540,10 +536,10 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
 }
 
 function drawBar(context, dotFrom, dotTo) {
-  // adjust long bar to fit perpendicular bars snugly
-
   const lineWidth = lineWidthOf(context.canvas.height);
   const perpendicularSlope = perpendicularSlopeOf(dotFrom, dotTo);
+
+  // adjust long bar to fit perpendicular bars snugly
   const adjustedFrom = perpendicularAway(
     dotFrom,
     lineWidth / 2,
