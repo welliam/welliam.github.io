@@ -675,6 +675,8 @@ function drawingState() {
     setState({ showBreakdown: !state.showBreakdown });
   }
 
+  window.getState = getState;
+
   return {
     getState,
     undoDots: () => setState({ dotsUndoStack: state.dotsUndoStack.undo() }),
