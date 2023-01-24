@@ -452,7 +452,6 @@ function render({ state, setMode }) {
 
   document.getElementById("cma-calculation-breakdown").innerHTML = "";
   const breakdown = renderCMABreakdown(state);
-    console.log(breakdown && state.showBreakdown);
   if (breakdown && state.showBreakdown) {
     document.getElementById("cma-calculation-breakdown").appendChild(breakdown);
   }
