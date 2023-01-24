@@ -4,7 +4,7 @@
 
 function textHeight(context, text) {
   const metrics = context.measureText(text);
-  return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+  return metrics.actualBoundingBoxAscent;
 }
 
 function sum(xs) {
