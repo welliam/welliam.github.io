@@ -121,7 +121,7 @@ function calculateCMA(dots) {
 function dotLocationOnSlope(dot1, dot2, x, y) {
   const line_slope = (dot2.y - dot1.y) / (dot2.x - dot1.x);
 
-  if (line_slope === Infinity) {
+  if (Math.abs(line_slope) === Infinity) {
     return { x: dot1.x, y };
   } else if (line_slope === 0) {
     return { x, y: dot1.y };
@@ -149,6 +149,8 @@ function addDot(dots, x, y) {
 
   const [dot1, dot2] = dots;
 
+console.log(dot1, dot2, x, y);
+    console.log(dotLocationOnSlope(dot1, dot2, x, y));
   return [...dots, dotLocationOnSlope(dot1, dot2, x, y)];
 }
 
