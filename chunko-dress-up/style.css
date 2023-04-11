@@ -1,0 +1,17 @@
+body {
+    font-family: sans-serif;
+}
+
+#game {
+    height: 250px;
+    width: 250px;
+}
+
+.flex {
+    display: flex;
+}
+
+#outfits * {
+    display: block;
+
+}
