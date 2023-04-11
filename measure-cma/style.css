@@ -2,12 +2,6 @@ label {
   margin-right: 0.8rem;
 }
 
-td,
-th {
-  border: 1px solid rgb(190, 190, 190);
-  padding: 5px 10px;
-}
-
 .canvas-container {
   position: relative;
 }
@@ -64,6 +58,12 @@ th {
 
 td {
   min-width: 35px;
+}
+
+td,
+th {
+  border: 1px solid rgb(190, 190, 190);
+  padding: 5px 10px;
 }
 
 .table-number-cell {
