@@ -368,7 +368,7 @@ function renderCMABreakdown(state) {
     return element("div", [
       element("table", [
         element("thead", [
-          element("th", [""]),
+          element("th", [""], { className: "table-row-label" }),
           element("th", ["Raw"]),
           element("th", ["Average"]),
           element("th", ["%"]),
