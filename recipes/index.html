@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Recipes</title>
+</head>
+
+<style>
+  ol {
+      list-style: none;
+      margin: 0;
+  }
+  h2 {
+      margin: 0;
+  }
+</style>
+
+<script type="module">
+  import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.esm.js'
+
+  const RECIPES = [
+    {
+      name: 'chocolate chip cookies',
+      ingredients: [
+        '1 1/2 sticks butter',
+        '20g molasses',
+        '230g sugar',
+        '1 egg',
+        '2 egg yolks',
+        '2 tsp vanilla',
+        '217g AP flour',
+        '1 1/2 tsp salt',
+        '3/4 tsp baking soda',
+      ],
+    },
+    {
+      name: 'flour tortillas',
+      ingredients: [
+        '220g flour',
+        '1/2 stick butter',
+        '1 tsp salt',
+        '1/8 tsp baking soda',
+        '120ml water, 160F',
+      ],
+    },
+    {
+      name: 'corn tortillas',
+      ingredients: [
+        '1 cup masa harina',
+        '3/4th cup water, 160F',
+        '1tsp salt',
+      ],
+    },
+    {
+      name: 'pickled red onions',
+      ingredients: [
+        '2 large red onion',
+        '1 cup white vinegar',
+        '1 cup water',
+        '1T salt',
+        '1 cup sugar',
+      ],
+    },
+    {
+      name: 'cream biscuits',
+      ingredients: [
+        'TODO'
+      ],
+    },
+    {
+      name: 'buttermilk biscuits',
+      ingredients: [
+        'TODO'
+      ],
+    },
+    {
+      name: 'pie dough',
+      ingredients: [
+        'TODO'
+      ],
+    },
+    {
+      name: 'carrot cake',
+      ingredients: [
+        'TODO'
+      ],
+    },
+    {
+      name: 'tiramisu',
+      ingredients: [
+        'TODO'
+      ],
+    },
+    {
+      name: 'bao dough',
+      ingredients: [
+        '250g flour',
+        '142g water',
+        '5g sugar',
+        '3g active dry yeast',
+        '5g salt',
+      ],
+    },
+    {
+      name: 'bao filling',
+      ingredients: [
+        '1 block tofu',
+        '1 cabbage',
+        '1 bunch green onions',
+        'salt',
+        'msg',
+        'corn starch',
+        'sherry/white wine/etc',
+      ],
+    },
+    {
+      name: 'madeleines',
+      ingredients: [
+        '150g sugar',
+        '2 eggs',
+        'zest from 1 lemon',
+        '150g flour',
+        '1/2tsp salt',
+        '1/2tsp baking powder',
+        '125g butter, melted',
+      ],
+    },
+    {
+      name: 'french fries',
+      ingredients: [
+        '1350g oil',
+        '1133g potatoes',
+      ]
+    }
+  ]
+
+
+  const fuse = new Fuse(RECIPES, {
+    keys: ['name', 'ingredients']
+  });
+
+  function element(name, children, attributes) {
+    const element = document.createElement(name);
+    (children || []).forEach((child) => {
+      try {
+        element.appendChild(child);
+      } catch {
+        if (child)
+            element.appendChild(document.createTextNode(child.toString()));
+      }
+    });
+    Object.entries(attributes || {}).map(([key, value]) => {
+      element[key] = value;
+    });
+    return element;
+  }
+
+  function renderRecipes(recipes, search) {
+    if (search) {
+      recipes = fuse.search(search).map(({ item }) => item);
+    }
+    return element('div', recipes.map(recipe => {
+      return element('div', [
+      element('h2', [recipe.name]),
+      element('ol', recipe.ingredients.map(ingredient => element('li', [ingredient]))),
+      ]);
+    }));
+  }
+
+  function updateRecipes(event) {
+      const container = document.getElementById('recipes');
+      container.innerHTML = '';
+      container.appendChild(renderRecipes(RECIPES, event.target.value));
+  }
+
+  function main() {
+    console.log(document.getElementById('search').value)
+    document.getElementById('search').oninput = updateRecipes;
+    document.getElementById('recipes').appendChild(
+      renderRecipes(
+        RECIPES,
+        document.getElementById('search').value,
+      )
+    );
+  }
+
+  window.onload = main;
+</script>
+
+<input id="search" placeholder="Search" autofocus>
+<div id="recipes">
+</div>
