@@ -36,6 +36,7 @@
         '217g AP flour',
         '1 1/2 tsp salt',
         '3/4 tsp baking soda',
+        '6oz chocolate',
       ],
     },
     {
@@ -141,7 +142,10 @@
 
 
   const fuse = new Fuse(RECIPES, {
-    keys: ['name', 'ingredients']
+    keys: [
+      { name: 'name', weight: 0.7 },
+      { name: 'ingredients', weight: 0.3 }
+    ]
   });
 
   function element(name, children, attributes) {
