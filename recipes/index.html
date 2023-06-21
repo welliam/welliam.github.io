@@ -35,7 +35,8 @@
         '1/3C oil',
         '1 egg',
         '1 cup (240g) milk',
-      ]
+        'mix wet into dry, bake for 20-25 at 400F',
+      ],
     },
     {
       name: 'pesto',
@@ -169,14 +170,38 @@
         "100g sugar"
       ],
     },
-  ]
-
+    {
+      name: 'chocolate tart',
+      ingredients: [
+        "Chocolate dough:",
+        "- 1/2 cup (1 stick) salted butter, at room temperature",
+        "- 1/2 cup plus 1 tablespoon confectioners' sugar",
+        "- 1/4 cup unsweetened cocoa",
+        "- 1 large egg yolk",
+        "- 3/4 teaspoon vanilla extract",
+        "- 150g all-purpose flour",
+        "Caramel filling:",
+        "- 2 cups sugar",
+        "- 1/2 cup water",
+        "- 1/4 cup corn syrup",
+        "- 1/2 cup (1 stick) unsalted butter",
+        "- 1/2 cup heavy cream",
+        "- 2 T creme fraiche (available at specialty food markets)",
+        "- Pinch of salt",
+        "Chocolate glaze:",
+        "- 3 1/2 ounces extra-bittersweet chocolate (70 to 85%), chopped",
+        "- 1/2 cup heavy cream",
+        "- Fleur de sel",
+      ]
+    },
+  ];
 
   const fuse = new Fuse(RECIPES, {
     keys: [
       { name: 'name', weight: 0.7 },
       { name: 'ingredients', weight: 0.3 }
-    ]
+    ],
+    threshold: 0.5,
   });
 
   function element(name, children, attributes) {
