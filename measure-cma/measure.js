@@ -82,6 +82,13 @@ function perpendicularAway(dot, byAmount, perpendicularSlope) {
   return { x: x + dot.x, y: y + dot.y };
 }
 
+function cmaRatio(a, b) {
+  if (!b) {
+    return 0;
+  }
+  return Math.round(a / b * 10) / 10;
+}
+
 function calculateCMA(dots) {
   if (dots && dots.length == 6) {
     const sorted = sortDots(dots);
@@ -112,6 +119,8 @@ function calculateCMA(dots) {
       mPixelsAverage: mAverage,
       aPixels: a,
       diameter,
+      mcRatio: cmaRatio(mPart, cPart),
+      amRatio: cmaRatio(aPart, mPart),
     };
   } else {
     return null;
@@ -250,8 +259,19 @@ function cmaTextOf(state) {
   }
 }
 
+function ratiosTextOf(state) {
+  const cma = calculateCMA(state.dotsUndoStack.getState());
+  if (cma) {
+    const { mcRatio, amRatio } = cma;
+    return `; M/C = ${mcRatio}; A/M = ${amRatio}`;
+  }
+}
+
 function renderLabel(state, context) {
-  const cmaText = cmaTextOf(state);
+  let cmaText = cmaTextOf(state);
+  if (cmaText && state.labelIncludeRatios) {
+    cmaText += ratiosTextOf(state);
+  }
   const fontSizePx = Math.round(
     Math.max(context.canvas.height, context.canvas.width) / 30
   );
@@ -443,7 +463,7 @@ function render({ state, setMode }) {
 
   const cmaText = cmaTextOf(state);
   if (cmaText) {
-    document.getElementById("cma-display").innerHTML = cmaText;
+    document.getElementById("cma-display").innerHTML = cmaText + ratiosTextOf(state);
     document.getElementById("toggle-show-breakdown-button").style.display =
       "inline";
   } else {
@@ -594,6 +614,7 @@ function drawingState() {
     mode: "Measure",
     mouseLocation: "out",
     labelIncludeCMA: true,
+    labelIncludeRatios: false,
     label: "",
     fileLoaded: false,
     showBreakdown: false,
@@ -685,6 +706,10 @@ function drawingState() {
     setState({ labelIncludeCMA });
   }
 
+  function changeIncludeRatios(labelIncludeRatios) {
+    setState({ labelIncludeRatios });
+  }
+
   function toggleShowBreakdown() {
     setState({ showBreakdown: !state.showBreakdown });
   }
@@ -703,6 +728,7 @@ function drawingState() {
     fileLoaded,
     changeLabel,
     changeIncludeCMA,
+    changeIncludeRatios,
     toggleShowBreakdown,
   };
 }
@@ -719,6 +745,7 @@ window.onload = function () {
     fileLoaded,
     changeLabel,
     changeIncludeCMA,
+    changeIncludeRatios,
     redoDots,
     undoDots,
     toggleShowBreakdown,
@@ -788,6 +815,11 @@ window.onload = function () {
 
   document.getElementById("input-include-cma").onchange = (event) => {
     changeIncludeCMA(event.target.checked);
+  };
+
+  document.getElementById("input-include-ratios").checked = getState().labelIncludeRatios;
+  document.getElementById("input-include-ratios").onchange = (event) => {
+    changeIncludeRatios(event.target.checked);
   };
 
   document.getElementById("toggle-show-breakdown-button").onclick = () => {
