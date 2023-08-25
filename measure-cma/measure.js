@@ -86,7 +86,7 @@ function cmaRatio(a, b) {
   if (!b) {
     return 0;
   }
-  return Math.round(a / b * 10) / 10;
+  return Math.round((a / b) * 10) / 10;
 }
 
 function calculateCMA(dots) {
@@ -277,7 +277,10 @@ function renderLabel(state, context) {
   );
   context.font = `${fontSizePx}px Arial`;
 
-  const includeCMA = state.labelIncludeCMA && cmaText;
+  const includeCMA =
+    state.labelIncludeCMA &&
+    cmaText &&
+    state.cmaPosition === cmaPositionTopLeft;
   const lines = (state.label ? 1 : 0) + (includeCMA ? 1 : 0);
 
   if (!lines) {
@@ -290,7 +293,7 @@ function renderLabel(state, context) {
     textLines.push(state.label);
   }
 
-  if (state.labelIncludeCMA && cmaText) {
+  if (includeCMA) {
     textLines.push(cmaText);
   }
 
@@ -341,6 +344,24 @@ function renderLabel(state, context) {
     context.fillText(line, xInnerStart, textY);
     textY += lineSpacing;
   });
+
+  if (
+    state.cmaPosition === cmaPositionAboveBar &&
+    state.labelIncludeCMA &&
+    cmaText
+  ) {
+    const highestPointY = Math.min(
+      ...state.dotsUndoStack.getState().map(({ y }) => y)
+    );
+    const highestPoint = state.dotsUndoStack
+      .getState()
+      .find(({ y }) => y === highestPointY);
+    const cmaTextWidth = context.measureText(cmaText).width;
+    const cmaTextY = highestPoint.y - textHeight(context, cmaText);
+    const cmaTextX = highestPoint.x - cmaTextWidth / 2;
+    context.beginPath();
+    context.fillText(cmaText, cmaTextX, cmaTextY);
+  }
 }
 
 function renderCanvas(state, context) {
@@ -465,7 +486,8 @@ function render({ state, setMode }) {
 
   const cmaText = cmaTextOf(state);
   if (cmaText) {
-    document.getElementById("cma-display").innerHTML = cmaText + ratiosTextOf(state);
+    document.getElementById("cma-display").innerHTML =
+      cmaText + ratiosTextOf(state);
     document.getElementById("toggle-show-breakdown-button").style.display =
       "inline";
   } else {
@@ -487,6 +509,12 @@ function render({ state, setMode }) {
   document.getElementById("clear-dots").disabled = !state.fileLoaded;
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
+    if (state.cmaPosition === cmaPositionAboveBar) {
+        document.getElementById("cmaPositionAboveBar").checked = true;
+    }
+    if (state.cmaPosition === cmaPositionTopLeft) {
+        document.getElementById("cmaPositionTopLeft").checked = true;
+    }
 
   document.getElementById(
     "measurement-undo"
@@ -614,16 +642,21 @@ function drawGuide(state, canvas, x, y) {
 
 // themes
 const whiteTheme = {
+    theme: "white",
   font: "white",
   line: "white",
   background: null,
 };
 
 const blackTheme = {
+    theme: "black",
   font: "white",
   line: "black",
   background: "black",
 };
+
+const cmaPositionTopLeft = "top left";
+const cmaPositionAboveBar = "above bar";
 
 // state
 
@@ -637,7 +670,8 @@ function drawingState() {
     label: "",
     fileLoaded: false,
     showBreakdown: false,
-    theme: blackTheme,
+    theme: whiteTheme,
+    cmaPosition: cmaPositionAboveBar,
   };
 
   function setDotsUndoStack(dotsUndoStack) {
@@ -837,7 +871,9 @@ window.onload = function () {
     changeIncludeCMA(event.target.checked);
   };
 
-  document.getElementById("input-include-ratios").checked = getState().labelIncludeRatios;
+  document.getElementById(
+    "input-include-ratios"
+  ).checked = getState().labelIncludeRatios;
   document.getElementById("input-include-ratios").onchange = (event) => {
     changeIncludeRatios(event.target.checked);
   };
