@@ -149,8 +149,6 @@ function addDot(dots, x, y) {
 
   const [dot1, dot2] = dots;
 
-console.log(dot1, dot2, x, y);
-    console.log(dotLocationOnSlope(dot1, dot2, x, y));
   return [...dots, dotLocationOnSlope(dot1, dot2, x, y)];
 }
 
@@ -219,9 +217,11 @@ function renderDotsOnCanvas(state, context) {
     return;
   }
 
+  context.fillStyle = state.theme.line;
+  context.strokeStyle = state.theme.line;
+
   if (dots.length === 1) {
     context.beginPath();
-    context.fillStyle = "black";
     context.moveTo(dots[0].x, dots[0].y);
     context.arc(dots[0].x, dots[0].y, 3, 0, 2 * Math.PI);
     context.fill();
@@ -300,17 +300,19 @@ function renderLabel(state, context) {
 
   const height = fontSizePx * 1.5 * lines;
 
-  context.beginPath();
-  context.fillStyle = "black";
-  context.rect(
-    xOuterStart,
-    yOuterStart,
-    xOuterEnd - xOuterStart,
-    yOuterEnd - yOuterStart
-  );
-  context.fill();
+  if (state.theme.background) {
+    context.beginPath();
+    context.fillStyle = state.theme.background;
+    context.rect(
+      xOuterStart,
+      yOuterStart,
+      xOuterEnd - xOuterStart,
+      yOuterEnd - yOuterStart
+    );
+    context.fill();
+  }
 
-  context.fillStyle = "white";
+  context.fillStyle = state.theme.font;
 
   let textY = yInnerStart;
   textLines.forEach((line) => {
@@ -466,10 +468,12 @@ function render({ state, setMode }) {
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
 
-  document.getElementById("measurement-undo").disabled =
-    !state.dotsUndoStack.hasUndo();
-  document.getElementById("measurement-redo").disabled =
-    !state.dotsUndoStack.hasRedo();
+  document.getElementById(
+    "measurement-undo"
+  ).disabled = !state.dotsUndoStack.hasUndo();
+  document.getElementById(
+    "measurement-redo"
+  ).disabled = !state.dotsUndoStack.hasRedo();
 }
 
 // canvas manipulation and loading
@@ -569,6 +573,8 @@ function drawGuide(state, canvas, x, y) {
   }
 
   if (dots.length === 1) {
+    context.fillStyle = state.theme.line;
+    context.strokeStyle = state.theme.line;
     const [dot] = dots;
     drawBar(context, dot, { x, y });
 
@@ -586,6 +592,19 @@ function drawGuide(state, canvas, x, y) {
   }
 }
 
+// themes
+const whiteTheme = {
+  font: "white",
+  line: "white",
+  background: null,
+};
+
+const blackTheme = {
+  font: "white",
+  line: "black",
+  background: "black",
+};
+
 // state
 
 function drawingState() {
@@ -597,6 +616,7 @@ function drawingState() {
     label: "",
     fileLoaded: false,
     showBreakdown: false,
+    theme: blackTheme,
   };
 
   function setDotsUndoStack(dotsUndoStack) {
