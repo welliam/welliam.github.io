@@ -552,7 +552,7 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
     (state.label ? state.label + " " : "") +
     "CMA measurement" +
     (state.label ? "" : " " + timestamp) +
-    ".png";
+    ".jpg";
 
   link.download = filename;
   link.href = flattenedCanvas.toDataURL();
