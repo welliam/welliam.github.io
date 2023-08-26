@@ -359,6 +359,7 @@ function renderLabel(state, context) {
     const cmaTextWidth = context.measureText(cmaText).width;
     const cmaTextY = highestPoint.y - textHeight(context, cmaText);
     const cmaTextX = highestPoint.x - cmaTextWidth / 2;
+    context.fillStyle = state.theme.cmaAboveBarFont;
     context.beginPath();
     context.fillText(cmaText, cmaTextX, cmaTextY);
   }
@@ -642,15 +643,15 @@ function drawGuide(state, canvas, x, y) {
 
 // themes
 const whiteTheme = {
-    theme: "white",
   font: "white",
+  cmaAboveBarFont: "white",
   line: "white",
   background: null,
 };
 
 const blackTheme = {
-    theme: "black",
   font: "white",
+  cmaAboveBarFont: "black",
   line: "black",
   background: "black",
 };
@@ -768,6 +769,18 @@ function drawingState() {
     setState({ showBreakdown: !state.showBreakdown });
   }
 
+  function setTheme(value) {
+    if (value === 'themeWhite') {
+      setState({ theme: whiteTheme })
+    } else if (value === 'themeBlack')  {
+      setState({ theme: blackTheme })
+    }
+  }
+
+  function setCMAPosition(cmaPosition) {
+    setState({ cmaPosition });
+  }
+
   window.getState = getState;
 
   return {
@@ -784,6 +797,8 @@ function drawingState() {
     changeIncludeCMA,
     changeIncludeRatios,
     toggleShowBreakdown,
+    setTheme,
+    setCMAPosition,
   };
 }
 
@@ -803,6 +818,8 @@ window.onload = function () {
     redoDots,
     undoDots,
     toggleShowBreakdown,
+    setCMAPosition,
+    setTheme,
   } = drawingState();
 
   const imageCanvas = document.getElementById("image-canvas");
@@ -877,6 +894,36 @@ window.onload = function () {
   document.getElementById("input-include-ratios").onchange = (event) => {
     changeIncludeRatios(event.target.checked);
   };
+
+  document.getElementById("cmaPositionTopLeft").checked =
+    getState().cmaPosition === cmaPositionTopLeft;
+  document.getElementById("cmaPositionAboveBar").checked =
+    getState().cmaPosition === cmaPositionAboveBar;
+  document.getElementById("cmaPositionTopLeft").onchange = (event) => {
+    if (event.target.checked) {
+      setCMAPosition(event.target.value)
+    }
+  }
+  document.getElementById("cmaPositionAboveBar").onchange = (event) => {
+    if (event.target.checked) {
+      setCMAPosition(event.target.value)
+    }
+  }
+
+  document.getElementById("themeWhite").checked =
+    getState().theme == whiteTheme;
+  document.getElementById("themeBlack").checked =
+    getState().theme == blackTheme;
+  document.getElementById("themeWhite").onchange = (event) => {
+    if (event.target.checked) {
+      setTheme(event.target.value)
+    }
+  }
+  document.getElementById("themeBlack").onchange = (event) => {
+    if (event.target.checked) {
+      setTheme(event.target.value)
+    }
+  }
 
   document.getElementById("toggle-show-breakdown-button").onclick = () => {
     toggleShowBreakdown();
