@@ -510,19 +510,17 @@ function render({ state, setMode }) {
   document.getElementById("clear-dots").disabled = !state.fileLoaded;
   document.getElementById("download-canvas").disabled = !state.fileLoaded;
   document.getElementById("input-include-cma").checked = state.labelIncludeCMA;
-    if (state.cmaPosition === cmaPositionAboveBar) {
-        document.getElementById("cmaPositionAboveBar").checked = true;
-    }
-    if (state.cmaPosition === cmaPositionTopLeft) {
-        document.getElementById("cmaPositionTopLeft").checked = true;
-    }
+  if (state.cmaPosition === cmaPositionAboveBar) {
+    document.getElementById("cmaPositionAboveBar").checked = true;
+  }
+  if (state.cmaPosition === cmaPositionTopLeft) {
+    document.getElementById("cmaPositionTopLeft").checked = true;
+  }
 
-  document.getElementById(
-    "measurement-undo"
-  ).disabled = !state.dotsUndoStack.hasUndo();
-  document.getElementById(
-    "measurement-redo"
-  ).disabled = !state.dotsUndoStack.hasRedo();
+  document.getElementById("measurement-undo").disabled =
+    !state.dotsUndoStack.hasUndo();
+  document.getElementById("measurement-redo").disabled =
+    !state.dotsUndoStack.hasRedo();
 }
 
 // canvas manipulation and loading
@@ -770,10 +768,10 @@ function drawingState() {
   }
 
   function setTheme(value) {
-    if (value === 'themeWhite') {
-      setState({ theme: whiteTheme })
-    } else if (value === 'themeBlack')  {
-      setState({ theme: blackTheme })
+    if (value === "themeWhite") {
+      setState({ theme: whiteTheme });
+    } else if (value === "themeBlack") {
+      setState({ theme: blackTheme });
     }
   }
 
@@ -888,9 +886,8 @@ window.onload = function () {
     changeIncludeCMA(event.target.checked);
   };
 
-  document.getElementById(
-    "input-include-ratios"
-  ).checked = getState().labelIncludeRatios;
+  document.getElementById("input-include-ratios").checked =
+    getState().labelIncludeRatios;
   document.getElementById("input-include-ratios").onchange = (event) => {
     changeIncludeRatios(event.target.checked);
   };
@@ -901,14 +898,14 @@ window.onload = function () {
     getState().cmaPosition === cmaPositionAboveBar;
   document.getElementById("cmaPositionTopLeft").onchange = (event) => {
     if (event.target.checked) {
-      setCMAPosition(event.target.value)
+      setCMAPosition(event.target.value);
     }
-  }
+  };
   document.getElementById("cmaPositionAboveBar").onchange = (event) => {
     if (event.target.checked) {
-      setCMAPosition(event.target.value)
+      setCMAPosition(event.target.value);
     }
-  }
+  };
 
   document.getElementById("themeWhite").checked =
     getState().theme == whiteTheme;
@@ -916,14 +913,14 @@ window.onload = function () {
     getState().theme == blackTheme;
   document.getElementById("themeWhite").onchange = (event) => {
     if (event.target.checked) {
-      setTheme(event.target.value)
+      setTheme(event.target.value);
     }
-  }
+  };
   document.getElementById("themeBlack").onchange = (event) => {
     if (event.target.checked) {
-      setTheme(event.target.value)
+      setTheme(event.target.value);
     }
-  }
+  };
 
   document.getElementById("toggle-show-breakdown-button").onclick = () => {
     toggleShowBreakdown();
