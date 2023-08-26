@@ -1,6 +1,7 @@
+* TODO improvement: remember preference settings (ratios, theme)
+* TODO improvement: white theme for text
 * TODO bug: fix help page screenshots/description
 "reset" -> new button and others
-* TODO improvement: indicate progress somehow
 * TODO improvement: mark breakdown as closed when dots are cleared or ctrl-z
 * TODO bug: fix fuzzy "click to upload photo" (is it being upscaled? why)
 * TODO refactor: fix naming: draw vs render
@@ -18,6 +19,8 @@
 - for example, model with start and end dot, and have the inner dots be distances along that line
   - this would simplify CMA calculation, but make display logic more complicated
   - function that "recovers" dots from this wouldn't be difficult though
+* WONTDO improvement: indicate progress somehow
+- what did i mean by this
 * DONE bug: fix dot "sticking" when placing 6 dots and undoing all
 not sure when this got resolved
 * DONE bug: fix jostling when finishing measurement (particularly annoying on mobile)
