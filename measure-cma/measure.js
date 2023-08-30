@@ -578,11 +578,10 @@ function downloadCanvas(state, imageCanvas, drawingCanvas) {
   const filename =
     (state.label ? state.label + " " : "") +
     "CMA measurement" +
-    (state.label ? "" : " " + timestamp) +
-    ".jpg";
+    (state.label ? "" : " " + timestamp);
 
   link.download = filename;
-  link.href = flattenedCanvas.toDataURL();
+  link.href = flattenedCanvas.toDataURL("image/jpeg");
   link.click();
 }
 
