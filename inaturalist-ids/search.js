@@ -1,4 +1,4 @@
-const csvUrl = "taxa-filtered.csv"; // Replace with your CSV URL
+const csvUrl = "taxa-filtered.csv";
 
 async function loadCSV(url) {
     const response = await fetch(url);
