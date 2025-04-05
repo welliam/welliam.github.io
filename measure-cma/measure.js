@@ -97,7 +97,7 @@ function calculateCMA(dots) {
     const first = sorted[0];
     const rest = sorted.slice(1);
     const diffs = rest.map((dot, i) =>
-      distanceBetween(dot, i === 0 ? first : rest[i - 1])
+      distanceBetween(dot, i === 0 ? first : rest[i - 1]),
     );
     const [c1, m1, a, m2, c2] = diffs;
 
@@ -273,7 +273,7 @@ function renderLabel(state, context) {
     cmaText += ratiosTextOf(state);
   }
   const fontSizePx = Math.round(
-    Math.max(context.canvas.height, context.canvas.width) / 30
+    Math.max(context.canvas.height, context.canvas.width) / 30,
   );
   context.font = `${fontSizePx}px Arial`;
 
@@ -300,7 +300,7 @@ function renderLabel(state, context) {
   const textWidth = Math.max(
     0,
     context.measureText(state.label).width,
-    includeCMA ? context.measureText(cmaText).width : 0
+    includeCMA ? context.measureText(cmaText).width : 0,
   );
 
   const lineSpacing = fontSizePx * 0.4;
@@ -330,7 +330,7 @@ function renderLabel(state, context) {
       xOuterStart,
       yOuterStart,
       xOuterEnd - xOuterStart,
-      yOuterEnd - yOuterStart
+      yOuterEnd - yOuterStart,
     );
     context.fill();
   }
@@ -351,7 +351,7 @@ function renderLabel(state, context) {
     cmaText
   ) {
     const highestPointY = Math.min(
-      ...state.dotsUndoStack.getState().map(({ y }) => y)
+      ...state.dotsUndoStack.getState().map(({ y }) => y),
     );
     const highestPoint = state.dotsUndoStack
       .getState()
@@ -376,7 +376,7 @@ function renderCanvas(state, context) {
     context.fillText(
       text,
       context.canvas.width / 2 - textWidth / 2,
-      context.canvas.height / 2
+      context.canvas.height / 2,
     );
   }
 }
@@ -504,7 +504,7 @@ function render({ state, setMode }) {
   }
 
   document.getElementById("diameter-display").innerHTML = renderDiameter(
-    diameterOf(state.dotsUndoStack.getState())
+    diameterOf(state.dotsUndoStack.getState()),
   );
   document.getElementById("label-input").value = state.label;
   document.getElementById("clear-dots").disabled = !state.fileLoaded;
@@ -555,6 +555,38 @@ function loadImage(e, fileLoaded) {
   reader.readAsDataURL(file);
 }
 
+function loadImageFromClipboard(clipboardData, fileLoaded) {
+  const imageCanvas = document.getElementById("image-canvas");
+  const drawingCanvas = document.getElementById("drawing-canvas");
+  const context = imageCanvas.getContext("2d");
+  context.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+
+  const items = clipboardData.items;
+
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf("image") !== -1) {
+      const blob = items[i].getAsFile();
+      const img = new Image();
+      const url = URL.createObjectURL(blob);
+
+      img.onload = function () {
+        drawingCanvas.width = img.width;
+        drawingCanvas.height = img.height;
+        imageCanvas.width = img.width;
+        imageCanvas.height = img.height;
+
+        context.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
+        URL.revokeObjectURL(url);
+
+        fileLoaded("Pasted image");
+      };
+
+      img.src = url;
+      break;
+    }
+  }
+}
+
 function downloadCanvas(state, imageCanvas, drawingCanvas) {
   const flattenedCanvas = document.createElement("canvas");
   flattenedCanvas.height = imageCanvas.height;
@@ -593,12 +625,12 @@ function drawBar(context, dotFrom, dotTo) {
   const adjustedFrom = perpendicularAway(
     dotFrom,
     lineWidth / 2,
-    perpendicularSlope
+    perpendicularSlope,
   );
   const adjustedTo = perpendicularAway(
     dotTo,
     lineWidth / 2,
-    perpendicularSlope
+    perpendicularSlope,
   );
 
   context.beginPath();
@@ -629,7 +661,7 @@ function drawGuide(state, canvas, x, y) {
     renderDot(context, dot.x, dot.y, perpendicularSlope);
 
     document.getElementById("diameter-display").innerHTML = renderDiameter(
-      distanceBetween(dot, { x, y })
+      distanceBetween(dot, { x, y }),
     );
   } else if (dots.length > 1 && dots.length < 6) {
     const dotOnSlope = dotLocationOnSlope(dots[0], dots[1], x, y);
@@ -831,11 +863,11 @@ window.onload = function () {
         event.clientX,
         event.clientY,
         rect,
-        drawingCanvas
+        drawingCanvas,
       );
       clickCanvas(x, y);
     },
-    false
+    false,
   );
 
   drawingCanvas.addEventListener("mouseout", () => mouseOut());
@@ -846,7 +878,7 @@ window.onload = function () {
       event.clientX,
       event.clientY,
       rect,
-      drawingCanvas
+      drawingCanvas,
     );
     const state = getState();
     mouseMove();
@@ -857,12 +889,19 @@ window.onload = function () {
     .getElementById("image-input")
     .addEventListener("change", (e) => loadImage(e, fileLoaded));
 
+  document.addEventListener("paste", (e) => {
+    if (e.clipboardData && e.clipboardData.items) {
+      loadImageFromClipboard(e.clipboardData, fileLoaded);
+      e.preventDefault();
+    }
+  });
+
   document
     .getElementById("download-canvas")
     .addEventListener(
       "click",
       () => downloadCanvas(getState(), imageCanvas, drawingCanvas),
-      false
+      false,
     );
 
   document
@@ -926,14 +965,21 @@ window.onload = function () {
   };
 
   document.onkeydown = (event) => {
-    if (event.keyCode == "Z".charCodeAt(0) && event.ctrlKey) {
-      undoDots();
-    }
-    if (event.keyCode == "Y".charCodeAt(0) && event.ctrlKey) {
+    if (
+      (event.key == "y" && (event.ctrlKey || event.metaKey)) ||
+      (event.shiftKey && event.key == "z" && (event.ctrlKey || event.metaKey))
+    ) {
       redoDots();
+      return;
     }
-    if (event.keyCode == "N".charCodeAt(0) && event.ctrlKey) {
+    if (event.key == "z" && (event.ctrlKey || event.metaKey)) {
+      undoDots();
+      return;
+    }
+
+    if (event.key == "n" && (event.ctrlKey || event.metaKey)) {
       document.getElementById("image-input").click();
+      return;
     }
   };
 
