@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Audio normalizer</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      h1 {
+        margin-bottom: 24px;
+      }
+      .card {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      input[type="file"],
+      input[type="range"],
+      input[type="number"],
+      button {
+        margin-bottom: 16px;
+      }
+      input[type="range"] {
+        width: 100%;
+        -webkit-appearance: none;
+        margin: 10px 0;
+        background: transparent;
+      }
+
+      /* Thumb styling */
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #66cc99;
+        cursor: pointer;
+        margin-top: -8px;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #66cc99;
+        cursor: pointer;
+        border: none;
+      }
+
+      input[type="range"]::-ms-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #66cc99;
+        cursor: pointer;
+      }
+
+      /* Track styling */
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: #e5f5ee;
+        border-radius: 2px;
+        border: 1px solid #bbeedd;
+      }
+
+      input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: #e5f5ee;
+        border-radius: 2px;
+        border: 1px solid #bbeedd;
+      }
+
+      input[type="range"]::-ms-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+
+      input[type="range"]::-ms-fill-lower {
+        background: #66cc99;
+        border-radius: 2px;
+      }
+
+      input[type="range"]::-ms-fill-upper {
+        background: #e5f5ee;
+        border-radius: 2px;
+      }
+
+      input[type="range"]:focus {
+        outline: none;
+      }
+
+      input[type="range"]:focus::-webkit-slider-runnable-track {
+        background: #e5f5ee;
+      }
+
+      /* File input styling */
+      .file-input-container {
+        position: relative;
+        margin-bottom: 20px;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .file-input-container input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+      }
+      .file-button {
+        display: block;
+        width: 100%;
+        background: #f8f8f8;
+        border: 2px dashed;
+        border-radius: 8px;
+        padding: 24px 16px;
+        text-align: center;
+        font-weight: 500;
+        font-size: 16px;
+        transition: all 0.2s ease;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        max-width: 100%;
+      }
+      .controls {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .controls label {
+        margin: 0;
+      }
+      button {
+        background: #66cc99;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      button:disabled {
+        background: #cccccc;
+        cursor: not-allowed;
+      }
+      .status {
+        background: #f5f5f5;
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 16px;
+        min-height: 45px;
+      }
+      .hidden {
+        display: none;
+      }
+      audio {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+      .loader {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        border: 3px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top-color: #66cc99;
+        animation: spin 1s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Full-page overlay styles */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .overlay-loader {
+        width: 60px;
+        height: 60px;
+        border: 5px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top-color: #66cc99;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 20px;
+      }
+
+      .overlay-content {
+        text-align: center;
+        max-width: 80%;
+      }
+
+      .overlay-error {
+        color: #e74c3c;
+        font-size: 24px;
+        margin-bottom: 16px;
+      }
+
+      .overlay-message {
+        font-size: 18px;
+        margin-bottom: 24px;
+      }
+
+      .overlay-button {
+        background: #66cc99;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Audio processor</h1>
+
+    <div class="card">
+      <div class="file-input-container">
+        <input type="file" id="audioFile" accept="audio/*,video/*" />
+        <div class="file-button">
+          <div style="margin-bottom: 8px">
+            Drop file here or click to browse
+          </div>
+          <div style="font-size: 14px; color: #666">
+            Supports audio and video files
+          </div>
+        </div>
+      </div>
+
+      <div id="processingOptions" class="hidden">
+        <div class="controls">
+          <label for="highpassFreq" style="margin-bottom: 10px; display: block">
+            Filter frequencies below: <span id="freqValue">20</span> Hz
+          </label>
+          <input
+            type="range"
+            id="highpassFreq"
+            min="20"
+            max="2000"
+            value="20"
+            step="10"
+          />
+        </div>
+      </div>
+
+      <button
+        id="processBtn"
+        disabled
+        style="height: 50px; margin-top: 10px; font-size: 18px"
+      >
+        Process audio
+      </button>
+    </div>
+
+    <div id="resultCard" class="card hidden">
+      <h2>Preview</h2>
+      <audio id="preview" controls></audio>
+      <button id="downloadBtn" style="height: 50px; font-size: 18px">
+        Download processed audio
+      </button>
+    </div>
+
+    <div id="loadingOverlay" class="overlay" style="display: none">
+      <div class="overlay-loader"></div>
+      <div class="overlay-content">
+        <div class="overlay-message">Loading FFmpeg...</div>
+      </div>
+    </div>
+
+    <div id="errorOverlay" class="overlay" style="display: none">
+      <div class="overlay-content">
+        <div class="overlay-error">Error</div>
+        <div class="overlay-message" id="errorMessage">
+          Something went wrong.
+        </div>
+        <button class="overlay-button" id="errorDismissBtn">Dismiss</button>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.9.8/dist/ffmpeg.min.js"></script>
+
+    <script>
+      const audioFileInput = document.getElementById("audioFile");
+      const processBtn = document.getElementById("processBtn");
+      const highpassFreq = document.getElementById("highpassFreq");
+      const freqValue = document.getElementById("freqValue");
+      const resultCard = document.getElementById("resultCard");
+      const previewAudio = document.getElementById("preview");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const errorOverlay = document.getElementById("errorOverlay");
+      const errorMessage = document.getElementById("errorMessage");
+      const errorDismissBtn = document.getElementById("errorDismissBtn");
+
+      function showLoading(message = "Loading FFmpeg...") {
+        document.querySelector("#loadingOverlay .overlay-message").textContent =
+          message;
+        loadingOverlay.style.display = "flex";
+      }
+
+      function hideLoading() {
+        loadingOverlay.style.display = "none";
+      }
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorOverlay.style.display = "flex";
+      }
+
+      errorDismissBtn.addEventListener("click", () => {
+        errorOverlay.style.display = "none";
+      });
+
+      let ffmpeg;
+      let audioFile;
+      let processedFileName;
+      let originalFileName;
+
+      const acceptedAudioMimeTypes = [
+        "audio/mpeg",
+        "audio/wav",
+        "audio/wave",
+        "audio/x-wav",
+        "audio/webm",
+        "audio/ogg",
+        "audio/aac",
+        "audio/flac",
+        "audio/x-m4a",
+        "audio/mp4",
+      ];
+
+      const acceptedVideoMimeTypes = [
+        "video/mp4",
+        "video/webm",
+        "video/ogg",
+        "video/quicktime",
+        "video/x-msvideo",
+        "video/x-matroska",
+        "video/x-flv",
+      ];
+
+      async function initFFmpeg() {
+        showLoading("Loading FFmpeg...");
+
+        const { createFFmpeg } = FFmpeg;
+        ffmpeg = createFFmpeg({
+          log: true,
+          corePath:
+            "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.8.0/dist/ffmpeg-core.js",
+        });
+
+        try {
+          await ffmpeg.load();
+          hideLoading();
+          processBtn.disabled = !(audioFile && ffmpeg);
+        } catch (error) {
+          console.error("Failed to load FFmpeg:", error);
+          hideLoading();
+          showError(
+            "Failed to load FFmpeg. Please reload the page and try again.",
+          );
+        }
+      }
+
+      const fileContainer = document.querySelector(".file-input-container");
+      const fileButton = document.querySelector(".file-button");
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        fileContainer.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        fileContainer.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        fileContainer.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight() {
+        fileButton.style.backgroundColor = "#e5f5ee";
+        fileButton.style.borderColor = "#55aa88";
+      }
+
+      function unhighlight() {
+        fileButton.style.backgroundColor = "#f8f8f8";
+        fileButton.style.borderColor = "#66cc99";
+      }
+
+      fileContainer.addEventListener("drop", handleDrop, false);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        if (files.length) {
+          audioFileInput.files = files;
+          const changeEvent = new Event("change");
+          audioFileInput.dispatchEvent(changeEvent);
+        }
+      }
+
+      audioFileInput.addEventListener("change", (e) => {
+        audioFile = e.target.files[0];
+
+        if (audioFile) {
+          document
+            .getElementById("processingOptions")
+            .classList.remove("hidden");
+
+          document.querySelector(".file-button div:first-child").textContent =
+            audioFile.name;
+
+          originalFileName = audioFile.name;
+          const fileExtension = originalFileName.split(".").pop().toLowerCase();
+          const fileMimeType = audioFile.type;
+
+          const isAudioType = acceptedAudioMimeTypes.includes(fileMimeType);
+          const isVideoType = acceptedVideoMimeTypes.includes(fileMimeType);
+
+          if (!isAudioType && !isVideoType) {
+            processBtn.disabled = true;
+            return;
+          }
+
+          const videoExtensions = [
+            "mp4",
+            "webm",
+            "mov",
+            "avi",
+            "mkv",
+            "flv",
+            "wmv",
+          ];
+          const isVideo =
+            videoExtensions.includes(fileExtension) || isVideoType;
+
+          processedFileName = `processed.wav`;
+
+          processBtn.disabled = !ffmpeg;
+        } else {
+          processBtn.disabled = true;
+        }
+      });
+
+      highpassFreq.addEventListener("input", () => {
+        freqValue.textContent = highpassFreq.value;
+      });
+
+      processBtn.addEventListener("click", processAudio);
+      downloadBtn.addEventListener("click", downloadAudio);
+
+      async function processAudio() {
+        if (!ffmpeg) {
+          await initFFmpeg();
+        }
+
+        if (!audioFile) {
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = async function (e) {
+          const arrayBuffer = e.target.result;
+          const fileExt = audioFile.name.split(".").pop().toLowerCase();
+          const inputFileName = `input.${fileExt}`;
+
+          const videoExtensions = [
+            "mp4",
+            "webm",
+            "mov",
+            "avi",
+            "mkv",
+            "flv",
+            "wmv",
+          ];
+          const fileMimeType = audioFile.type;
+          const isVideoMimeType = acceptedVideoMimeTypes.includes(fileMimeType);
+          const isVideo = videoExtensions.includes(fileExt) || isVideoMimeType;
+
+          const outputExt = "wav";
+          processedFileName = `processed.${outputExt}`;
+
+          resultCard.classList.add("hidden");
+
+          showLoading("Processing audio...");
+          processBtn.disabled = true;
+
+          try {
+            console.log("Processing started", {
+              inputFileName,
+              processedFileName,
+            });
+
+            ffmpeg.FS("writeFile", inputFileName, new Uint8Array(arrayBuffer));
+
+            console.log("Files before processing:", ffmpeg.FS("readdir", "/"));
+
+            let ffmpegCommand = ["-i", inputFileName];
+
+            ffmpegCommand.push("-vn");
+
+            let filterString = "";
+
+            const frequency = highpassFreq.value;
+            filterString = `highpass=f=${frequency},loudnorm=I=-16:TP=-1.5:LRA=11`;
+
+            ffmpegCommand.push("-af", filterString);
+
+            ffmpegCommand.push("-ar", "44100");
+            ffmpegCommand.push("-ac", "2");
+            ffmpegCommand.push("-b:a", "192k");
+
+            ffmpegCommand.push("-f", "wav");
+
+            ffmpegCommand.push(processedFileName);
+
+            console.log("FFmpeg command:", ffmpegCommand.join(" "));
+
+            await ffmpeg.run(...ffmpegCommand);
+
+            console.log("Files after processing:", ffmpeg.FS("readdir", "/"));
+
+            const data = ffmpeg.FS("readFile", processedFileName);
+            console.log("Output file size:", data.length);
+
+            const blob = new Blob([data.buffer], {
+              type: `audio/${processedFileName.split(".").pop()}`,
+            });
+            const url = URL.createObjectURL(blob);
+
+            previewAudio.src = url;
+
+            hideLoading();
+            resultCard.classList.remove("hidden");
+          } catch (error) {
+            console.error("FFmpeg error:", error);
+            hideLoading();
+            showError("Error processing audio: " + error.message);
+          } finally {
+            processBtn.disabled = false;
+          }
+        };
+
+        reader.readAsArrayBuffer(audioFile);
+      }
+
+      function downloadAudio() {
+        if (!ffmpeg || !processedFileName) {
+          showError("No processed audio available for download.");
+          return;
+        }
+
+        try {
+          const data = ffmpeg.FS("readFile", processedFileName);
+          const blob = new Blob([data.buffer], {
+            type: `audio/${processedFileName.split(".").pop()}`,
+          });
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = url;
+
+          const originalNameWithoutExt = originalFileName.substring(
+            0,
+            originalFileName.lastIndexOf("."),
+          );
+          const extension = processedFileName.split(".").pop();
+          a.download = `${originalNameWithoutExt}_processed.${extension}`;
+
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } catch (error) {
+          console.error("Download error:", error);
+          showError("Error downloading processed audio: " + error.message);
+        }
+      }
+
+      initFFmpeg();
+    </script>
+  </body>
+</html>
