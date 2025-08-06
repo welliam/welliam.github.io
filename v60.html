@@ -1,0 +1,66 @@
+<style>
+  .step {
+    color: gray;
+  }
+  .active {
+      color: green!important;
+    font-style: italic;
+  }
+</style>
+
+<input placeholder="coffee in grams" id="g" type="number" onchange="setSteps()">
+<div class="step" id="bloom">Bloom <span id="bloomg"></span> until 0:30</div>
+<div class="step" id="pour1">Pour to <span id="pour1g"></span> until 1:15</div>
+<div class="step" id="pour2">Pour to <span id="pour2g"></span> until 1:45</div>
+<div class="step" id="finish">Let finish</div>
+<div>
+  <button onclick="start()">Start</button>
+  <span><span id="time"></span> seconds</span>
+</div>
+
+<script>
+  let cb;
+  function setActive(passed) {
+    Array.from(document.querySelectorAll(".step")).forEach(e => e.classList.remove("active"));
+    if (passed < 30) {
+      document.getElementById("bloom").classList.add("active");
+    } else if (passed < 75) {
+      document.getElementById("pour1").classList.add("active");
+    } else if (passed < 105) {
+      document.getElementById("pour2").classList.add("active");
+    } else {
+      document.getElementById("finish").classList.add("active");
+    }
+  }
+
+ function setSteps() {
+   const g = Number(document.getElementById("g").value);
+   const bloom = g * 2;
+   const pour2 = g * 50 / 3;
+   const pour1 = pour2 * 0.6;
+
+   document.getElementById("bloomg").innerHTML = `${Math.round(bloom)}g`;
+   document.getElementById("pour1g").innerHTML = `${Math.round(pour1)}g`;
+   document.getElementById("pour2g").innerHTML = `${Math.round(pour2)}g`;
+
+   localStorage.g = g;
+ }
+
+  function start() {
+      const g = Number(document.getElementById("g").value);
+      const startTime = Date.now();
+      if (cb) { clearInterval(cb); }
+      cb = setInterval(() => {
+        const ms = Date.now() - startTime;
+        const passed = Math.floor(ms / 1000);
+	document.getElementById("time").innerHTML = passed;
+	setActive(passed);
+      }, 100);
+  }
+
+ if (localStorage.g && !Number.isNaN(parseInt(localStorage.g))) {
+   document.getElementById("g").value = parseInt(localStorage.g);
+   setSteps();
+ }
+</script>
+
