@@ -1,103 +1,179 @@
 <!doctype html>
 <html>
-<style>
-  .step {
-    color: gray;
-  }
-  .active {
-      color: green!important;
-    font-style: italic;
-  }
- .hidden {
-   display: none;
- }
-</style>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <style>
+      input,
+      textarea,
+      select,
+      button {
+        font-size: 16px;
+        border-radius: 5px;
+      }
+      input[type="checkbox"] {
+        transform: scale(1.5);
+        margin-right: 0.5em; /* optional: space between checkbox and label */
+      }
 
-<div>
-Ground coffee: <input id="g" type="number" onchange="setSteps()">
-Coffee brewed: <input id="brewedg" type="number" onchange="setCoffeeBrewed()">
-</div>
+      body {
+        padding: 0;
+        font-size: 16px;
+        line-height: 1.7;
+      }
 
-<div class="step hidden" id="ice">Add <span id="iceg"></span> ice, zero scale</div>
-<div class="step" id="bloom">Bloom <span id="bloomg"></span> until 0:30</div>
-<div class="step" id="pour1">Pour to <span id="pour1g"></span> until 1:15</div>
-<div class="step" id="pour2">Pour to <span id="pour2g"></span> until 1:45</div>
-<div class="step" id="finish">Let finish</div>
-<div>
-  <input type="checkbox" id="isice" onChange="setSteps()">
-  ice
-</div>
-<div>
-  <button onclick="start()">Start</button>
-  <span><span id="time"></span> seconds</span>
-</div>
+      .container {
+        max-width: 100%;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
 
-<script>
-  let cb;
-  function setActive(passed) {
+      .step {
+        color: gray;
+      }
+      .active {
+        color: green !important;
+        font-style: italic;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
 
-    Array.from(document.querySelectorAll(".step")).forEach(e => e.classList.remove("active"));
-    if (passed < 30) {
-      document.getElementById("bloom").classList.add("active");
-    } else if (passed < 75) {
-      document.getElementById("pour1").classList.add("active");
-    } else if (passed < 105) {
-      document.getElementById("pour2").classList.add("active");
-    } else {
-      document.getElementById("finish").classList.add("active");
-    }
-  }
+    <div>
+      Ground coffee: <input id="g" type="number" onchange="setSteps()" />
+    </div>
+    <div>
+      Coffee brewed:
+      <input id="brewedg" type="number" onchange="setCoffeeBrewed()" />
+    </div>
 
- function setCoffeeBrewed() {
-   const brewed = document.getElementById("brewedg");
-   const g = document.getElementById("g");
-   g.value = Number(brewed.value) * 3 / 50;
-   setSteps();
- }
+    <div class="step hidden" id="ice">
+      Add <span id="iceg"></span> ice, zero scale
+    </div>
+    <div class="step" id="bloom">
+      Bloom <span id="bloomg"></span> until 0:30
+    </div>
+    <div class="step" id="pour1">
+      Pour to <span id="pour1g"></span> until 1:15
+    </div>
+    <div class="step" id="pour2">
+      Pour to <span id="pour2g"></span> until 1:45
+    </div>
+    <div class="step" id="finish">Let finish</div>
+    <div>
+      <input type="checkbox" id="isice" onChange="setSteps()" />
+      ice
+    </div>
+    <div>
+      <button onclick="start()">Start</button>
+      <span><span id="time"></span> seconds</span>
+    </div>
 
- function setSteps() {
-   const g = Number(document.getElementById("g").value);
+    <script>
+      let cb;
 
-   const bloom = g * 2;
-   const pour2 = g * 50 / 3;
-   const pour1 = pour2 * 0.6;
+      function hideStepProgression() {
+        Array.from(document.querySelectorAll(".stepProgression")).forEach((e) =>
+          e.remove(),
+        );
+      }
+      function showStepProgression(progression, container) {
+        const emoji = ["🕛", "🕒", "🕕", "🕘"][Math.floor(progression * 4)];
+        const element = document.createElement("span");
+        element.classList.add("stepProgression");
+        element.innerHTML = emoji;
+        container.appendChild(element);
+      }
 
-   const brewed = document.getElementById("brewedg");
-   brewed.value = pour2;
+      function setActive(passed) {
+        Array.from(document.querySelectorAll(".step")).forEach((e) =>
+          e.classList.remove("active"),
+        );
+        hideStepProgression();
+        if (passed < 30) {
+          showStepProgression(passed / 30, document.getElementById("bloom"));
+          document.getElementById("bloom").classList.add("active");
+        } else if (passed < 75) {
+          showStepProgression(
+            (passed - 30) / (75 - 30),
+            document.getElementById("pour1"),
+          );
+          document.getElementById("pour1").classList.add("active");
+        } else if (passed < 105) {
+          showStepProgression(
+            (passed - 75) / (105 - 75),
+            document.getElementById("pour2"),
+          );
+          document
+            .getElementById("pour2", document.getElementById("pour2"))
+            .classList.add("active");
+        } else {
+          document.getElementById("finish").classList.add("active");
+        }
+      }
 
-   const ice = document.getElementById("isice");
-   if (!ice.checked) {
-     document.getElementById("bloomg").innerHTML = `${Math.round(bloom)}g`;
-     document.getElementById("pour1g").innerHTML = `${Math.round(pour1)}g`;
-     document.getElementById("pour2g").innerHTML = `${Math.round(pour2)}g`;
-     document.getElementById("ice").classList.add("hidden");
-   } else {
-     const ice = pour2 * 0.33;
-     document.getElementById("ice").classList.remove("hidden");
-     document.getElementById("iceg").innerHTML = `${Math.round(ice)}g`;
-     document.getElementById("bloomg").innerHTML = `${Math.round(bloom)}g`;
-     document.getElementById("pour1g").innerHTML = `${Math.round(pour1*0.66)}g`;
-     document.getElementById("pour2g").innerHTML = `${Math.round(pour2*0.66)}g`;
-   }
+      function setCoffeeBrewed() {
+        const brewed = document.getElementById("brewedg");
+        const g = document.getElementById("g");
+        g.value = Math.round((Number(brewed.value) * 3) / 50);
+        setSteps();
+      }
 
-   localStorage.g = g;
- }
+      function setSteps() {
+        const g = Number(document.getElementById("g").value);
 
-  function start() {
-      const g = Number(document.getElementById("g").value);
-      const startTime = Date.now();
-      if (cb) { clearInterval(cb); }
-      cb = setInterval(() => {
-        const ms = Date.now() - startTime;
-        const passed = Math.floor(ms / 1000);
-	document.getElementById("time").innerHTML = passed;
-	setActive(passed);
-      }, 100);
-  }
+        const bloom = g * 2;
+        const pour2 = (g * 50) / 3;
+        const pour1 = pour2 * 0.6;
 
- if (localStorage.g && !Number.isNaN(parseInt(localStorage.g))) {
-   document.getElementById("g").value = parseInt(localStorage.g);
-   setSteps();
- }
-</script>
+        const brewed = document.getElementById("brewedg");
+        brewed.value = Math.round(pour2);
+
+        const ice = document.getElementById("isice");
+        if (!ice.checked) {
+          document.getElementById("bloomg").innerHTML = `${Math.round(bloom)}g`;
+          document.getElementById("pour1g").innerHTML = `${Math.round(pour1)}g`;
+          document.getElementById("pour2g").innerHTML = `${Math.round(pour2)}g`;
+          document.getElementById("ice").classList.add("hidden");
+        } else {
+          const ice = pour2 * 0.33;
+          document.getElementById("ice").classList.remove("hidden");
+          document.getElementById("iceg").innerHTML = `${Math.round(ice)}g`;
+          document.getElementById("bloomg").innerHTML = `${Math.round(bloom)}g`;
+          document.getElementById("pour1g").innerHTML =
+            `${Math.round(pour1 * 0.66)}g`;
+          document.getElementById("pour2g").innerHTML =
+            `${Math.round(pour2 * 0.66)}g`;
+        }
+
+        localStorage.g = g;
+      }
+
+      function start() {
+        const g = Number(document.getElementById("g").value);
+        const startTime = Date.now();
+
+        const tick = () => {
+          const ms = Date.now() - startTime;
+          const passed = Math.floor(ms / 1000);
+          document.getElementById("time").innerHTML = passed;
+          setActive(passed);
+        };
+
+        if (cb) {
+          clearInterval(cb);
+        }
+        tick();
+        cb = setInterval(tick, 100);
+      }
+
+      if (localStorage.g && !Number.isNaN(parseInt(localStorage.g))) {
+        document.getElementById("g").value = parseInt(localStorage.g);
+        setSteps();
+      }
+    </script>
+  </body>
 </html>
+
