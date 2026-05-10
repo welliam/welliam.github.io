@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<script type="module">
+  import FitParser from 'https://cdn.jsdelivr.net/npm/fit-file-parser@3.0.0/+esm'
+
+  let allRecords;
+
+  function mRound(n, decimals) {
+      return Math.round(n * 10 * decimals) / (10 * decimals);
+  }
+
+  function averageHR(data, startTimerTime, endTimerTime) {
+      const startIndex = data.findIndex(point => point.timer_time >= startTimerTime);
+      const endIndex = data.findIndex(point => point.timer_time >= endTimerTime) || data.length;
+      const sliced = data.slice(startIndex, endIndex);
+      const hrs = sliced.map(point => point.heart_rate).filter(hr => hr);
+      return hrs.reduce((a, b) => a + b, 0) / hrs.length;
+  }
+
+  function write(obj) {
+      Object.entries(obj).map(([id, value]) => {
+          const container = document.getElementById(id);
+          if (container) container.innerHTML = typeof value == "number" ? mRound(value, 2) : value;
+      });
+  }
+
+  function writeResults() {
+      const warmupEnd = Number(document.querySelector("#warmupEnd").value) * 60;
+      const cooldownEnd = Number(document.querySelector("#cooldownEnd").value) * 60;
+
+      if (warmupEnd == null || Number.isNaN(warmupEnd) || !cooldownEnd || Number.isNaN(cooldownEnd) || !allRecords) return;
+
+      const firstHalfEnd = warmupEnd + cooldownEnd * 0.4;
+      const startHR = averageHR(allRecords, warmupEnd, warmupEnd + 60);
+      const firstHalfHR = averageHR(allRecords, warmupEnd, firstHalfEnd);
+      const secondHalfHR = averageHR(allRecords, firstHalfEnd, cooldownEnd);
+      const drift = ((secondHalfHR / firstHalfHR) - 1) * 100;
+      const showDrift = `${mRound(drift, 2)}%`
+      const results = drift < 3.5 ? "Drift below 3.5%, try again at a higher pace" : drift < 5 ? `Test success! Your AeT is ${mRound(startHR, 2)}` : "Drift above 5%, try again at a lower pace.";
+      write({ showDrift, firstHalfHR, secondHalfHR, startHR, results });
+  }
+
+  function inferWarmupCooldown() {
+      const totalTime = allRecords[allRecords.length - 1].timer_time;
+      const warmupEnd = totalTime * 0.2;
+      document.querySelector("#warmupEnd").value = Math.round(warmupEnd / 60);
+      document.querySelector("#cooldownEnd").value = Math.round(totalTime / 60);
+  }
+
+  document.querySelector("#fit").onchange = event => {
+      const fitParser = new FitParser({
+          force: true,
+          speedUnit: 'mph',
+          lengthUnit: 'mi',
+          temperatureUnit: 'fahrenheit',
+          pressureUnit: 'bar', // accept bar, cbar and psi (default is bar)
+          elapsedRecordField: true,
+          mode: 'cascade',
+      });
+
+      event.target.files[0].bytes().then(fileBytes => {
+          fitParser.parse(fileBytes, (error, data) => {
+              if (error) {
+                  console.error(error);
+                  return;
+              }
+              allRecords = data.activity.sessions.flatMap(session => session.laps.flatMap(lap => lap.records));
+              inferWarmupCooldown();
+              writeResults();
+          });
+      });
+  }
+
+
+  document.querySelector("#warmupEnd").onchange = () => writeResults();
+  document.querySelector("#cooldownEnd").onchange = () => writeResults();
+</script>
+
+<div><input type="file" id="fit" accept=".fit" /></div>
+<div><label>Warmup end time (minutes): <input id="warmupEnd" /></label></div>
+<div><label>Cooldown end time (minutes): <input id="cooldownEnd" /></label></div>
+
+<div>
+  <div><strong>Drift: <span id="showDrift"></span></strong></div>
+  <div><strong id="results"></strong></div>
+  <div><strong>Start HR: <span id="startHR"></span></strong></div>
+  <div>First half HR: <span id="firstHalfHR"></span></div>
+  <div>Second half HR: <span id="secondHalfHR"></span></div>
+</div>
