@@ -30,7 +30,7 @@
 
       if (warmupEnd == null || Number.isNaN(warmupEnd) || !cooldownEnd || Number.isNaN(cooldownEnd) || !allRecords) return;
 
-      const firstHalfEnd = warmupEnd + cooldownEnd * 0.4;
+      const firstHalfEnd = (warmupEnd + cooldownEnd) / 2;
       const startHR = averageHR(allRecords, warmupEnd, warmupEnd + 60);
       const firstHalfHR = averageHR(allRecords, warmupEnd, firstHalfEnd);
       const secondHalfHR = averageHR(allRecords, firstHalfEnd, cooldownEnd);
