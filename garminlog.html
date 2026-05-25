@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CSV Hiking Converter</title>
+</head>
+<body>
+  <h1>Drop CSV Anywhere</h1>
+
+  <button id="copyBtn">Copy Output</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    const output = document.getElementById("output");
+    const copyBtn = document.getElementById("copyBtn");
+
+    document.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    document.addEventListener("drop", async (e) => {
+      e.preventDefault();
+
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+
+      const text = await file.text();
+      parseCSV(text);
+    });
+
+    function parseCSV(text) {
+      const rows = csvToArray(text);
+
+      const headers = [
+        "Date",
+        "Calculated AeT",
+        "Type",
+        "Trail",
+        "Pack weight",
+        "Distance",
+        "Elevation gain",
+        "Time",
+        "Avg HR",
+        "Max HR"
+      ];
+
+      const result = [];
+
+      for (const row of rows) {
+        result.push([
+          row["Date"] || "",
+          "",
+          row["Activity Type"] || "",
+          row["Title"] || "",
+          "",
+          row["Distance"] || "",
+          row["Ascent"] || "",
+          row["Time"] || "",
+          row["Avg HR"] || "",
+          row["Max HR"] || ""
+        ].join("\t"));
+      }
+
+      output.textContent = result.join("\n");
+    }
+
+    function csvToArray(text) {
+      const lines = text.trim().split("\n");
+
+      const headers = splitCSVLine(lines[0]);
+
+      return lines.slice(1).map(line => {
+        const values = splitCSVLine(line);
+
+        const obj = {};
+        headers.forEach((header, i) => {
+          obj[header] = values[i] || "";
+        });
+
+        return obj;
+      });
+    }
+
+    function splitCSVLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === "," && !inQuotes) {
+          result.push(current);
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+
+      result.push(current);
+
+      return result.map(v => v.replace(/^"|"$/g, ""));
+    }
+
+    copyBtn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(output.textContent);
+    });
+  </script>
+</body>
+</html>
