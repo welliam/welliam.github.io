@@ -551,7 +551,7 @@ if (typeof document !== 'undefined') (function () {
       tr.appendChild(cell(fmtMph(s.distanceM, s.timerS)));
       tr.appendChild(cell(s.avgHr === null ? '' : String(s.avgHr)));
       tr.appendChild(cell(s.maxHr === null ? '' : String(s.maxHr)));
-      tr.appendChild(cell(s.vam === null ? '' : String(Math.round(s.vam))));
+      tr.appendChild(cell(s.vam === null ? '' : String(Math.round(s.vam * 3.280839895)))); // ft/h
       tbody.appendChild(tr);
     }
     var n = keys.length;
