@@ -1,115 +1,664 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>CSV Hiking Converter</title>
+<meta charset="utf-8">
+<title>FIT AeT Zone Table</title>
 </head>
 <body>
-  <h1>Drop CSV Anywhere</h1>
+<p>
+  <label>AeT (bpm): <input type="number" id="aet" min="60" max="250" step="1"></label>
+  &nbsp;
+  <label>FIT / Connect CSV files: <input type="file" id="files" multiple accept=".fit,.FIT,.csv,.CSV"></label>
+  &nbsp;
+  <button id="copy">Copy table (TSV)</button>
+  <button id="clear">Clear</button>
+</p>
+<p id="status"></p>
+<table border="1" cellpadding="3" id="out">
+<thead>
+<tr>
+  <th>Date</th><th>AeT</th><th>Activity</th><th>Title</th><th>Weight</th>
+  <th>Distance</th><th>Ascent</th><th>Time</th><th>Z1-Z2 time</th><th>Z3+ time</th>
+  <th>mph</th><th>Avg HR</th><th>Max HR</th><th>VAM</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
 
-  <button id="copyBtn">Copy Output</button>
+<script>
+// ---------------------------------------------------------------------------
+// Minimal FIT parser (no external dependencies)
+// ---------------------------------------------------------------------------
+var FIT_EPOCH = 631065600; // seconds between Unix epoch and FIT epoch (1989-12-31 UTC)
 
-  <pre id="output"></pre>
+// base type (low 5 bits of the type byte) -> byte size
+var BASE_SIZE = [1, 1, 1, 2, 2, 4, 4, 1, 4, 8, 1, 2, 4, 1, 8, 8, 8];
 
-  <script>
-    const output = document.getElementById("output");
-    const copyBtn = document.getElementById("copyBtn");
+// global message numbers we keep
+var KEEP = { 0: 1, 3: 1, 12: 1, 18: 1, 20: 1, 21: 1, 34: 1 };
 
-    document.addEventListener("dragover", (e) => {
-      e.preventDefault();
-    });
+function readScalar(dv, p, bt, little) {
+  var v;
+  switch (bt) {
+    case 0: case 2: case 13: v = dv.getUint8(p); return v === 0xFF ? null : v;
+    case 10: v = dv.getUint8(p); return v === 0 ? null : v;
+    case 1: v = dv.getInt8(p); return v === 0x7F ? null : v;
+    case 3: v = dv.getInt16(p, little); return v === 0x7FFF ? null : v;
+    case 4: v = dv.getUint16(p, little); return v === 0xFFFF ? null : v;
+    case 11: v = dv.getUint16(p, little); return v === 0 ? null : v;
+    case 5: v = dv.getInt32(p, little); return v === 0x7FFFFFFF ? null : v;
+    case 6: v = dv.getUint32(p, little); return v === 0xFFFFFFFF ? null : v;
+    case 12: v = dv.getUint32(p, little); return v === 0 ? null : v;
+    case 8: v = dv.getFloat32(p, little); return isNaN(v) ? null : v;
+    case 9: v = dv.getFloat64(p, little); return isNaN(v) ? null : v;
+    case 14: { var b = dv.getBigInt64(p, little); return b === 0x7FFFFFFFFFFFFFFFn ? null : Number(b); }
+    case 15: { var b2 = dv.getBigUint64(p, little); return b2 === 0xFFFFFFFFFFFFFFFFn ? null : Number(b2); }
+    case 16: { var b3 = dv.getBigUint64(p, little); return b3 === 0n ? null : Number(b3); }
+  }
+  return null;
+}
 
-    document.addEventListener("drop", async (e) => {
-      e.preventDefault();
+function readField(dv, p, type, size, little) {
+  var bt = type & 0x1F;
+  if (bt > 16) return null;
+  if (bt === 7) { // string, null terminated utf-8
+    var bytes = new Uint8Array(dv.buffer, dv.byteOffset + p, size);
+    var end = bytes.indexOf(0);
+    if (end < 0) end = size;
+    if (end === 0) return null;
+    return new TextDecoder().decode(bytes.subarray(0, end));
+  }
+  var bs = BASE_SIZE[bt];
+  var n = Math.floor(size / bs);
+  if (n <= 1) return readScalar(dv, p, bt, little);
+  var out = [], any = false;
+  for (var i = 0; i < n; i++) {
+    var v = readScalar(dv, p + i * bs, bt, little);
+    if (v !== null) any = true;
+    out.push(v);
+  }
+  return any ? out : null;
+}
 
-      const file = e.dataTransfer.files[0];
-      if (!file) return;
-
-      const text = await file.text();
-      parseCSV(text);
-    });
-
-    function parseCSV(text) {
-      const rows = csvToArray(text);
-
-      const headers = [
-        "Date",
-        "Calculated AeT",
-        "Type",
-        "Trail",
-        "Pack weight",
-        "Distance",
-        "Elevation gain",
-        "Elapsed Time",
-        "Speed",
-        "Avg HR",
-        "Max HR"
-      ];
-
-      const result = [];
-
-      for (const row of rows) {
-        result.push([
-          row["Date"] || "",
-          "",
-          row["Activity Type"] || "",
-          row["Title"] || "",
-          "",
-          row["Distance"] || "",
-          row["Total Ascent"] || row["Ascent"] || "",
-          row["Time"] || row["Total Time"] || row["Elapsed Time"] || "",
-          "",
-          row["Avg HR"] || "",
-          row["Max HR"] || ""
-        ].join("\t"));
-      }
-
-      output.textContent = result.join("\n");
-    }
-
-    function csvToArray(text) {
-      const lines = text.trim().split("\n");
-
-      const headers = splitCSVLine(lines[0]);
-
-      return lines.slice(1).map(line => {
-        const values = splitCSVLine(line);
-
-        const obj = {};
-        headers.forEach((header, i) => {
-          obj[header] = values[i] || "";
-        });
-
-        return obj;
-      }).toReversed();
-    }
-
-    function splitCSVLine(line) {
-      const result = [];
-      let current = "";
-      let inQuotes = false;
-
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === "," && !inQuotes) {
-          result.push(current);
-          current = "";
-        } else {
-          current += char;
+// Returns array of {num: globalMessageNumber, f: {fieldNum: value}} for kept messages.
+function parseFit(buf) {
+  var dv = new DataView(buf);
+  var msgs = [];
+  var pos = 0;
+  while (pos + 12 <= buf.byteLength) {
+    var headerSize = dv.getUint8(pos);
+    var dataSize = dv.getUint32(pos + 4, true);
+    var sig = String.fromCharCode(dv.getUint8(pos + 8), dv.getUint8(pos + 9), dv.getUint8(pos + 10), dv.getUint8(pos + 11));
+    if (sig !== '.FIT') throw new Error('Not a FIT file');
+    var end = pos + headerSize + dataSize;
+    if (end > buf.byteLength) end = buf.byteLength;
+    pos += headerSize;
+    var defs = {};
+    var lastTs = null;
+    while (pos < end) {
+      var hdr = dv.getUint8(pos++);
+      var def, local, ts = null;
+      if (hdr & 0x80) { // compressed timestamp header
+        local = (hdr >> 5) & 0x3;
+        var off = hdr & 0x1F;
+        if (lastTs !== null) {
+          ts = (lastTs & ~0x1F) + off;
+          if (off < (lastTs & 0x1F)) ts += 0x20;
+          lastTs = ts;
         }
+        def = defs[local];
+      } else if (hdr & 0x40) { // definition message
+        local = hdr & 0xF;
+        var hasDev = hdr & 0x20;
+        pos++; // reserved
+        var arch = dv.getUint8(pos++);
+        var little = arch === 0;
+        var gnum = dv.getUint16(pos, little); pos += 2;
+        var nf = dv.getUint8(pos++);
+        var fields = [], total = 0;
+        for (var i = 0; i < nf; i++) {
+          var fnum = dv.getUint8(pos), fsize = dv.getUint8(pos + 1), ftype = dv.getUint8(pos + 2);
+          fields.push({ num: fnum, size: fsize, type: ftype });
+          total += fsize;
+          pos += 3;
+        }
+        if (hasDev) {
+          var nd = dv.getUint8(pos++);
+          for (var j = 0; j < nd; j++) { total += dv.getUint8(pos + 1); pos += 3; }
+        }
+        defs[local] = { gnum: gnum, little: little, fields: fields, total: total };
+        continue;
+      } else { // normal data message
+        local = hdr & 0xF;
+        def = defs[local];
       }
-
-      result.push(current);
-
-      return result.map(v => v.replace(/^"|"$/g, ""));
+      if (!def) throw new Error('Data message without definition (local ' + local + ')');
+      var keep = KEEP[def.gnum];
+      var f = keep ? {} : null;
+      var p = pos;
+      for (var k = 0; k < def.fields.length; k++) {
+        var fd = def.fields[k];
+        if (keep || fd.num === 253) {
+          var v = readField(dv, p, fd.type, fd.size, def.little);
+          if (fd.num === 253 && typeof v === 'number') lastTs = v;
+          if (keep && v !== null) f[fd.num] = v;
+        }
+        p += fd.size;
+      }
+      pos += def.total;
+      if (keep) {
+        if (ts !== null && f[253] === undefined) f[253] = ts;
+        msgs.push({ num: def.gnum, f: f });
+      }
     }
+    pos = end + 2; // skip CRC
+  }
+  return msgs;
+}
 
-    copyBtn.addEventListener("click", async () => {
-      await navigator.clipboard.writeText(output.textContent);
+// ---------------------------------------------------------------------------
+// Activity summary
+// ---------------------------------------------------------------------------
+var SPORTS = { 0: 'generic', 1: 'running', 2: 'cycling', 3: 'transition', 4: 'fitness equipment', 5: 'swimming',
+  6: 'basketball', 7: 'soccer', 8: 'tennis', 9: 'american football', 10: 'training', 11: 'walking',
+  12: 'cross country skiing', 13: 'alpine skiing', 14: 'snowboarding', 15: 'rowing', 16: 'mountaineering',
+  17: 'hiking', 18: 'multisport', 19: 'paddling', 20: 'flying', 21: 'e-biking', 22: 'motorcycling', 23: 'boating',
+  24: 'driving', 25: 'golf', 26: 'hang gliding', 27: 'horseback riding', 28: 'hunting', 29: 'fishing',
+  30: 'inline skating', 31: 'rock climbing', 32: 'sailing', 33: 'ice skating', 34: 'sky diving', 35: 'snowshoeing',
+  36: 'snowmobiling', 37: 'stand up paddleboarding', 38: 'surfing', 39: 'wakeboarding', 40: 'water skiing',
+  41: 'kayaking', 42: 'rafting', 43: 'windsurfing', 44: 'kitesurfing', 45: 'tactical', 46: 'jumpmaster',
+  47: 'boxing', 48: 'floor climbing', 53: 'diving', 62: 'hiit', 64: 'racket', 65: 'wheelchair push walk',
+  66: 'wheelchair push run', 67: 'bowling', 69: 'disc golf', 71: 'water tubing', 72: 'wakesurfing' };
+
+var MAX_GAP = 60; // seconds: longest record gap credited to a single HR sample
+
+function byNum(msgs, n) { var r = []; for (var i = 0; i < msgs.length; i++) if (msgs[i].num === n) r.push(msgs[i].f); return r; }
+
+// Build timer-running intervals [[start, stop], ...] from timer events. Null if no events.
+function runningIntervals(events, lastTs) {
+  var ev = [];
+  for (var i = 0; i < events.length; i++) {
+    var e = events[i];
+    if (e[0] !== 0 || e[253] === undefined) continue; // event 0 = timer
+    var t = e[1];
+    if (t === 0) ev.push([e[253], 1]);                       // start
+    else if (t === 1 || t === 4 || t === 8 || t === 9) ev.push([e[253], 0]); // stop, stop_all, stop_disable(_all)
+  }
+  if (!ev.length) return null;
+  ev.sort(function (a, b) { return a[0] - b[0] || b[1] - a[1]; });
+  var out = [], running = false, start = 0;
+  for (var j = 0; j < ev.length; j++) {
+    if (ev[j][1] === 1) { if (!running) { running = true; start = ev[j][0]; } }
+    else if (running) { running = false; out.push([start, ev[j][0]]); }
+  }
+  if (running) out.push([start, lastTs !== null ? Math.max(lastTs, start) : Infinity]);
+  return out;
+}
+
+// Seconds of [a, b] that fall inside the running intervals.
+function runningOverlap(intervals, a, b) {
+  if (!intervals) return b - a;
+  var s = 0;
+  for (var i = 0; i < intervals.length; i++) {
+    var lo = Math.max(a, intervals[i][0]), hi = Math.min(b, intervals[i][1]);
+    if (hi > lo) s += hi - lo;
+  }
+  return s;
+}
+
+// ---------------------------------------------------------------------------
+// VAM: climb gain / climbing time over auto-detected climbs
+// ---------------------------------------------------------------------------
+var VAM_SMOOTH = 30;   // s, half-width of rolling median applied to altitude
+var VAM_HYST = 10;     // m, hysteresis used to split the track into up/down legs
+var VAM_MIN_CLIMB = 30;// m, minimum net gain for a leg to count as a climb
+var VAM_BREAK_S = 120; // s, a stop this long (or longer)...
+var VAM_BREAK_M = 15;  // m, ...with less than this much horizontal progress is a break
+
+function median(a) {
+  var b = a.slice().sort(function (x, y) { return x - y; });
+  var m = b.length >> 1;
+  return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2;
+}
+
+// pts: array of [t, altitude m, distance m] sorted by t. Returns m/h or null.
+function climbVam(pts) {
+  var n = pts.length;
+  if (n < 2) return null;
+  var t = new Float64Array(n), alt = new Float64Array(n), dist = new Float64Array(n), i, k;
+  for (i = 0; i < n; i++) { t[i] = pts[i][0]; alt[i] = pts[i][1]; dist[i] = pts[i][2]; }
+
+  // 1. smoothed altitude: centered rolling median over +-VAM_SMOOTH seconds
+  var sa = new Float64Array(n), lo = 0, hi = 0;
+  for (i = 0; i < n; i++) {
+    while (lo < n && t[lo] < t[i] - VAM_SMOOTH) lo++;
+    while (hi < n && t[hi] <= t[i] + VAM_SMOOTH) hi++;
+    sa[i] = median(Array.prototype.slice.call(alt, lo, hi));
+  }
+
+  // 2. breaks: any stretch of >= VAM_BREAK_S seconds with < VAM_BREAK_M m of progress
+  var brk = new Uint8Array(n), j = 0, marked = 0;
+  for (i = 0; i < n; i++) {
+    if (j < i) j = i;
+    while (j < n && dist[j] - dist[i] < VAM_BREAK_M) j++;
+    var jj = Math.min(j, n - 1);
+    if (t[jj] - t[i] >= VAM_BREAK_S) for (k = Math.max(i, marked); k < jj; k++) { brk[k] = 1; marked = k + 1; }
+  }
+
+  // 3. hysteresis legs on smoothed altitude: [startIdx, endIdx, isUp]
+  var legs = [], ref = sa[0], refI = 0, state = 0, startI = 0; // state 0 unknown, 1 up, -1 down
+  for (i = 1; i < n; i++) {
+    var v = sa[i];
+    if (state === 0) {
+      if (v - sa[0] >= VAM_HYST) { state = 1; ref = v; refI = i; }
+      else if (sa[0] - v >= VAM_HYST) { state = -1; ref = v; refI = i; }
+      continue;
+    }
+    if (state === 1) {
+      if (v > ref) { ref = v; refI = i; }
+      else if (ref - v >= VAM_HYST) { legs.push([startI, refI, true]); startI = refI; state = -1; ref = v; refI = i; }
+    } else {
+      if (v < ref) { ref = v; refI = i; }
+      else if (v - ref >= VAM_HYST) { legs.push([startI, refI, false]); startI = refI; state = 1; ref = v; refI = i; }
+    }
+  }
+  if (state !== 0) legs.push([startI, refI, state === 1]);
+
+  // 4. merge climbs separated by a dip smaller than 2 x hysteresis
+  var merged = [];
+  for (i = 0; i < legs.length; i++) {
+    var L = legs[i], m = merged.length;
+    if (m >= 2 && L[2] && !merged[m - 1][2] && merged[m - 2][2] && sa[merged[m - 1][0]] - sa[merged[m - 1][1]] < 2 * VAM_HYST) {
+      merged.pop(); merged[m - 2][1] = L[1];
+    } else merged.push([L[0], L[1], L[2]]);
+  }
+
+  // 5. climbs = up legs with gain >= VAM_MIN_CLIMB; time excludes breaks; gaps capped at 60 s
+  var gain = 0, time = 0;
+  for (i = 0; i < merged.length; i++) {
+    var c = merged[i];
+    if (!c[2]) continue;
+    var g = sa[c[1]] - sa[c[0]];
+    if (g < VAM_MIN_CLIMB) continue;
+    gain += g;
+    for (k = c[0]; k < c[1]; k++) if (!brk[k]) time += Math.min(t[k + 1] - t[k], 60);
+  }
+  return time > 0 ? gain / (time / 3600) : null;
+}
+
+// Parse messages into a summary that does not depend on AeT.
+function summarize(msgs) {
+  var fileId = byNum(msgs, 0)[0] || {};
+  var profile = byNum(msgs, 3)[0] || {};
+  var sportMsg = byNum(msgs, 12)[0] || {};
+  var sessions = byNum(msgs, 18);
+  var records = byNum(msgs, 20);
+  var events = byNum(msgs, 21);
+  var activity = byNum(msgs, 34)[0] || {};
+
+  // HR samples: [ts, hr]; altitude points: [ts, altitude m, distance m]
+  var samples = [], pts = [];
+  var lastTs = null;
+  for (var i = 0; i < records.length; i++) {
+    var r = records[i];
+    if (r[253] === undefined) continue;
+    lastTs = r[253];
+    samples.push([r[253], typeof r[3] === 'number' ? r[3] : null]);
+    var altRaw = typeof r[78] === 'number' ? r[78] : (typeof r[2] === 'number' ? r[2] : null); // enhanced_altitude / altitude
+    if (altRaw !== null && typeof r[5] === 'number') pts.push([r[253], altRaw / 5 - 500, r[5] / 100]);
+  }
+  samples.sort(function (a, b) { return a[0] - b[0]; });
+  pts.sort(function (a, b) { return a[0] - b[0]; });
+  var vam = null;
+  try { vam = climbVam(pts); } catch (e) { vam = null; }
+  var intervals = runningIntervals(events, lastTs);
+
+  // Per-sample durations (seconds of timer-running time credited to each sample)
+  var durs = new Array(samples.length);
+  for (var k = 0; k < samples.length; k++) {
+    var d;
+    if (k + 1 < samples.length) d = runningOverlap(intervals, samples[k][0], samples[k + 1][0]);
+    else d = k > 0 ? durs[k - 1] : 0;
+    durs[k] = Math.min(d, MAX_GAP);
+  }
+
+  var start = null, timer = 0, dist = 0, ascent = null, hrSum = 0, hrW = 0, maxHr = null, sport = null, title = null;
+  for (var s = 0; s < sessions.length; s++) {
+    var se = sessions[s];
+    if (se[2] !== undefined && (start === null || se[2] < start)) start = se[2];
+    var t = se[8] !== undefined ? se[8] / 1000 : (se[7] !== undefined ? se[7] / 1000 : 0);
+    timer += t;
+    if (se[9] !== undefined) dist += se[9] / 100;
+    if (se[22] !== undefined) ascent = (ascent || 0) + se[22];
+    if (se[16] !== undefined) { hrSum += se[16] * (t || 1); hrW += (t || 1); }
+    if (se[17] !== undefined) maxHr = maxHr === null ? se[17] : Math.max(maxHr, se[17]);
+    if (sport === null && se[5] !== undefined) sport = se[5];
+    if (title === null && typeof se[110] === 'string') title = se[110];
+  }
+  if (sport === null && sportMsg[0] !== undefined) sport = sportMsg[0];
+  if (title === null && typeof sportMsg[3] === 'string') title = sportMsg[3];
+  if (start === null) start = fileId[4] !== undefined ? fileId[4] : (samples.length ? samples[0][0] : null);
+
+  // Fallbacks from records if there is no session message
+  if (!sessions.length) {
+    var last = records[records.length - 1] || {};
+    if (last[5] !== undefined) dist = last[5] / 100;
+    var sum = 0, w = 0;
+    for (var q = 0; q < samples.length; q++) {
+      timer += durs[q];
+      if (samples[q][1] !== null) { sum += samples[q][1] * durs[q]; w += durs[q]; maxHr = maxHr === null ? samples[q][1] : Math.max(maxHr, samples[q][1]); }
+    }
+    if (w > 0) { hrSum = sum; hrW = w; }
+  }
+
+  var utcOffset = (activity[5] !== undefined && activity[253] !== undefined) ? activity[5] - activity[253] : null;
+
+  return {
+    key: (fileId[3] !== undefined && fileId[4] !== undefined) ? fileId[3] + '-' + fileId[4] : null,
+    start: start,              // FIT seconds (UTC)
+    utcOffset: utcOffset,      // seconds, from the device's local time, or null
+    sport: sport,
+    title: title,
+    weightKg: profile[4] !== undefined ? profile[4] / 10 : null,
+    distanceM: dist,
+    ascentM: ascent,
+    timerS: timer,
+    avgHr: hrW > 0 ? Math.round(hrSum / hrW) : null,
+    maxHr: maxHr,
+    vam: vam,
+    samples: samples,
+    durs: durs
+  };
+}
+
+// Returns {z12: seconds, z3: seconds}
+function zoneTimes(summary, aet) {
+  var lo = aet - aet * 0.2;
+  var z12 = 0, z3 = 0;
+  for (var i = 0; i < summary.samples.length; i++) {
+    var hr = summary.samples[i][1];
+    if (hr === null) continue;
+    if (hr > aet) z3 += summary.durs[i];
+    else if (hr > lo) z12 += summary.durs[i];
+  }
+  return { z12: z12, z3: z3 };
+}
+
+// ---------------------------------------------------------------------------
+// Garmin Connect "Activities" CSV: Activity Type, Date (local), Title, Ascent (ft)
+// ---------------------------------------------------------------------------
+var CSV_MATCH_TOLERANCE = 120; // seconds; Connect truncates some start times to the minute
+
+// RFC 4180-ish CSV -> array of rows (arrays of strings)
+function parseCsv(text) {
+  var rows = [], row = [], field = '', q = false, i = 0, c;
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  while (i < text.length) {
+    c = text[i];
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
+      else field += c;
+    } else if (c === '"') q = true;
+    else if (c === ',') { row.push(field); field = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && text[i + 1] === '\n') i++;
+      row.push(field); field = ''; rows.push(row); row = [];
+    } else field += c;
+    i++;
+  }
+  if (field !== '' || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+// "2026-10-17 07:59:24" (local) -> seconds, treating the local clock time as if UTC
+function parseLocalDate(s) {
+  var m = /^\s*(\d{4})-(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{2})(?::(\d{2}))?/.exec(s || '');
+  if (!m) return null;
+  return Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], m[6] ? +m[6] : 0) / 1000;
+}
+
+function parseCsvNumber(s) {
+  if (s === undefined || s === null) return null;
+  var v = parseFloat(String(s).replace(/[^0-9.\-]/g, ''));
+  return isNaN(v) ? null : v;
+}
+
+// CSV text -> [{t: localSeconds, type, title, ascentFt}]
+function csvToRows(text) {
+  var rows = parseCsv(text);
+  if (!rows.length) throw new Error('empty CSV');
+  var header = rows[0].map(function (h) { return h.trim().toLowerCase(); });
+  function col(names) { for (var i = 0; i < names.length; i++) { var k = header.indexOf(names[i]); if (k >= 0) return k; } return -1; }
+  var iDate = col(['date', 'start time', 'start']);
+  var iTitle = col(['title', 'name', 'activity name']);
+  var iType = col(['activity type', 'type', 'sport']);
+  var iAsc = col(['ascent', 'total ascent', 'elev gain', 'elevation gain']);
+  if (iDate < 0) throw new Error('no Date column');
+  var out = [];
+  for (var r = 1; r < rows.length; r++) {
+    var t = parseLocalDate(rows[r][iDate]);
+    if (t === null) continue;
+    out.push({
+      t: t,
+      type: iType >= 0 ? (rows[r][iType] || '').trim() : '',
+      title: iTitle >= 0 ? (rows[r][iTitle] || '').trim() : '',
+      ascentFt: iAsc >= 0 ? parseCsvNumber(rows[r][iAsc]) : null
     });
-  </script>
+  }
+  return out;
+}
+
+// Local start of an activity (seconds, local clock time as if UTC) for matching against the CSV
+function localStart(summary) {
+  if (summary.start === null) return null;
+  var secs = summary.start + FIT_EPOCH;
+  if (summary.utcOffset !== null) return secs + summary.utcOffset;
+  return secs - new Date(secs * 1000).getTimezoneOffset() * 60;
+}
+
+function matchCsv(csvRows, summary) {
+  var t = localStart(summary);
+  if (t === null) return null;
+  var best = null, bestD = Infinity;
+  for (var i = 0; i < csvRows.length; i++) {
+    var d = Math.abs(csvRows[i].t - t);
+    if (d < bestD) { bestD = d; best = csvRows[i]; }
+  }
+  return bestD <= CSV_MATCH_TOLERANCE ? best : null;
+}
+
+// ---------------------------------------------------------------------------
+// Formatting
+// ---------------------------------------------------------------------------
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function hms(sec) {
+  if (sec === null || sec === undefined || isNaN(sec)) return '';
+  sec = Math.round(sec);
+  var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  return h + ':' + pad2(m) + ':' + pad2(s);
+}
+function fmtDate(summary) {
+  if (summary.start === null) return '';
+  var secs = summary.start + FIT_EPOCH;
+  var d;
+  if (summary.utcOffset !== null) {
+    d = new Date((secs + summary.utcOffset) * 1000);
+    return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate());
+  }
+  d = new Date(secs * 1000);
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+}
+function fmtSport(s) { if (s === null) return ''; return SPORTS[s] || ('sport ' + s); }
+function fmtWeight(kg) { return kg === null ? '' : (kg * 2.2046226218).toFixed(1); }
+function fmtDist(m) { return (m / 1609.344).toFixed(2); }
+function fmtAscent(m) { return m === null ? '' : String(Math.round(m * 3.280839895)); }
+function fmtMph(m, s) { return s > 0 ? ((m / 1609.344) / (s / 3600)).toFixed(1) : ''; }
+
+// ---------------------------------------------------------------------------
+// Page wiring
+// ---------------------------------------------------------------------------
+if (typeof document !== 'undefined') (function () {
+  var aetInput = document.getElementById('aet');
+  var fileInput = document.getElementById('files');
+  var tbody = document.querySelector('#out tbody');
+  var status = document.getElementById('status');
+  var acts = {};       // key -> summary
+  var overrides = {};  // key -> {title, weight}
+  var csvRows = {};    // "localSeconds|title" -> CSV row (accumulated across all CSV files dropped)
+  function csvList() { return Object.keys(csvRows).map(function (k) { return csvRows[k]; }); }
+
+  try { var saved = localStorage.getItem('aet'); if (saved) aetInput.value = saved; } catch (e) {}
+
+  function aet() { var v = parseFloat(aetInput.value); return isNaN(v) ? null : v; }
+
+  function cell(text, editable, key, field) {
+    var td = document.createElement('td');
+    td.textContent = text;
+    if (editable) {
+      td.contentEditable = 'true';
+      td.addEventListener('input', function () {
+        overrides[key] = overrides[key] || {};
+        overrides[key][field] = td.textContent;
+      });
+    }
+    return td;
+  }
+
+  function render() {
+    var a = aet();
+    var rows = csvList(), matched = 0;
+    var keys = Object.keys(acts).sort(function (x, y) { return (acts[x].start || 0) - (acts[y].start || 0); });
+    tbody.innerHTML = '';
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i], s = acts[k], o = overrides[k] || {};
+      var z = a ? zoneTimes(s, a) : null;
+      var c = matchCsv(rows, s); // CSV values win over FIT values when both exist
+      if (c) matched++;
+      var activity = (c && c.type) || s.title || fmtSport(s.sport);
+      var title = o.title !== undefined ? o.title : ((c && c.title) || '');
+      var ascent = (c && c.ascentFt !== null) ? String(Math.round(c.ascentFt)) : fmtAscent(s.ascentM);
+      var tr = document.createElement('tr');
+      tr.appendChild(cell(fmtDate(s)));
+      tr.appendChild(cell(a === null ? '' : String(a)));
+      tr.appendChild(cell(activity));
+      tr.appendChild(cell(title, true, k, 'title'));
+      tr.appendChild(cell(o.weight !== undefined ? o.weight : '', true, k, 'weight'));
+      tr.appendChild(cell(fmtDist(s.distanceM)));
+      tr.appendChild(cell(ascent));
+      tr.appendChild(cell(hms(s.timerS)));
+      tr.appendChild(cell(z ? hms(z.z12) : ''));
+      tr.appendChild(cell(z ? hms(z.z3) : ''));
+      tr.appendChild(cell(fmtMph(s.distanceM, s.timerS)));
+      tr.appendChild(cell(s.avgHr === null ? '' : String(s.avgHr)));
+      tr.appendChild(cell(s.maxHr === null ? '' : String(s.maxHr)));
+      tr.appendChild(cell(s.vam === null ? '' : String(Math.round(s.vam))));
+      tbody.appendChild(tr);
+    }
+    var n = keys.length;
+    status.textContent = (n ? n + ' activit' + (n === 1 ? 'y' : 'ies') + ' loaded. ' : '') +
+      (rows.length ? rows.length + ' CSV row' + (rows.length === 1 ? '' : 's') + ', ' + matched + ' matched. ' : '') +
+      (a === null ? 'Enter your AeT to compute zone times.' : '');
+  }
+
+  aetInput.addEventListener('input', function () {
+    try { localStorage.setItem('aet', aetInput.value); } catch (e) {}
+    render();
+  });
+
+  function addCsvText(text) {
+    var rows = csvToRows(text);
+    for (var i = 0; i < rows.length; i++) csvRows[rows[i].t + '|' + rows[i].title] = rows[i];
+    return rows.length;
+  }
+
+  function addFitBuffer(buf, name) {
+    var s = summarize(parseFit(buf));
+    s.file = name;
+    acts[s.key || name] = s;
+  }
+
+  function isFit(buf) {
+    if (buf.byteLength < 12) return false;
+    var b = new Uint8Array(buf, 8, 4);
+    return b[0] === 0x2E && b[1] === 0x46 && b[2] === 0x49 && b[3] === 0x54; // ".FIT"
+  }
+
+  function loadFiles(fileList) {
+    var files = Array.prototype.slice.call(fileList);
+    var errors = [];
+    var pending = files.length;
+    if (!pending) return;
+    status.textContent = 'Reading ' + pending + ' file(s)...';
+    files.forEach(function (file) {
+      file.arrayBuffer().then(function (buf) {
+        if (isFit(buf)) return addFitBuffer(buf, file.name);
+        if (/\.csv$/i.test(file.name) || /\.(txt|tsv)$/i.test(file.name) || buf.byteLength < 5000000) {
+          var text = new TextDecoder().decode(buf);
+          if (/\.csv$/i.test(file.name) || /^﻿?[^\n]*\bdate\b/i.test(text)) { addCsvText(text); return; }
+        }
+        throw new Error('not a FIT file or Connect CSV');
+      }).catch(function (err) {
+        errors.push(file.name + ': ' + (err && err.message ? err.message : err));
+      }).then(function () {
+        if (--pending === 0) {
+          render();
+          if (errors.length) status.textContent += ' Errors: ' + errors.join('; ');
+        }
+      });
+    });
+  }
+
+  fileInput.addEventListener('change', function () {
+    loadFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  // Whole page is a drop zone
+  var dragDepth = 0, savedStatus = null;
+  document.addEventListener('dragenter', function (e) {
+    e.preventDefault();
+    if (dragDepth++ === 0) { savedStatus = status.textContent; status.textContent = 'Drop .fit or Connect .csv files anywhere on the page'; }
+  });
+  document.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+  });
+  document.addEventListener('dragleave', function (e) {
+    e.preventDefault();
+    if (--dragDepth <= 0) { dragDepth = 0; if (savedStatus !== null) status.textContent = savedStatus; savedStatus = null; }
+  });
+  document.addEventListener('drop', function (e) {
+    e.preventDefault();
+    dragDepth = 0; savedStatus = null;
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) loadFiles(e.dataTransfer.files);
+    else status.textContent = 'Nothing droppable found (drop .fit or .csv files).';
+  });
+
+  document.getElementById('clear').addEventListener('click', function () {
+    acts = {}; overrides = {}; csvRows = {}; render();
+  });
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var rows = [];
+    var trs = document.querySelectorAll('#out tbody tr');
+    for (var i = 0; i < trs.length; i++) {
+      var cells = trs[i].querySelectorAll('td'), vals = [];
+      for (var j = 0; j < cells.length; j++) vals.push(cells[j].textContent);
+      rows.push(vals.join('\t'));
+    }
+    var tsv = rows.join('\n');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(tsv).then(function () { status.textContent = 'Copied ' + trs.length + ' row(s).'; },
+        function () { window.prompt('Copy:', tsv); });
+    } else {
+      window.prompt('Copy:', tsv);
+    }
+  });
+
+  render();
+})();
+
+if (typeof module !== 'undefined') module.exports = { parseFit: parseFit, summarize: summarize, zoneTimes: zoneTimes, hms: hms, fmtDate: fmtDate };
+</script>
 </body>
 </html>
