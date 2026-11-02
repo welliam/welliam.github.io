@@ -8,7 +8,7 @@
 <p>
   <label>AeT (bpm): <input type="number" id="aet" min="60" max="250" step="1"></label>
   &nbsp;
-  <label>FIT / Connect CSV files: <input type="file" id="files" multiple accept=".fit,.FIT,.csv,.CSV"></label>
+  <label>FIT / zip / Connect CSV files: <input type="file" id="files" multiple accept=".fit,.FIT,.zip,.ZIP,.csv,.CSV"></label>
   &nbsp;
   <button id="copy">Copy table (TSV)</button>
   <button id="clear">Clear</button>
@@ -154,6 +154,81 @@ function parseFit(buf) {
     pos = end + 2; // skip CRC
   }
   return msgs;
+}
+
+// ---------------------------------------------------------------------------
+// Minimal ZIP reader (no external dependencies). Finds the single .fit file
+// inside an archive such as a Garmin Connect "Export Original" download.
+// Deflated entries are inflated with the browser's DecompressionStream.
+// ---------------------------------------------------------------------------
+function isZip(buf) {
+  if (buf.byteLength < 4) return false;
+  var b = new Uint8Array(buf, 0, 4);
+  return b[0] === 0x50 && b[1] === 0x4B && // "PK"
+    ((b[2] === 0x03 && b[3] === 0x04) || (b[2] === 0x05 && b[3] === 0x06) || (b[2] === 0x07 && b[3] === 0x08));
+}
+
+// Raw-deflate bytes -> Promise<ArrayBuffer>
+function inflateRaw(bytes) {
+  if (typeof DecompressionStream === 'undefined') {
+    return Promise.reject(new Error('this browser cannot inflate zip entries (no DecompressionStream)'));
+  }
+  var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Response(stream).arrayBuffer();
+}
+
+// Zip ArrayBuffer -> Promise<{name: innerFileName, buf: ArrayBuffer of the .fit file}>
+function fitFromZip(buf) {
+  var dv = new DataView(buf), n = buf.byteLength, p, i;
+
+  // End of central directory record: scan back over the (optional) archive comment
+  var eocd = -1;
+  for (p = n - 22; p >= Math.max(0, n - 22 - 65535); p--) {
+    if (dv.getUint32(p, true) === 0x06054B50) { eocd = p; break; }
+  }
+  if (eocd < 0) throw new Error('not a zip file (no end of central directory)');
+  var count = dv.getUint16(eocd + 10, true);
+  var cdOff = dv.getUint32(eocd + 16, true);
+  if (count === 0xFFFF || cdOff === 0xFFFFFFFF) throw new Error('zip64 archives are not supported');
+
+  // Central directory entries
+  var entries = [];
+  p = cdOff;
+  for (i = 0; i < count; i++) {
+    if (p + 46 > n || dv.getUint32(p, true) !== 0x02014B50) throw new Error('corrupt zip central directory');
+    var nameLen = dv.getUint16(p + 28, true), extraLen = dv.getUint16(p + 30, true), commentLen = dv.getUint16(p + 32, true);
+    entries.push({
+      name: new TextDecoder().decode(new Uint8Array(buf, p + 46, nameLen)),
+      flags: dv.getUint16(p + 8, true),
+      method: dv.getUint16(p + 10, true),
+      csize: dv.getUint32(p + 20, true),
+      localOff: dv.getUint32(p + 42, true)
+    });
+    p += 46 + nameLen + extraLen + commentLen;
+  }
+
+  // Exactly one .fit file, ignoring directories and macOS resource-fork junk
+  var fits = entries.filter(function (e) {
+    return /\.fit$/i.test(e.name) && !/\/$/.test(e.name) && !/^__MACOSX\//.test(e.name) && !/(^|\/)\._/.test(e.name);
+  });
+  if (!fits.length) throw new Error('no .fit file inside the zip');
+  if (fits.length > 1) throw new Error(fits.length + ' .fit files inside the zip (expected one)');
+  var e = fits[0];
+  if (e.flags & 1) throw new Error('encrypted zip entries are not supported');
+  if (e.csize === 0xFFFFFFFF || e.localOff === 0xFFFFFFFF) throw new Error('zip64 archives are not supported');
+
+  // Local file header -> start of the compressed data
+  var lp = e.localOff;
+  if (lp + 30 > n || dv.getUint32(lp, true) !== 0x04034B50) throw new Error('corrupt zip local header');
+  var dataStart = lp + 30 + dv.getUint16(lp + 26, true) + dv.getUint16(lp + 28, true);
+  if (dataStart + e.csize > n) throw new Error('corrupt zip entry (' + e.name + ')');
+  var data = new Uint8Array(buf, dataStart, e.csize);
+
+  var out;
+  if (e.method === 0) out = Promise.resolve(data.slice().buffer);          // stored
+  else if (e.method === 8) out = inflateRaw(data);                          // deflate
+  else return Promise.reject(new Error('unsupported zip compression method ' + e.method + ' (' + e.name + ')'));
+  return out.then(function (fitBuf) { return { name: e.name, buf: fitBuf }; });
 }
 
 // ---------------------------------------------------------------------------
@@ -592,11 +667,12 @@ if (typeof document !== 'undefined') (function () {
     files.forEach(function (file) {
       file.arrayBuffer().then(function (buf) {
         if (isFit(buf)) return addFitBuffer(buf, file.name);
+        if (isZip(buf)) return fitFromZip(buf).then(function (r) { addFitBuffer(r.buf, file.name + '/' + r.name); });
         if (/\.csv$/i.test(file.name) || /\.(txt|tsv)$/i.test(file.name) || buf.byteLength < 5000000) {
           var text = new TextDecoder().decode(buf);
           if (/\.csv$/i.test(file.name) || /^﻿?[^\n]*\bdate\b/i.test(text)) { addCsvText(text); return; }
         }
-        throw new Error('not a FIT file or Connect CSV');
+        throw new Error('not a FIT file, zip or Connect CSV');
       }).catch(function (err) {
         errors.push(file.name + ': ' + (err && err.message ? err.message : err));
       }).then(function () {
@@ -617,7 +693,7 @@ if (typeof document !== 'undefined') (function () {
   var dragDepth = 0, savedStatus = null;
   document.addEventListener('dragenter', function (e) {
     e.preventDefault();
-    if (dragDepth++ === 0) { savedStatus = status.textContent; status.textContent = 'Drop .fit or Connect .csv files anywhere on the page'; }
+    if (dragDepth++ === 0) { savedStatus = status.textContent; status.textContent = 'Drop .fit, .zip or Connect .csv files anywhere on the page'; }
   });
   document.addEventListener('dragover', function (e) {
     e.preventDefault();
@@ -631,7 +707,7 @@ if (typeof document !== 'undefined') (function () {
     e.preventDefault();
     dragDepth = 0; savedStatus = null;
     if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) loadFiles(e.dataTransfer.files);
-    else status.textContent = 'Nothing droppable found (drop .fit or .csv files).';
+    else status.textContent = 'Nothing droppable found (drop .fit, .zip or .csv files).';
   });
 
   document.getElementById('clear').addEventListener('click', function () {
@@ -658,7 +734,7 @@ if (typeof document !== 'undefined') (function () {
   render();
 })();
 
-if (typeof module !== 'undefined') module.exports = { parseFit: parseFit, summarize: summarize, zoneTimes: zoneTimes, hms: hms, fmtDate: fmtDate };
+if (typeof module !== 'undefined') module.exports = { parseFit: parseFit, fitFromZip: fitFromZip, isZip: isZip, summarize: summarize, zoneTimes: zoneTimes, hms: hms, fmtDate: fmtDate };
 </script>
 </body>
 </html>
