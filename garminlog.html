@@ -454,7 +454,7 @@ function zoneTimes(summary, aet) {
     var hr = summary.samples[i][1];
     if (hr === null) continue;
     if (hr > aet) z3 += summary.durs[i];
-    else if (hr > lo) z12 += summary.durs[i];
+    else if (hr >= lo) z12 += summary.durs[i];
   }
   return { z12: z12, z3: z3 };
 }
